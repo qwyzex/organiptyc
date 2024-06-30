@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
     createUserWithEmailAndPassword,
     onAuthStateChanged,
@@ -19,6 +19,7 @@ import {
 import { ref, uploadBytes } from "firebase/storage";
 
 import { useRouter } from "next/router";
+import { UserContext } from "@/context/UserContext";
 const Signup = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -33,7 +34,17 @@ const Signup = () => {
     const [error, setError] = useState<string | null>(null);
     const [emailAvailable, setEmailAvailable] = useState<boolean | null>(null);
 
+    const { loading, authUser } = useContext(UserContext);
+
     const router = useRouter();
+
+    useEffect(() => {
+        if (authUser) {
+            router.push("/dashboard");
+            return;
+        }
+        // eslint-disable-next-line
+    }, []);
 
     const checkEmailAvailability = async (email: string) => {
         try {
@@ -101,7 +112,7 @@ const Signup = () => {
                 await sendEmailVerification(user);
             }
 
-            router.push("/dashboard");
+            router.push("/organization");
         } catch (error) {
             setError("Error creating user");
         } finally {
@@ -111,66 +122,75 @@ const Signup = () => {
 
     return (
         <div>
-            {step === 1 && (
-                <form onSubmit={handleStep1Submit}>
-                    <h2>Step 1: Email and Password</h2>
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="password"
-                        placeholder="Confirm Password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                    />
-                    <button type="submit" disabled={isLoading}>
-                        {isLoading ? "Checking..." : "Next"}
-                    </button>
-                    {error && <p>{error}</p>}
-                </form>
-            )}
+            {!loading && !authUser ? (
+                <div>
+                    {step === 1 && (
+                        <form onSubmit={handleStep1Submit}>
+                            <h2>Step 1: Email and Password</h2>
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <input
+                                type="password"
+                                placeholder="Confirm Password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                required
+                            />
+                            <button type="submit" disabled={isLoading}>
+                                {isLoading ? "Checking..." : "Next"}
+                            </button>
+                            {error && <p>{error}</p>}
+                        </form>
+                    )}
 
-            {step === 2 && (
-                <form onSubmit={handleStep2Submit}>
-                    <h2>Step 2: Personal Information</h2>
-                    <input
-                        type="text"
-                        placeholder="Firstname"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="text"
-                        placeholder="Lastname"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="date"
-                        placeholder="Date of birth"
-                        value={dateOfBirth}
-                        onChange={(e) => setDateOfBirth(e.target.value)}
-                        required
-                    />
-                    <button type="submit" disabled={isLoading}>
-                        {isLoading ? "Creating Account..." : "Sign Up"}
-                    </button>
-                    {error && <p>{error}</p>}
-                </form>
+                    {step === 2 && (
+                        <form onSubmit={handleStep2Submit}>
+                            <h2>Step 2: Personal Information</h2>
+                            <input
+                                type="text"
+                                placeholder="Firstname"
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
+                                required
+                            />
+                            <input
+                                type="text"
+                                placeholder="Lastname"
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
+                                required
+                            />
+                            <input
+                                type="date"
+                                placeholder="Date of birth"
+                                value={dateOfBirth}
+                                onChange={(e) => setDateOfBirth(e.target.value)}
+                                required
+                            />
+                            <button type="submit" disabled={isLoading}>
+                                {isLoading ? "Creating Account..." : "Sign Up"}
+                            </button>
+                            {error && <p>{error}</p>}
+                        </form>
+                    )}
+                    <div>
+                        <button onClick={() => router.push("/signin")}>Sign In</button>
+                    </div>
+                </div>
+            ) : (
+                <></>
             )}
         </div>
     );

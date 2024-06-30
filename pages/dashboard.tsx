@@ -5,6 +5,8 @@ import { UserContext } from "@/context/UserContext";
 import { useContext } from "react";
 import { useRouter } from "next/router";
 
+import Head  from "next/head";
+
 const Dashboard = () => {
     const router = useRouter();
     const { loading, authUser, userDoc } = useContext(UserContext);
@@ -19,9 +21,14 @@ const Dashboard = () => {
 
     return (
         <div>
+            <Head>
+                <title>Dashboard</title>
+                <meta name="description" content="Organiptyc" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+            </Head>
             {!loading && authUser ? (
                 <div>
-                    <p>Email: {userDoc?.email}</p>
+                    <p>Email: {userDoc?.email}, {authUser.uid}</p>
                     <p>
                         Name: {userDoc?.firstName} {userDoc?.lastName}
                     </p>
@@ -30,11 +37,11 @@ const Dashboard = () => {
                     ) : (
                         <p>Email is not verified</p>
                     )}
-                    <button onClick={newOrganization}>New Organization</button>
-                    <button onClick={logout}>Logout</button>
+                    <button className="btn-def" onClick={newOrganization}>New Organization</button>
+                    <button className="btn-ref" onClick={logout}>Logout</button>
                 </div>
             ) : (
-                <p>No user logged in</p>
+                <p>Loading...</p>
             )}
         </div>
     );

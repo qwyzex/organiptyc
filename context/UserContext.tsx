@@ -48,9 +48,9 @@ export function UserProvider({ children }: UserProviderProps) {
             } else {
                 setUserDoc(null);
             }
+            setLoading(false);
         });
 
-        setLoading(false);
         return () => unsubscribe();
     }, []);
 
