@@ -1,40 +1,48 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Organiptyc
 
-## Getting Started
+Organiptyc is a web application designed to help small organizations, such as student councils and nonprofits, manage their administrative tasks, document storage, and event planning efficiently.
 
-First, run the development server:
+## ✨ Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **User Authentication**: Secure sign-in with role-based access management.
+- **Organization Management**: Create and customize organizations with specific details.
+- **Document Handling**: Upload, store, and manage organizational documents securely.
+- **Event Planning**: Schedule and oversee events with ease.
+- **Role-Based Access**: Differentiate permissions for admins and members.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📚 Tech Stack
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+- **Next.js**: A powerful React framework for building modern web applications.
+- **Firebase**:
+  - **Firestore**: Real-time database for storing and managing data.
+  - **Firebase Authentication**: Secure authentication system.
+  - **Firebase Storage**: Reliable file storage for documents and media.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## ✍️ Usage
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- **Create and Join Organizations**: Users can create organizations or join existing ones, facilitating collaboration.
+- **Manage Members**: Admins can invite members, assign roles, and manage permissions.
+- **Document Management**: Store and organize essential documents with access control.
+- **Plan and Manage Events**: Organize events with detailed planning tools.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## ✅ Permissions Overview
 
-## Learn More
+- **Stranger**: Cannot access any organization or user profiles.
+- **Non-Member**: Limited to their own profile and settings.
+- **Member**: Can access and contribute to organization content based on permissions.
+- **Admin**: Full access to manage the organization, members, and content.
 
-To learn more about Next.js, take a look at the following resources:
+## 🗂️ Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Organiptyc is built with a focus on usability and security, leveraging modern web technologies to ensure a seamless user experience.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- **Frontend**: Developed with Next.js, providing server-side rendering and static generation.
+- **Backend**: Powered by Firebase services, offering a scalable and secure backend solution.
 
-## Deploy on Vercel
+## 💝 Contributions
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+We welcome contributions to enhance Organiptyc! Please feel free to fork the repository and submit pull requests.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## 📜 License
+
+This project is licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives (CC BY-NC-ND).
