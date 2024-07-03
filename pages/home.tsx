@@ -5,11 +5,11 @@ import { UserContext } from "@/context/UserContext";
 import { useContext } from "react";
 import { useRouter } from "next/router";
 
-import styles from "@/styles/Dashboard.module.sass";
+import styles from "@/styles/Home.module.sass";
 
 import Head from "next/head";
 
-const Dashboard = () => {
+const Home = () => {
     const router = useRouter();
     const { loading, authUser, userDoc } = useContext(UserContext);
 
@@ -24,7 +24,7 @@ const Dashboard = () => {
     return (
         <div>
             <Head>
-                <title>Dashboard</title>
+                <title>Home</title>
                 <meta name="description" content="Organiptyc" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
             </Head>
@@ -56,4 +56,4 @@ const Dashboard = () => {
     );
 };
 
-export default Dashboard;
+export default Home;

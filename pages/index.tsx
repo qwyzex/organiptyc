@@ -21,7 +21,7 @@ export default function Home() {
 
     useEffect(() => {
         if (authUser) {
-            router.push("/dashboard");
+            router.push("/home");
             return;
         }
     });

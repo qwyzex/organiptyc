@@ -87,16 +87,17 @@ const CreateOrganizationForm = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
-    
+
         try {
             const user = auth.currentUser;
             if (!user) {
                 throw new Error("User not authenticated");
             }
-    
+
             const orgId = uuidv4();
-    
+
             const orgData = {
+                uid: orgId,
                 name,
                 description,
                 type,
@@ -106,27 +107,23 @@ const CreateOrganizationForm = () => {
                 adArtURL: "",
                 createdAt: new Date(),
             };
-    
+
             const orgRef = doc(db, "organizations", orgId);
             await setDoc(orgRef, orgData);
-    
+
             const memberRef = doc(db, `organizations/${orgId}/members`, user.uid);
             await setDoc(memberRef, {
                 userId: user.uid,
                 role: "admin",
                 joinedAt: new Date(),
             });
-    
-            const userRef = doc(db, "users", user.uid);
-            await updateDoc(userRef, {
-                organizations: {
-                    [orgId]: {
-                        role: "admin",
-                        joinedAt: new Date(),
-                    },
-                },
+
+            const userOrgRef = doc(db, `users/${user.uid}/organizations`, orgId);
+            await setDoc(userOrgRef, {
+                role: "admin",
+                joinedAt: new Date(),
             });
-    
+
             const uploadFile = async (file: File, folder: string) => {
                 const customFilename = `${folder}_${orgId}`;
                 const storageRef = ref(
@@ -136,26 +133,25 @@ const CreateOrganizationForm = () => {
                 await uploadBytes(storageRef, file);
                 return getDownloadURL(storageRef);
             };
-    
+
             let logoURL = "";
             if (logoFile) {
                 logoURL = await uploadFile(logoFile, "logo");
             }
-    
+
             let adArtURL = "";
             if (adArtFile) {
                 adArtURL = await uploadFile(adArtFile, "aoa");
             }
-    
+
             await updateDoc(orgRef, { logoURL, adArtURL });
-    
+
             router.push(`/organization/${orgId}`);
         } catch (err) {
             console.error("Error creating organization:", err);
             setError("Failed to create organization. Please try again.");
         }
     };
-    
 
     return (
         <>

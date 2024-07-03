@@ -11,6 +11,12 @@ interface UserDocument {
     photoURL: string;
     createdAt: string;
     updatedAt: string;
+    organizations: {
+        [orgId: string]: {
+            role: string;
+            joinedAt: string;
+        };
+    };
 }
 
 interface UserContextProps {

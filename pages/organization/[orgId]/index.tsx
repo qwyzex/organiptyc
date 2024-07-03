@@ -67,11 +67,11 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
 };
 
 export const getServerSideProps = async (context: any) => {
-    const { orgid } = context.params;
+    const { orgId } = context.params;
 
     return {
         props: {
-            orgId: orgid,
+            orgId,
         },
     };
 };

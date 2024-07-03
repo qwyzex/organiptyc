@@ -1,6 +1,6 @@
 import LandingLayout from "@/components/layouts/LandingLayout";
 import AuthLayout from "@/components/layouts/AuthLayout";
-import DashboardLayout from "@/components/layouts/DashboardLayout";
+import HomeLayout from "@/components/layouts/HomeLayout";
 import OrgLayout from "@/components/layouts/OrgLayout";
 import EmptyLayout from "@/components/layouts/EmptyLayout";
 import { useContext } from "react";
@@ -10,11 +10,11 @@ import { useEffect } from "react";
 
 const getLayoutByRoute = (pathname: string) => {
     if (
-        pathname.startsWith("/dashboard") ||
+        pathname.startsWith("/home") ||
         pathname.startsWith("/profile") ||
         pathname.startsWith("/settings")
     ) {
-        return DashboardLayout;
+        return HomeLayout;
     }
 
     if (pathname.startsWith("/org")) {

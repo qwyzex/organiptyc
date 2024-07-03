@@ -40,7 +40,7 @@ const Signup = () => {
 
     useEffect(() => {
         if (authUser) {
-            router.push("/dashboard");
+            router.push("/home");
             return;
         }
         // eslint-disable-next-line

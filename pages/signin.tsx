@@ -16,7 +16,7 @@ export default function SigninPage() {
 
     useEffect(() => {
         if (authUser) {
-            router.push("/dashboard");
+            router.push("/home");
             return;
         }
     });
@@ -29,8 +29,8 @@ export default function SigninPage() {
         try {
             const result = await signInWithEmailAndPassword(auth, email, password);
             console.log("Logged in:", result.user);
-            // Redirect to dashboard or home page
-            // history.push("/dashboard");
+            // Redirect to home page
+            // history.push("/home");
         } catch (error) {
             setError("error");
         } finally {
