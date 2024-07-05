@@ -1,4 +1,5 @@
 import styles from "@/styles/components/Sidebar.module.sass";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
@@ -49,13 +50,13 @@ const Sidebar = ({ list }: SidebarList) => {
                                 className={`${
                                     item.href == router.asPath ? styles.yesThisIsMe : ""
                                 }`}
-                                onClick={() => {
-                                    if (item.href != router.pathname) {
-                                        router.push(item.href);
-                                    }
-                                }}
+                                // onClick={() => {
+                                //     if (item.href != router.pathname) {
+                                //         router.push(item.href);
+                                //     }
+                                // }}
                             >
-                                {item.title}
+                                <Link href={item.href}>{item.title}</Link>
                             </li>
                         );
                     })}

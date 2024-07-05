@@ -1,0 +1,1566 @@
+// File: components/Header.tsx
+import Image from "next/image";
+import { useContext } from "react";
+import { UserContext } from "@/context/UserContext";
+
+import styles from "@/styles/components/Header.module.sass";
+
+export default function Header() {
+    const { loading, authUser, userDoc } = useContext(UserContext);
+
+    return (
+        <>
+            <header className={styles.header}>
+                <h1>Organiptyc</h1>
+                <div className={styles.profile}>
+                    <div>
+                        {!loading && userDoc
+                            ? `${userDoc.firstName} ${userDoc.lastName}`
+                            : "..."}
+                    </div>
+
+                    <Image
+                        src="https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250"
+                        alt="User Avatar"
+                        width={50}
+                        height={50}
+                    />
+                </div>
+            </header>
+        </>
+    );
+}
+
+// File: components/layouts/AuthLayout.tsx
+import { ReactNode } from "react";
+
+type AuthLayoutProps = {
+    children: ReactNode;
+};
+
+const AuthLayout = ({ children }: AuthLayoutProps) => {
+    return (
+        <div>
+            <h2>AUTHENTICATION</h2>
+            <main>{children}</main>
+        </div>
+    );
+};
+
+export default AuthLayout;
+
+// File: components/layouts/EmptyLayout.tsx
+import { ReactNode } from "react";
+
+type EmptyLayoutProps = {
+    children: ReactNode;
+};
+
+const EmptyLayout = ({ children }: EmptyLayoutProps) => {
+    return (
+        <div>
+            empty
+            {children}
+
+        </div>
+    );
+};
+
+export default EmptyLayout;
+
+// File: components/layouts/HomeLayout.tsx
+import { ReactNode, useContext } from "react";
+
+import styles from "@/styles/HomeLayout.module.sass";
+import Image from "next/image";
+import { UserContext } from "@/context/UserContext";
+
+import Sidebar from "@/components/Sidebar";
+import Header from "@/components/Header";
+
+type HomeLayoutProps = {
+    children: ReactNode;
+};
+
+const HomeLayout = ({ children }: HomeLayoutProps) => {
+    const { loading, authUser, userDoc } = useContext(UserContext);
+
+    return (
+        <div className={styles.container}>
+            <Header />
+            <div className="sideAndMain">
+                <Sidebar
+                    list={[
+                        {
+                            title: "Homepage",
+                            href: "/home",
+                        },
+                        {
+                            title: "Organization",
+                            href: "/organization",
+                        },
+                        {
+                            title: "Message",
+                            href: "/message",
+                        },
+                        {
+                            title: "Notification",
+                            href: "/notification",
+                        },
+                        {
+                            title: "Settings",
+                            href: "/settings",
+                        },
+                    ]}
+                />
+                <main className="mainLayout">{children}</main>
+            </div>
+        </div>
+    );
+};
+
+export default HomeLayout;
+
+// File: components/layouts/LandingLayout.tsx
+import { ReactNode } from "react";
+
+type LandingLayoutProps = {
+    children: ReactNode;
+};
+
+const LandingLayout = ({ children }: LandingLayoutProps) => {
+    return (
+        <div>
+            <header>Landing Header</header>
+            <main>{children}</main>
+            <footer>Landing Footer</footer>
+        </div>
+    );
+};
+
+export default LandingLayout;
+
+// File: components/layouts/OrgLayout.tsx
+import { ReactNode } from "react";
+
+import Header from "../Header";
+import Sidebar from "../Sidebar";
+import { NextPage } from "next";
+
+type OrgLayoutProps = {
+    children: ReactNode;
+    orgId: string;
+};
+
+const OrgLayout: NextPage<OrgLayoutProps> = ({ children, orgId }) => {
+    return (
+        <div>
+            <Header />
+            <div className="sideAndMain">
+                <Sidebar
+                    list={[
+                        { title: "Homepage", href: "/home" },
+                        { title: "Organization", href: "/organization" },
+                        { title: "Dashboard", href: `/organization/${orgId}` },
+                        { title: "Members", href: `/organization/${orgId}/members` },
+                        { title: "Programs", href: `/organization/${orgId}/programs` },
+                        { title: "Files", href: `/organization/${orgId}/files` },
+                        { title: "Message", href: `/organization/${orgId}/message` },
+                        { title: "Settings", href: `/organization/${orgId}/settings` },
+                    ]}
+                />
+                <main className="mainLayout">{children}</main>
+            </div>
+        </div>
+    );
+};
+
+export const getServerSideProps = async (context: any) => {
+    const { orgId } = context.params;
+
+    return {
+        props: {
+            orgId,
+        },
+    };
+};
+
+export default OrgLayout;
+
+// File: components/Sidebar.tsx
+import styles from "@/styles/components/Sidebar.module.sass";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+
+type SidebarListItem = {
+    title: string;
+    href: string;
+};
+
+type SidebarList = {
+    list: Array<SidebarListItem>;
+};
+
+const Sidebar = ({ list }: SidebarList) => {
+    const router = useRouter();
+
+    const defaultList = [
+        {
+            title: "Homepage",
+            href: "/home",
+        },
+        {
+            title: "Organization",
+            href: "/organization",
+        },
+        {
+            title: "New",
+            href: "/organization/new",
+        },
+    ];
+
+    const paths = [
+        "/organization",
+        "/organization/new",
+        "/organization/join",
+        "/organization/create",
+    ];
+
+    const itemList = paths.includes(router.pathname) ? defaultList : list;
+
+    return (
+        <>
+            <aside className={styles.sidebar}>
+                <ul>
+                    {itemList.map((item, i) => {
+                        return (
+                            <li
+                                key={i}
+                                className={`${
+                                    item.href == router.asPath ? styles.yesThisIsMe : ""
+                                }`}
+                                onClick={() => {
+                                    if (item.href != router.pathname) {
+                                        router.push(item.href);
+                                    }
+                                }}
+                            >
+                                {item.title}
+                            </li>
+                        );
+                    })}
+                </ul>
+            </aside>
+        </>
+    );
+};
+
+export default Sidebar;
+
+// File: context/UserContext.tsx
+import { createContext, useState, useEffect, ReactNode } from "react";
+import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../firebase"; // Adjust the import based on your file structure
+
+interface UserDocument {
+    firstName: string;
+    lastName: string;
+    dateOfBirth: string;
+    email: string;
+    photoURL: string;
+    createdAt: string;
+    updatedAt: string;
+    organizations: {
+        [orgId: string]: {
+            role: string;
+            joinedAt: string;
+        };
+    };
+}
+
+interface UserContextProps {
+    loading: boolean;
+    authUser: FirebaseUser | null;
+    userDoc: UserDocument | null;
+}
+
+export const UserContext = createContext<UserContextProps>({
+    loading: true,
+    authUser: null,
+    userDoc: null,
+});
+
+interface UserProviderProps {
+    children: ReactNode;
+}
+
+export function UserProvider({ children }: UserProviderProps) {
+    const [authUser, setAuthUser] = useState<FirebaseUser | null>(null);
+    const [userDoc, setUserDoc] = useState<UserDocument | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            setAuthUser(user);
+            if (user) {
+                const userDocRef = doc(db, "users", user.uid);
+                const userDocSnap = await getDoc(userDocRef);
+                if (userDocSnap.exists()) {
+                    setUserDoc(userDocSnap.data() as UserDocument);
+                } else {
+                    setUserDoc(null);
+                }
+            } else {
+                setUserDoc(null);
+            }
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    return (
+        <UserContext.Provider value={{ loading, authUser, userDoc }}>
+            {children}
+        </UserContext.Provider>
+    );
+}
+
+// File: pages/_app.tsx
+import "@/styles/globals.sass";
+import { useRouter } from "next/router";
+import { useEffect, useContext } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/firebase";
+import type { AppProps } from "next/app";
+import { UserProvider } from "@/context/UserContext";
+import getLayoutByRoute from "@/utils/layouts";
+import { UserContext } from "@/context/UserContext";
+
+import Head from "next/head";
+
+export default function App({ Component, pageProps }: AppProps) {
+    const router = useRouter();
+    const Layout = getLayoutByRoute(router.pathname);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            const strangerPage = ["/", "/signin", "/signup"];
+
+            if (!user && !strangerPage.includes(router.pathname)) {
+                router.push("/signin");
+            }
+        });
+
+        return () => unsubscribe();
+    }, [router]);
+
+    return (
+        <UserProvider>
+            <Head>
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <link rel="icon" href="/logo.ico" />
+            </Head>
+            <Layout {...pageProps}>
+                <Component {...pageProps} />
+            </Layout>
+        </UserProvider>
+    );
+}
+
+// File: pages/_document.tsx
+import { Html, Head, Main, NextScript } from "next/document";
+
+export default function Document() {
+  return (
+    <Html lang="en">
+      <Head />
+      <body>
+        <Main />
+        <NextScript />
+      </body>
+    </Html>
+  );
+}
+
+// File: pages/api/hello.ts
+// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import type { NextApiRequest, NextApiResponse } from "next";
+
+type Data = {
+  name: string;
+};
+
+export default function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<Data>,
+) {
+  res.status(200).json({ name: "John Doe" });
+}
+
+// File: pages/home.tsx
+import { useEffect, useState } from "react";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "@/firebase";
+import { UserContext } from "@/context/UserContext";
+import { useContext } from "react";
+import { useRouter } from "next/router";
+
+import styles from "@/styles/Home.module.sass";
+
+import Head from "next/head";
+
+const Home = () => {
+    const router = useRouter();
+    const { loading, authUser, userDoc } = useContext(UserContext);
+
+    function logout() {
+        signOut(auth);
+    }
+
+    const newOrganization = () => {
+        router.push("/organization");
+    };
+
+    return (
+        <div>
+            <Head>
+                <title>Home</title>
+                <meta name="description" content="Organiptyc" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+            </Head>
+            {!loading && authUser ? (
+                <div className={styles.container}>
+
+                    <p>
+                        Email: {userDoc?.email}, {authUser.uid}
+                    </p>
+                    <p>
+                        Name: {userDoc?.firstName} {userDoc?.lastName}
+                    </p>
+                    {authUser.emailVerified ? (
+                        <p>Email is verified</p>
+                    ) : (
+                        <p>Email is not verified</p>
+                    )}
+                    <button className="btn-def" onClick={newOrganization}>
+                        New Organization
+                    </button>
+                    <button className="btn-ref" onClick={logout}>
+                        Logout
+                    </button>
+                </div>
+            ) : (
+                <p>Loading...</p>
+            )}
+        </div>
+    );
+};
+
+export default Home;
+
+// File: pages/index.tsx
+import Head from "next/head";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "@/firebase";
+
+import { onAuthStateChanged } from "firebase/auth";
+import { useContext, useEffect, useState } from "react";
+import { getUserData, redirect } from "@/function/";
+
+import Image from "next/image";
+import { Inter } from "next/font/google";
+import styles from "@/styles/Home.module.css";
+import { UserContext } from "@/context/UserContext";
+import { useRouter } from "next/router";
+
+const inter = Inter({ subsets: ["latin"] });
+
+export default function Home() {
+    const { loading, authUser } = useContext(UserContext);
+
+    const router = useRouter();
+
+    useEffect(() => {
+        if (authUser) {
+            router.push("/home");
+            return;
+        }
+    });
+
+    return (
+        <>
+            <Head>
+                <title>Organiptyc</title>
+                <meta name="description" content="Organiptyc" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+            </Head>
+            <main>
+                {loading ? (
+                    <>LOADING...</>
+                ) : (
+                    <>
+                        <div>WELCOME TO ORGANIPTYC!</div>
+                        <button onClick={() => redirect("/signup")}>SIGN UP</button>
+                        <button onClick={() => redirect("/signin")}>SIGN IN</button>
+                    </>
+                )}
+            </main>
+        </>
+    );
+}
+
+// File: pages/message/[orgId].tsx
+
+// File: pages/message/index.tsx
+export default function Message() {
+    return <>Message</>;
+}
+
+// File: pages/organization/[orgId]/files.tsx
+export default function OrganizationFiles() {
+    return <>Files</>;
+}
+
+// File: pages/organization/[orgId]/index.tsx
+import { NextPage } from "next";
+import { useRouter } from "next/router";
+import { doc, getDoc } from "firebase/firestore";
+import { useContext, useEffect, useState } from "react";
+import { db } from "@/firebase";
+import { UserContext } from "@/context/UserContext";
+
+type OrganizationProps = {
+    orgId: string;
+};
+
+const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
+    const [organization, setOrganization] = useState<any>(null);
+    const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
+
+    const { loading, authUser } = useContext(UserContext);
+
+    useEffect(() => {
+        const fetchOrganization = async () => {
+            try {
+                console.log(1)
+                const orgRef = doc(db, "organizations", orgId);
+                console.log(2)
+                const orgDoc = await getDoc(orgRef);
+                
+                console.log(3)
+                if (orgDoc.exists()) {
+                    console.log(4)
+                    setOrganization(orgDoc.data());
+                } else {
+                    setError("Organization not found.");
+                }
+            } catch (err) {
+                setError(JSON.stringify(err));
+            }
+        };
+        
+        if (orgId && !loading && authUser) {
+            console.log(orgId);
+            console.log(authUser.uid);
+            console.log(0)
+            fetchOrganization();
+            console.log(9)
+        }
+    }, [orgId, loading, authUser]);
+
+    if (error) {
+        return <div>{error}</div>;
+    }
+
+    if (!organization) {
+        return <div>Loading...</div>;
+    }
+
+    return (
+        <div>
+            <h1>{organization.name}</h1>
+            <p>{organization.description}</p>
+            <p>
+                Created At:{" "}
+                {new Date(organization.createdAt.seconds * 1000).toLocaleDateString()}
+            </p>
+            {/* Display other organization details */}
+        </div>
+    );
+};
+
+export const getServerSideProps = async (context: any) => {
+    const { orgId } = context.params;
+
+    return {
+        props: {
+            orgId,
+        },
+    };
+};
+
+export default OrganizationPage;
+
+// File: pages/organization/[orgId]/members.tsx
+export default function OrganizationMembers() {
+    return <>Members</>;
+}
+
+// File: pages/organization/[orgId]/programs.tsx
+export default function OrganizationPrograms() {
+    return <>Programs</>;
+}
+
+// File: pages/organization/create.tsx
+import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
+import { useRouter } from "next/router";
+import { addDoc, collection, doc, setDoc, updateDoc } from "firebase/firestore";
+import { useState } from "react";
+
+import { storage, db, auth } from "@/firebase";
+
+import { v4 as uuidv4 } from "uuid";
+
+const CreateOrganizationForm = () => {
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+    const [type, setType] = useState("");
+    const [website, setWebsite] = useState("");
+    const [location, setLocation] = useState("");
+    const [logoFile, setLogoFile] = useState<File | null>(null);
+    const [adArtFile, setAdArtFile] = useState<File | null>(null);
+
+    const [error, setError] = useState("");
+    const router = useRouter();
+
+    // const handleSubmit = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     setError("");
+
+    //     try {
+    //         const user = auth.currentUser;
+    //         if (!user) {
+    //             throw new Error("User not authenticated");
+    //         }
+
+    //         const orgId = uuidv4();
+
+    //         const uploadFile = async (file: File, folder: string) => {
+    //             const customFilename = `${folder}_${orgId}`;
+    //             const storageRef = ref(
+    //                 storage,
+    //                 `organization/${orgId}/${folder}/${customFilename}`
+    //             );
+    //             await uploadBytes(storageRef, file);
+    //             return getDownloadURL(storageRef);
+    //         };
+
+    //         const logoURL = logoFile ? await uploadFile(logoFile, "logo") : null;
+
+    //         const adArtURL = adArtFile ? await uploadFile(adArtFile, "aoa") : null;
+
+    //         const orgData = {
+    //             name,
+    //             description,
+    //             type,
+    //             website,
+    //             location,
+    //             logoURL,
+    //             adArtURL,
+    //             createdAt: new Date(),
+    //         };
+
+    //         const orgRef = doc(db, "organizations", orgId);
+    //         await setDoc(orgRef, orgData);
+
+    //         const memberRef = doc(db, `organizations/${orgId}/members`, user.uid);
+    //         await setDoc(memberRef, {
+    //             userId: user.uid,
+    //             role: "admin",
+    //             joinedAt: new Date(),
+    //         });
+
+    //         // Update user document to include the new organization
+    //         const userRef = doc(db, "users", user.uid);
+    //         await updateDoc(userRef, {
+    //             organizations: {
+    //                 [orgId]: {
+    //                     role: "admin",
+    //                     joinedAt: new Date(),
+    //                 },
+    //             },
+    //         });
+
+    //         router.push(`/organization/${orgId}`);
+    //     } catch (err) {
+    //         console.error("Error creating organization:", err);
+    //         setError("Failed to create organization. Please try again.");
+    //     }
+    // };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError("");
+
+        try {
+            const user = auth.currentUser;
+            if (!user) {
+                throw new Error("User not authenticated");
+            }
+
+            const orgId = uuidv4();
+
+            const orgData = {
+                uid: orgId,
+                name,
+                description,
+                type,
+                website,
+                location,
+                logoURL: "",
+                adArtURL: "",
+                createdAt: new Date(),
+            };
+
+            const orgRef = doc(db, "organizations", orgId);
+            await setDoc(orgRef, orgData);
+
+            const memberRef = doc(db, `organizations/${orgId}/members`, user.uid);
+            await setDoc(memberRef, {
+                userId: user.uid,
+                role: "admin",
+                joinedAt: new Date(),
+            });
+
+            const userOrgRef = doc(db, `users/${user.uid}/organizations`, orgId);
+            await setDoc(userOrgRef, {
+                role: "admin",
+                joinedAt: new Date(),
+            });
+
+            const uploadFile = async (file: File, folder: string) => {
+                const customFilename = `${folder}_${orgId}`;
+                const storageRef = ref(
+                    storage,
+                    `organization/${orgId}/${folder}/${customFilename}`
+                );
+                await uploadBytes(storageRef, file);
+                return getDownloadURL(storageRef);
+            };
+
+            let logoURL = "";
+            if (logoFile) {
+                logoURL = await uploadFile(logoFile, "logo");
+            }
+
+            let adArtURL = "";
+            if (adArtFile) {
+                adArtURL = await uploadFile(adArtFile, "aoa");
+            }
+
+            await updateDoc(orgRef, { logoURL, adArtURL });
+
+            router.push(`/organization/${orgId}`);
+        } catch (err) {
+            console.error("Error creating organization:", err);
+            setError("Failed to create organization. Please try again.");
+        }
+    };
+
+    return (
+        <>
+            <h1>Create Organization</h1>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label>Organization Name</label>
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                    />
+                </div>
+                <div>
+                    <label>Description</label>
+                    <textarea
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
+                </div>
+                <div>
+                    <label>Type</label>
+                    <select
+                        value={type}
+                        onChange={(e) => setType(e.target.value)}
+                        required
+                    >
+                        <option value="" disabled>
+                            Select type
+                        </option>
+                        <option value="nonprofit">Nonprofit</option>
+                        <option value="student">Student</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Website (optional)</label>
+                    <input
+                        type="url"
+                        value={website}
+                        onChange={(e) => setWebsite(e.target.value)}
+                    />
+                </div>
+                <div>
+                    <label>Location (optional)</label>
+                    <input
+                        type="text"
+                        value={location}
+                        onChange={(e) => setLocation(e.target.value)}
+                    />
+                </div>
+                <div>
+                    <label>Logo (optional)</label>
+                    <input
+                        type="file"
+                        onChange={(e) => setLogoFile(e.target.files?.[0] || null)}
+                    />
+                </div>
+                <div>
+                    <label>Articles of Association / Bylaws</label>
+                    <input
+                        type="file"
+                        onChange={(e) => setAdArtFile(e.target.files?.[0] || null)}
+                        required
+                    />
+                </div>
+                <button type="submit">Create Organization</button>
+            </form>
+        </>
+    );
+};
+
+export default CreateOrganizationForm;
+
+// File: pages/organization/index.tsx
+import { useState, useEffect, useContext } from "react";
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
+import { db } from "@/firebase";
+import { UserContext } from "@/context/UserContext";
+import { useRouter } from "next/router";
+import fetchUserOrgs from "@/function/fetchUserOrgs";
+
+const Organization = () => {
+    const [organizations, setOrganizations] = useState<any>([]);
+    const [listLoading, setListLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>("");
+    const { userDoc, loading, authUser } = useContext(UserContext);
+    const router = useRouter();
+
+    useEffect(() => {
+        if (authUser) {
+            fetchUserOrgs(authUser.uid, setListLoading)
+                .then(setOrganizations)
+                .catch(setError);
+        }
+    }, [authUser]);
+
+    if (error) return <div>Error: {error}</div>;
+
+    return (
+        <div>
+            <h1>Your Organizations</h1>
+            <ul>
+                {!listLoading ? (
+                    organizations.map((org: any) => (
+                        <li
+                            key={org.uid}
+                            onClick={() => router.push(`/organization/${org.uid}`)}
+                        >
+                            <h2>{org.name}</h2>
+                            <p>{org.description}</p>
+                        </li>
+                    ))
+                ) : (
+                    <>Loading...</>
+                )}
+            </ul>
+        </div>
+    );
+};
+
+export default Organization;
+
+// File: pages/organization/join.tsx
+export default function JoinOrganization() {
+    return <div>Join Organization</div>;
+}
+
+// File: pages/organization/new.tsx
+import {useRouter} from "next/router"
+
+export default function New() {
+    const router = useRouter()
+
+    return (
+        <div>
+            <div>
+                <button onClick={() => router.back()}>
+                    <h2>BACK</h2>
+                </button>
+            </div>
+            <div>
+                <button onClick={() => router.push("/organization/join")}>
+                    <h2>JOIN</h2>
+                </button>
+            </div>
+            <div>
+                <button onClick={() => router.push("/organization/create")}>
+                    <h2>CREATE</h2>
+                </button>
+            </div>
+        </div>
+    );
+}
+
+// File: pages/signin.tsx
+import React, { useState, useEffect, useContext } from "react";
+import { auth } from "@/firebase";
+import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
+import { useRouter } from "next/router";
+import { UserContext } from "@/context/UserContext";
+
+export default function SigninPage() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const { loading, authUser } = useContext(UserContext);
+
+    const router = useRouter();
+
+    useEffect(() => {
+        if (authUser) {
+            router.push("/home");
+            return;
+        }
+    });
+
+    const handleLoginSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const result = await signInWithEmailAndPassword(auth, email, password);
+            console.log("Logged in:", result.user);
+            // Redirect to home page
+            // history.push("/home");
+        } catch (error) {
+            setError("error");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div>
+            {!loading && !authUser ? (
+                <>
+                    <form onSubmit={handleLoginSubmit}>
+                        <h2>Sign In</h2>
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                        <button type="submit" disabled={isLoading}>
+                            {isLoading ? "Signing in..." : "Next"}
+                        </button>
+                        {error && <p>{error}</p>}
+                    </form>
+
+                    <div>
+                        <button onClick={() => router.push("/signup")}>Sign Up</button>
+                    </div>
+                </>
+            ) : (
+                <></>
+            )}
+        </div>
+    );
+}
+
+// File: pages/signup.tsx
+import { useContext, useEffect, useState } from "react";
+import {
+    createUserWithEmailAndPassword,
+    onAuthStateChanged,
+    sendEmailVerification,
+} from "firebase/auth";
+import { auth, db, storage } from "@/firebase";
+import { redirect } from "@/function/";
+import {
+    collection,
+    query,
+    where,
+    getDocs,
+    addDoc,
+    doc,
+    setDoc,
+    Timestamp,
+} from "firebase/firestore";
+import { ref, uploadBytes } from "firebase/storage";
+
+import { useRouter } from "next/router";
+import { UserContext } from "@/context/UserContext";
+const Signup = () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [dateOfBirth, setDateOfBirth] = useState("");
+
+    const [step, setStep] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const [error, setError] = useState<string | null>(null);
+    const [emailAvailable, setEmailAvailable] = useState<boolean | null>(null);
+
+    const { loading, authUser } = useContext(UserContext);
+
+    const router = useRouter();
+
+    useEffect(() => {
+        if (authUser) {
+            router.push("/home");
+            return;
+        }
+        // eslint-disable-next-line
+    }, []);
+
+    const checkEmailAvailability = async (email: string) => {
+        try {
+            const usersRef = collection(db, "users");
+            const q = query(usersRef, where("email", "==", email));
+            const querySnapshot = await getDocs(q);
+            return querySnapshot.empty;
+        } catch (error) {
+            console.error("Error checking email availability:", error);
+            return false;
+        }
+    };
+
+    const handleStep1Submit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setError(null);
+
+        if (password !== confirmPassword) {
+            setError("Passwords do not match");
+            setIsLoading(false);
+            return;
+        }
+
+        try {
+            const available = await checkEmailAvailability(email);
+            setEmailAvailable(available);
+
+            if (available) {
+                setStep(2);
+            } else {
+                setError("Email is already in use");
+            }
+        } catch (error) {
+            setError("Error checking email availability");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleStep2Submit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const userCredential = await createUserWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
+            const user = userCredential.user;
+
+            if (user) {
+                const userRef = doc(db, "users", user.uid);
+                await setDoc(userRef, {
+                    email,
+                    firstName,
+                    lastName,
+                    dateOfBirth: Timestamp.fromDate(new Date(dateOfBirth)),
+                    photoURL: null,
+                    createdAt: Timestamp.fromDate(new Date()),
+                    updatedAt: Timestamp.fromDate(new Date()),
+                });
+                await sendEmailVerification(user);
+            }
+
+            router.push("/organization");
+        } catch (error) {
+            setError("Error creating user");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div>
+            {!loading && !authUser ? (
+                <div>
+                    {step === 1 && (
+                        <form onSubmit={handleStep1Submit}>
+                            <h2>Step 1: Email and Password</h2>
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <input
+                                type="password"
+                                placeholder="Confirm Password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                required
+                            />
+                            <button type="submit" disabled={isLoading}>
+                                {isLoading ? "Checking..." : "Next"}
+                            </button>
+                            {error && <p>{error}</p>}
+                        </form>
+                    )}
+
+                    {step === 2 && (
+                        <form onSubmit={handleStep2Submit}>
+                            <h2>Step 2: Personal Information</h2>
+                            <input
+                                type="text"
+                                placeholder="Firstname"
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
+                                required
+                            />
+                            <input
+                                type="text"
+                                placeholder="Lastname"
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
+                                required
+                            />
+                            <input
+                                type="date"
+                                placeholder="Date of birth"
+                                value={dateOfBirth}
+                                onChange={(e) => setDateOfBirth(e.target.value)}
+                                required
+                            />
+                            <button type="submit" disabled={isLoading}>
+                                {isLoading ? "Creating Account..." : "Sign Up"}
+                            </button>
+                            {error && <p>{error}</p>}
+                        </form>
+                    )}
+                    <div>
+                        <button onClick={() => router.push("/signin")}>Sign In</button>
+                    </div>
+                </div>
+            ) : (
+                <></>
+            )}
+        </div>
+    );
+};
+
+export default Signup;
+
+// File: styles/components/Header.module.sass
+.header
+    // background-color: #00ff0050
+    padding: 1rem
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    align-items: center
+
+    h1
+        font-size: 2.2rem
+        font-weight: 900
+        padding: 0 1rem
+        cursor: default
+        
+        user-select: none
+        -moz-user-select: none
+        -webkit-user-select:  none
+
+    .profile
+        display: flex
+        flex-direction: row
+        align-items: center
+        justify-content: center
+        gap: 2rem
+
+        padding: 0.7rem 1.2rem
+        border-radius: 10px
+        background-color: #ff000000
+        transition:  all 0.3s ease
+
+        &:hover
+            background-color: #8A8FF8
+            box-shadow:  0 3px 20px -2px rgba(138,143,248, 0.35)
+            cursor: pointer
+            
+        img 
+            box-shadow:  0 3px 10px 0 rgba(0,0,0, 0.5)
+            border-radius: 50px
+
+// File: styles/components/Sidebar.module.sass
+.sidebar
+        padding: 3rem 4rem
+
+        min-width: 20rem
+        max-width: 30vh
+
+        ul
+            display: flex
+            flex-direction: column
+            gap: 2rem
+
+            li
+                width: min-content
+
+                font-weight: 300
+                font-size: 1.25rem
+                list-style: none
+                cursor: pointer
+
+                color: #f5f5f5be
+                text-shadow:  0 0 1.3rem #f5f5f500
+
+                transition:  all 0.3s ease
+                user-select: none
+
+                &:hover
+                    text-shadow:  0 0 0.8rem #e4e2e2c4
+                    color: #f5f5f5
+                    
+                &:active
+                    text-shadow:  0 0 0.5rem #f5f5f57c
+
+                &.yesThisIsMe
+                    // background-color: #ff0000
+                    color: #f5f5f5
+                    font-weight: 600
+                    cursor: default
+
+                    text-shadow:  0 0 1.3rem #f5f5f5
+
+// File: styles/globals.sass
+* 
+  box-sizing: border-box
+  padding: 0
+  margin: 0
+
+
+html,
+body 
+    max-width: 100vw
+    overflow-x: hidden
+    background: url('/bg.png') no-repeat
+    background-size: cover
+
+@font-face
+    font-family: DMSans
+    src: url('DMSans.ttf')
+
+body
+    min-height: 100vh
+    color: white
+    font-family: DMSans
+
+::selection
+    color: #ffffff
+    background: #a9adf7
+
+::-moz-selection
+    color: #ffffff
+    background: #a9adf7
+
+.btn-def
+    padding: 0.5rem 1rem
+    border: none
+    // border-radius: 0.2rem
+
+    font-weight: 600
+    color: #ffffff
+
+    background-color: #8A8FF8
+
+    &:hover
+        cursor: pointer
+
+.btn-ref
+    padding: 0.5rem 1rem
+    border: none
+    // border-radius: 0.2rem
+
+    font-weight: 600
+    color: #8A8FF8
+
+    background-color: #ffffff
+
+    &:hover
+        cursor: pointer
+
+.sideAndMain
+    display: flex
+    flex-direction: row
+
+.mainLayout
+    padding: 3rem
+
+// File: styles/Home.module.css
+
+// File: styles/Home.module.sass
+
+// File: styles/HomeLayout.module.sass
+.container
+    display: flex
+    flex-direction:  column
+
+    // background-color: #ff000050
+
+    min-height: 100vh
+
+
+    .header
+        // background-color: #00ff0050
+        padding: 1rem
+        display: flex
+        flex-direction: row
+
+        justify-content: space-between
+        align-items: center
+
+        h1
+            font-size: 2.2rem
+            font-weight: 900
+            padding: 0 1rem
+            cursor: default
+            
+            user-select: none
+            -moz-user-select: none
+            -webkit-user-select:  none
+
+
+        .profile
+            display: flex
+            flex-direction: row
+            align-items: center
+            justify-content: center
+
+            gap: 2rem
+            padding: 0.7rem 1.2rem
+            border-radius: 10px
+
+            background-color: #ff000000
+
+            transition:  all 0.3s ease
+
+            &:hover
+                background-color: #8A8FF8
+                box-shadow:  0 3px 20px -2px rgba(138,143,248, 0.35)
+                cursor: pointer
+
+            img 
+                box-shadow:  0 3px 10px 0 rgba(0,0,0, 0.5)
+                border-radius: 50px
+
+
+    .box
+        // background-color: #0000ff50
+        display: flex
+        flex-direction: row
+
+        // min-height: min-content
+
+        .sidebar
+            padding: 3rem 4rem
+
+            ul
+                display: flex
+                flex-direction: column
+                gap: 2rem
+
+                li
+                    font-weight: 300
+                    font-size: 1.25rem
+
+                    list-style: none
+
+
+        main
+            padding: 3rem
+
+// File: utils/layouts.ts
+import LandingLayout from "@/components/layouts/LandingLayout";
+import AuthLayout from "@/components/layouts/AuthLayout";
+import HomeLayout from "@/components/layouts/HomeLayout";
+import OrgLayout from "@/components/layouts/OrgLayout";
+import EmptyLayout from "@/components/layouts/EmptyLayout";
+import { useContext } from "react";
+import { UserContext } from "@/context/UserContext";
+
+import { useEffect } from "react";
+
+const getLayoutByRoute = (pathname: string) => {
+    if (
+        pathname.startsWith("/home") ||
+        pathname.startsWith("/profile") ||
+        pathname.startsWith("/settings")
+    ) {
+        return HomeLayout;
+    }
+
+    if (pathname.startsWith("/org")) {
+        return OrgLayout;
+    }
+
+    if (pathname.startsWith("/")) {
+        return LandingLayout;
+    }
+
+    if (pathname === "/" || pathname === "/signin" || pathname === "/signup") {
+        return AuthLayout;
+    }
+
+    return EmptyLayout;
+};
+
+export default getLayoutByRoute;
+
+// File: function/fetchUserOrgs.ts
+import { collection, doc, getDocs, getDoc, query } from "firebase/firestore";
+import { db } from "@/firebase";
+import { SetStateAction, Dispatch } from "react";
+
+const fetchUserOrgs = async (
+    userId: string,
+    setLoading: Dispatch<SetStateAction<boolean>>
+) => {
+    try {
+        const orgRefs: Array<any> = [];
+
+        // Fetching the user's organization IDs from their subcollection
+        const userOrgCollectionRef = collection(db, `users/${userId}/organizations`);
+        const userOrgSnapshot = await getDocs(userOrgCollectionRef);
+
+        userOrgSnapshot.forEach((doc) => {
+            orgRefs.push(doc.id); // Collect organization IDs
+        });
+
+        // Fetching the actual organization documents
+        const orgPromises = orgRefs.map((orgId) =>
+            getDoc(doc(db, "organizations", orgId))
+        );
+        const orgDocs = await Promise.all(orgPromises);
+
+        // Filtering out any null documents and formatting the data
+        const organizations = orgDocs
+            .filter((orgDoc) => orgDoc.exists())
+            .map((orgDoc) => ({
+                ...orgDoc.data(),
+            }));
+
+        setLoading(false);
+        return organizations;
+    } catch (error) {
+        console.error("Error fetching organizations:", error);
+        throw error;
+    }
+};
+
+export default fetchUserOrgs;
+
+// File: function/index.ts
+import { onAuthStateChanged } from "firebase/auth";
+import {
+    collection,
+    CollectionReference,
+    doc,
+    DocumentData,
+    DocumentReference,
+    DocumentSnapshot,
+    getDoc,
+} from "firebase/firestore";
+import Router from "next/router";
+import { Dispatch, SetStateAction, useEffect } from "react";
+import { auth, db } from "@/firebase";
+
+export function redirect(href: string) {
+    Router.replace(href);
+}
+
+export function redirectNoUser() {
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+            redirect("/signin");
+        }
+    });
+}
+
+/**
+ * Returns the user's data from the database.
+ * @param {setUserDataVariables} setUserDataVariables The function to set the user's data.
+ */
+export const getUserData = (
+    setUserDataVariables: Dispatch<SetStateAction<DocumentData>>
+) => {
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            const usersRef: CollectionReference = collection(db, "users");
+            const docRef: DocumentReference = doc(usersRef, user!.uid);
+            const docSnap: DocumentSnapshot = await getDoc(docRef);
+
+            // @ts-ignore
+            setUserDataVariables(docSnap.data());
+        }
+    });
+};
+
+export const useEmailVerified = () => {
+    onAuthStateChanged(auth, async (user) => {
+        if (user) return user.emailVerified;
+    });
+    return false;
+};
+
