@@ -6,7 +6,7 @@ type LandingLayoutProps = {
 
 const LandingLayout = ({ children }: LandingLayoutProps) => {
     return (
-        <div>
+        <div className="root">
             <header>Landing Header</header>
             <main>{children}</main>
             <footer>Landing Footer</footer>

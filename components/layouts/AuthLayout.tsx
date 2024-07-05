@@ -6,7 +6,7 @@ type AuthLayoutProps = {
 
 const AuthLayout = ({ children }: AuthLayoutProps) => {
     return (
-        <div>
+        <div className="root">
             <h2>AUTHENTICATION</h2>
             <main>{children}</main>
         </div>

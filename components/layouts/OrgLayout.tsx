@@ -17,7 +17,7 @@ const OrgLayout: NextPage<OrgLayoutProps> = ({ children }) => {
 
     return (
         <OrganizationProvider orgId={orgId as string}>
-            <div>
+            <div className="root">
                 <Header />
                 <div className="sideAndMain">
                     <Sidebar

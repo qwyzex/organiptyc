@@ -6,7 +6,7 @@ type EmptyLayoutProps = {
 
 const EmptyLayout = ({ children }: EmptyLayoutProps) => {
     return (
-        <div>
+        <div className="root">
             empty
             {children}
 

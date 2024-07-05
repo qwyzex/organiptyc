@@ -15,7 +15,7 @@ const HomeLayout = ({ children }: HomeLayoutProps) => {
     const { loading, authUser, userDoc } = useContext(UserContext);
 
     return (
-        <div className={styles.container}>
+        <div className={`${styles.container} root`}>
             <Header />
             <div className="sideAndMain">
                 <Sidebar
