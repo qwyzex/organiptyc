@@ -101,9 +101,11 @@ const Signup = () => {
             if (user) {
                 const userRef = doc(db, "users", user.uid);
                 await setDoc(userRef, {
+                    uid: user.uid,
                     email,
                     firstName,
                     lastName,
+                    fullName: firstName + lastName,
                     dateOfBirth: Timestamp.fromDate(new Date(dateOfBirth)),
                     photoURL: null,
                     createdAt: Timestamp.fromDate(new Date()),

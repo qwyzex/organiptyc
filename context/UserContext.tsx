@@ -4,8 +4,10 @@ import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebase"; // Adjust the import based on your file structure
 
 interface UserDocument {
+    uid: string;
     firstName: string;
     lastName: string;
+    fullName: string;
     dateOfBirth: string;
     email: string;
     photoURL: string;

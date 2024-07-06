@@ -8,12 +8,13 @@ import { Skeleton } from "@mui/material";
 import styles from "@/styles/Organization.module.sass";
 import Link from "next/link";
 import { DocumentData } from "@google-cloud/firestore";
+import Image from "next/image";
 
 const Organization = () => {
-    const [organizations, setOrganizations] = useState<any>([]);
+    const [organizations, setOrganizations] = useState<any | null>(null);
     const [listLoading, setListLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>("");
-    const [roles, setRoles] = useState<DocumentData>();
+    const [roles, setRoles] = useState<DocumentData | null>(null);
     const { userDoc, loading, authUser } = useContext(UserContext);
     const router = useRouter();
 
@@ -28,7 +29,6 @@ const Organization = () => {
                 const orgMemberDoc = await getDoc(orgMemberRef);
 
                 if (orgMemberDoc.exists()) {
-                    console.log("DATA DOCUMENT : ", orgMemberDoc.data());
                     return orgMemberDoc.data();
                 }
             } catch (error) {
@@ -49,13 +49,14 @@ const Organization = () => {
                     }
                     setRoles(roles);
                 } catch (err) {
-                    // setError(err.message);
+                    setError(JSON.stringify(err));
                 }
             }
         };
 
         fetchOrganizations();
-    }, [authUser]);
+        // console.log(roles)
+    }, [authUser, roles]);
 
     if (error) return <div>Error: {error}</div>;
 
@@ -63,83 +64,125 @@ const Organization = () => {
         <div className={styles.container}>
             <h1>Your Organizations</h1>
             <ul>
-                {1 === 0 + 1 && roles ? (
+                {roles !== null && !listLoading && organizations.length > 0 ? (
                     organizations.map((org: any) => (
                         <li key={org.uid} className="fadeIn">
-                            <Link href={`organization/${org.uid}`}>
-                                <h2>{org.name}</h2>
-                            </Link>
-                            <div>
-                                <p className={styles.userStatus}>
-                                    {userDoc?.firstName} {userDoc?.lastName} -{" "}
-                                    {roles[org.uid].role} (Joined{" "}
-                                    {roles[org.uid].joinedAt.toDate().toDateString()})
-                                </p>
-                                <p className={styles.orgDescription}>{org.description}</p>
+                            <div className={styles.titleHeader}>
+                                <div>
+                                    <Link href={`organization/${org.uid}`}>
+                                        <Image
+                                            src={org.logoURL}
+                                            alt={`${org.name} logo`}
+                                            width={75}
+                                            height={75}
+                                        />
+                                    </Link>
+                                </div>
+                                <div>
+                                    <Link href={`organization/${org.uid}`}>
+                                        <h2>{org.name}</h2>
+                                    </Link>
+                                    <div className={styles.userStatus}>
+                                        <p>
+                                            {userDoc?.firstName} {userDoc?.lastName} -{" "}
+                                            {roles[org.uid].role}
+                                        </p>
+                                        <p>
+                                            Joined{" "}
+                                            {roles[org.uid].joinedAt
+                                                .toDate()
+                                                .toDateString()}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
+                            <p className={styles.orgDescription}>{org.description}</p>
                         </li>
                     ))
+                ) : roles !== null && !listLoading && organizations.length < 1 ? (
+                    <div className={`fadeIn ${styles.noOrganizations}`}>
+                        You have no organizations.{" "}
+                        <Link href="/organization/new">Join</Link> now!
+                    </div>
                 ) : (
                     <>
                         <div className={styles.skeletonContainer}>
                             <Skeleton
-                                variant="rounded"
+                                variant="circular"
                                 sx={{ bgcolor: "grey.800" }}
                                 animation="wave"
-                                width={200}
-                                height={20}
+                                width={75}
+                                height={75}
                             />
-                            <Skeleton
-                                variant="rounded"
-                                sx={{ bgcolor: "grey.800" }}
-                                animation="wave"
-                                width={400}
-                                height={10}
-                            />
-                            <Skeleton
-                                variant="rounded"
-                                sx={{ bgcolor: "grey.800" }}
-                                animation="wave"
-                                width={300}
-                                height={10}
-                            />
-                            <Skeleton
-                                variant="rounded"
-                                sx={{ bgcolor: "grey.800" }}
-                                animation="wave"
-                                width={300}
-                                height={10}
-                            />
+                            <div>
+                                <Skeleton
+                                    variant="rounded"
+                                    sx={{ bgcolor: "grey.800" }}
+                                    animation="wave"
+                                    width={200}
+                                    height={20}
+                                />
+                                <Skeleton
+                                    variant="rounded"
+                                    sx={{ bgcolor: "grey.800" }}
+                                    animation="wave"
+                                    width={400}
+                                    height={10}
+                                />
+                                <Skeleton
+                                    variant="rounded"
+                                    sx={{ bgcolor: "grey.800" }}
+                                    animation="wave"
+                                    width={300}
+                                    height={10}
+                                />
+                                <Skeleton
+                                    variant="rounded"
+                                    sx={{ bgcolor: "grey.800" }}
+                                    animation="wave"
+                                    width={300}
+                                    height={10}
+                                />
+                            </div>
                         </div>
                         <div className={styles.skeletonContainer}>
                             <Skeleton
-                                variant="rounded"
+                                variant="circular"
                                 sx={{ bgcolor: "grey.800" }}
                                 animation="wave"
-                                width={200}
-                                height={20}
+                                width={75}
+                                height={75}
                             />
-                            <Skeleton
-                                variant="rounded"
-                                sx={{ bgcolor: "grey.800" }}
-                                animation="wave"
-                                width={400}
-                                height={10}
-                            />
-                            <Skeleton
-                                variant="rounded"
-                                sx={{ bgcolor: "grey.800" }}
-                                animation="wave"
-                                width={300}
-                                height={10}
-                            />
-                            <Skeleton
-                                variant="rounded"
-                                sx={{ bgcolor: "grey.800" }}
-                                animation="wave"
-                                width={300}
-                                height={10}
-                            />
+                            <div>
+                                <Skeleton
+                                    variant="rounded"
+                                    sx={{ bgcolor: "grey.800" }}
+                                    animation="wave"
+                                    width={200}
+                                    height={20}
+                                />
+                                <Skeleton
+                                    variant="rounded"
+                                    sx={{ bgcolor: "grey.800" }}
+                                    animation="wave"
+                                    width={400}
+                                    height={10}
+                                />
+                                <Skeleton
+                                    variant="rounded"
+                                    sx={{ bgcolor: "grey.800" }}
+                                    animation="wave"
+                                    width={300}
+                                    height={10}
+                                />
+                                <Skeleton
+                                    variant="rounded"
+                                    sx={{ bgcolor: "grey.800" }}
+                                    animation="wave"
+                                    width={300}
+                                    height={10}
+                                />
+                            </div>
                         </div>
                     </>
                 )}

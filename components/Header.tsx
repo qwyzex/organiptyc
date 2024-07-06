@@ -31,6 +31,7 @@ export default function Header() {
                         alt="User Avatar"
                         width={50}
                         height={50}
+                        priority
                     />
                 </div>
             </header>
