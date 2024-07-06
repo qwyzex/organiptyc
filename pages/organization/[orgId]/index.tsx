@@ -6,6 +6,9 @@ import { db } from "@/firebase";
 import { UserContext } from "@/context/UserContext";
 import Image from "next/image";
 import useOrganizationData from "@/function/useOrganizationData";
+// import { logDoc } from "@/function/createLog";
+import fetchLogs from "@/function/fetchLogs";
+import fetchAnyUser from "@/function/fetchAnyUser";
 
 type OrganizationProps = {
     orgId: string;
@@ -13,14 +16,18 @@ type OrganizationProps = {
 
 const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
     const [error, setError] = useState<string | null>(null);
+    const [logs, setLogs] = useState<Array<any> | null>(null);
     const { orgData } = useOrganizationData(orgId);
     const router = useRouter();
 
     const { loading, authUser } = useContext(UserContext);
 
-    // useEffect(() => {
-    //     console.log(orgData)
-    // }, [orgData])
+    useEffect(() => {
+        if (orgId) {
+            fetchLogs(orgId).then(setLogs).catch(setError);
+        }
+    }, [orgId]);
+
 
     if (error) {
         return <div>{error}</div>;
@@ -47,7 +54,22 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
                     <p></p>
                 </article>
             </header>
-            <main></main>
+            <main>
+                {logs?.map((log) => {
+                    return (
+                        <div key={log.id}>
+                            <Image
+                                src={log.photoURL}
+                                alt=""
+                                height={50}
+                                width={50}
+                            ></Image>
+                            <p>{log.timestamp.toDate().toDateString()}</p>
+                            <p>{log.action}</p>
+                        </div>
+                    );
+                })}
+            </main>
         </div>
     );
 };
