@@ -2,7 +2,7 @@
     
 .container
     h1
-    ul
+    > ul
         padding: 2rem 0.5rem
         
         display: grid
@@ -23,7 +23,7 @@
                 flex-direction: column
                 gap: 1rem
 
-        li
+        > li
             list-style: none
 
             display: flex
@@ -48,3 +48,16 @@
 
                 &:hover
                     color: $acc
+
+            ul
+                padding: 0 1rem
+                margin-top: -.5rem
+                li
+                    list-style: none
+                    opacity: 0.8
+
+                    display: flex
+                    // grid-template-columns: repeat(auto-fit, minmax(300px,1fr))
+                    justify-content: space-between
+
+                    font-size: 0.9rem

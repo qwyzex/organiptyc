@@ -55,8 +55,7 @@ const Organization = () => {
         };
 
         fetchOrganizations();
-        // console.log(roles)
-    }, [authUser, roles]);
+    }, [authUser]);
 
     if (error) return <div>Error: {error}</div>;
 
@@ -96,7 +95,19 @@ const Organization = () => {
                                     </div>
                                 </div>
                             </div>
-                            <p className={styles.orgDescription}>{org.description}</p>
+                            <h4>Latest Acivity</h4>
+                            <ul>
+                                {org.logs
+                                    .reverse()
+                                    .slice(-3)
+                                    .reverse()
+                                    .map((log: any, index: number) => (
+                                        <li key={index}>
+                                            <p>{log.action}</p>
+                                            <p>{log.timestamp.toDate().toUTCString()}</p>
+                                        </li>
+                                    ))}
+                            </ul>
                         </li>
                     ))
                 ) : roles !== null && !listLoading && organizations.length < 1 ? (

@@ -1,6 +1,7 @@
 import { collection, doc, getDocs, getDoc, query } from "firebase/firestore";
 import { db } from "@/firebase";
 import { SetStateAction, Dispatch } from "react";
+import fetchLogs from "./fetchLogs"; // Assuming fetchLogs is a function that fetches logs for an organization
 
 const fetchUserOrgs = async (
     userId: string,
@@ -17,23 +18,30 @@ const fetchUserOrgs = async (
             orgRefs.push(doc.id); // Collect organization IDs
         });
 
-        // Fetching the actual organization documents
-        const orgPromises = orgRefs.map((orgId) =>
-            getDoc(doc(db, "organizations", orgId))
-        );
+        // Fetching the actual organization documents and their logs
+        const orgPromises = orgRefs.map(async (orgId) => {
+            const orgDoc = await getDoc(doc(db, "organizations", orgId));
+            if (orgDoc.exists()) {
+                const logs = await fetchLogs(orgId); // Fetch logs for the organization
+                return {
+                    uid: orgId,
+                    ...orgDoc.data(),
+                    logs, // Include logs in the organization data
+                };
+            }
+            return null;
+        });
+
         const orgDocs = await Promise.all(orgPromises);
 
-        // Filtering out any null documents and formatting the data
-        const organizations = orgDocs
-            .filter((orgDoc) => orgDoc.exists())
-            .map((orgDoc) => ({
-                ...orgDoc.data(),
-            }));
+        // Filtering out any null documents
+        const organizations = orgDocs.filter((orgDoc) => orgDoc !== null);
 
         setLoading(false);
         return organizations;
     } catch (error) {
         console.error("Error fetching organizations:", error);
+        setLoading(false); // Ensure loading state is reset in case of error
         throw error;
     }
 };
