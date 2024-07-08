@@ -27,6 +27,10 @@ export interface FileItem {
 
 export interface FolderItem {
     name: string;
+    url?: string;
+    metadata?: {
+        [key: string]: any;
+    }
 }
 
 // const FileDisplay: React.FC<{ orgId: string }> = ({ orgId }) => {
@@ -66,6 +70,7 @@ const FileDisplay = () => {
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
+        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
