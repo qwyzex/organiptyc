@@ -1,4 +1,5 @@
 import "@/styles/globals.sass";
+
 import { useRouter } from "next/router";
 import { useEffect, useContext } from "react";
 import { onAuthStateChanged } from "firebase/auth";
@@ -6,7 +7,7 @@ import { auth } from "@/firebase";
 import type { AppProps } from "next/app";
 import { UserProvider } from "@/context/UserContext";
 import getLayoutByRoute from "@/utils/layouts";
-import { UserContext } from "@/context/UserContext";
+import { SnackbarProvider, VariantType, useSnackbar } from "notistack";
 
 import Head from "next/head";
 
@@ -32,9 +33,11 @@ export default function App({ Component, pageProps }: AppProps) {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/logo.ico" />
             </Head>
-            <Layout {...pageProps}>
-                <Component {...pageProps} />
-            </Layout>
+            <SnackbarProvider maxSnack={4}>
+                <Layout {...pageProps}>
+                    <Component {...pageProps} />
+                </Layout>
+            </SnackbarProvider>
         </UserProvider>
     );
 }

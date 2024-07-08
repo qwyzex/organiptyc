@@ -10,7 +10,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/firebase";
 
-const useOrganizationData = (orgId: string) => {
+const useOrganizationData = (orgId: string, rerenderer: number = 0) => {
     const [orgData, setOrgData] = useState<DocumentData | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<any>(null);
@@ -67,7 +67,7 @@ const useOrganizationData = (orgId: string) => {
         };
 
         fetchOrganizationData();
-    }, [orgId]);
+    }, [orgId, rerenderer]);
 
     return { orgData, loading, error };
 };

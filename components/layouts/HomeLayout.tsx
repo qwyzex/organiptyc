@@ -1,6 +1,6 @@
 import { ReactNode, useContext } from "react";
 
-import styles from "@/styles/HomeLayout.module.sass";
+import styles from "@/styles/layouts/HomeLayout.module.sass";
 import Image from "next/image";
 import { UserContext } from "@/context/UserContext";
 

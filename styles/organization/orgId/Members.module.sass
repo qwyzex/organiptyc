@@ -1,0 +1,103 @@
+.container
+    display: flex
+    flex-direction: column
+
+    > main
+        display: flex
+        flex-direction: column
+        gap: 1.5rem
+        padding: 1rem 0
+
+        .yourStatus
+            display: grid
+            grid-template-columns: repeat(6, 1fr)
+            grid-template-areas: "q q q w w e"
+
+            padding: 0 1.5rem
+
+            > *
+                &:first-child
+                    grid-area: q
+
+                &:nth-child(2)
+                    grid-area: w
+                    justify-self: center
+                        
+                &:last-child
+                    grid-area: e
+                    justify-self: center
+
+        .memberListHeader
+            display: flex
+            flex-direction: column
+            
+            .memberListParam
+                display: grid
+                grid-template-columns: repeat(6, 1fr)
+                grid-template-areas: "q q q w w e"
+
+                padding: 1rem 1.5rem 0 1.5rem
+
+                > *
+                    &:first-child
+                        grid-area: q
+
+                    &:nth-child(2)
+                        grid-area: w
+                        justify-self: center
+                        
+                    &:last-child
+                        grid-area: e
+                        justify-self: center
+                    
+        .otherMembers
+            display: flex
+            flex-direction: column
+
+            padding: 0 0.5rem
+            border: 1px var(--color-dimmer) solid
+            border-radius: 5px
+
+            li
+                display: grid
+                grid-template-columns: repeat(6, 1fr)
+                grid-template-areas: "q q q w w e"
+
+                align-items: center
+                
+                list-style: none
+
+                padding: 1rem
+                border-bottom: 1px solid #00000000
+
+                &:not(:last-child)
+                    border-bottom: 1px solid var(--color-dimmer)
+
+                > *
+                    &:first-child
+                        grid-area: q
+
+                    &:nth-child(2)
+                        grid-area: w
+                        justify-self: center
+                        
+                    &:last-child
+                        grid-area: e
+                        justify-self: center
+
+                        border: 1px var(--color-dimmed) solid
+                        border-radius: 3px
+
+                        // background-color: var(--color-dimmer)
+                        background-color: #00000000
+                        color: var(--color)
+
+                        padding: 0.3rem 0.6rem
+                        transition: all 0.3s ease
+
+                        &:hover
+                            cursor: pointer
+
+                            box-shadow: var(--shadow-light)
+                    
+

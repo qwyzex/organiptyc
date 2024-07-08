@@ -1,0 +1,65 @@
+.container
+    display: flex
+    flex-direction: column
+
+    gap: 2rem
+
+    .orgHeader
+        display: flex
+        flex-direction: row
+        gap: 2rem
+
+        h1
+            font-size: 2.6rem
+
+        article
+            display: flex
+            flex-direction: column
+            justify-content: space-between
+
+            p
+                color: var(--color-dimmed)
+    
+    .orgMain
+        padding: 0.4rem
+
+        .logsCard
+            display: flex
+            flex-direction: column
+
+            gap: 1rem
+
+            border: 1px var(--color-dimmer) solid
+            border-radius: 5px
+
+            padding: 1rem
+
+            transition: all 0.3s ease-out
+            overflow: hidden 
+
+            ul
+                display: flex
+                flex-direction: column
+                gap: 0.5rem
+                
+                transition: all 0.3s ease-out
+                overflow: hidden 
+
+                li
+                    list-style: none
+
+                    display: flex
+                    gap: 0.5rem
+
+                    > div
+                        display: flex
+                        flex-direction: column
+                        justify-content: space-evenly
+
+                        .logDate
+                            font-size: .8rem
+                            // opacity: 0.8
+                            color: var(--color-dimmed)
+
+                        .logAction
+                            font-size: 1.1rem

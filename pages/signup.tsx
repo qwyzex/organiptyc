@@ -105,7 +105,7 @@ const Signup = () => {
                     email,
                     firstName,
                     lastName,
-                    fullName: firstName + lastName,
+                    fullName: firstName + " " + lastName,
                     dateOfBirth: Timestamp.fromDate(new Date(dateOfBirth)),
                     photoURL: null,
                     createdAt: Timestamp.fromDate(new Date()),

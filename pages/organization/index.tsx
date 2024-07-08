@@ -5,7 +5,7 @@ import { UserContext } from "@/context/UserContext";
 import { useRouter } from "next/router";
 import fetchUserOrgs from "@/function/fetchUserOrgs";
 import { Skeleton } from "@mui/material";
-import styles from "@/styles/Organization.module.sass";
+import styles from "@/styles/organization/Organization.module.sass";
 import Link from "next/link";
 import { DocumentData } from "@google-cloud/firestore";
 import Image from "next/image";
@@ -98,13 +98,20 @@ const Organization = () => {
                             <h4>Latest Acivity</h4>
                             <ul>
                                 {org.logs
-                                    .reverse()
+                                    .sort((a: any, b: any) => {
+                                        return (
+                                            Math.round(a.timestamp.toDate() / 1000) -
+                                            Math.round(b.timestamp.toDate() / 1000)
+                                        );
+                                    })
                                     .slice(-3)
                                     .reverse()
                                     .map((log: any, index: number) => (
                                         <li key={index}>
                                             <p>{log.action}</p>
-                                            <p>{log.timestamp.toDate().toUTCString()}</p>
+                                            <p>
+                                                {log.timestamp.toDate().toLocaleString()}
+                                            </p>
                                         </li>
                                     ))}
                             </ul>
@@ -120,7 +127,7 @@ const Organization = () => {
                         <div className={styles.skeletonContainer}>
                             <Skeleton
                                 variant="circular"
-                                sx={{ bgcolor: "grey.800" }}
+                                sx={{ bgcolor: "var(--color-dimmer)" }}
                                 animation="wave"
                                 width={75}
                                 height={75}
@@ -128,28 +135,28 @@ const Organization = () => {
                             <div>
                                 <Skeleton
                                     variant="rounded"
-                                    sx={{ bgcolor: "grey.800" }}
+                                    sx={{ bgcolor: "var(--color-dimmer)" }}
                                     animation="wave"
                                     width={200}
                                     height={20}
                                 />
                                 <Skeleton
                                     variant="rounded"
-                                    sx={{ bgcolor: "grey.800" }}
+                                    sx={{ bgcolor: "var(--color-dimmer)" }}
                                     animation="wave"
                                     width={400}
                                     height={10}
                                 />
                                 <Skeleton
                                     variant="rounded"
-                                    sx={{ bgcolor: "grey.800" }}
+                                    sx={{ bgcolor: "var(--color-dimmer)" }}
                                     animation="wave"
                                     width={300}
                                     height={10}
                                 />
                                 <Skeleton
                                     variant="rounded"
-                                    sx={{ bgcolor: "grey.800" }}
+                                    sx={{ bgcolor: "var(--color-dimmer)" }}
                                     animation="wave"
                                     width={300}
                                     height={10}
@@ -159,7 +166,7 @@ const Organization = () => {
                         <div className={styles.skeletonContainer}>
                             <Skeleton
                                 variant="circular"
-                                sx={{ bgcolor: "grey.800" }}
+                                sx={{ bgcolor: "var(--color-dimmer)" }}
                                 animation="wave"
                                 width={75}
                                 height={75}
@@ -167,28 +174,28 @@ const Organization = () => {
                             <div>
                                 <Skeleton
                                     variant="rounded"
-                                    sx={{ bgcolor: "grey.800" }}
+                                    sx={{ bgcolor: "var(--color-dimmer)" }}
                                     animation="wave"
                                     width={200}
                                     height={20}
                                 />
                                 <Skeleton
                                     variant="rounded"
-                                    sx={{ bgcolor: "grey.800" }}
+                                    sx={{ bgcolor: "var(--color-dimmer)" }}
                                     animation="wave"
                                     width={400}
                                     height={10}
                                 />
                                 <Skeleton
                                     variant="rounded"
-                                    sx={{ bgcolor: "grey.800" }}
+                                    sx={{ bgcolor: "var(--color-dimmer)" }}
                                     animation="wave"
                                     width={300}
                                     height={10}
                                 />
                                 <Skeleton
                                     variant="rounded"
-                                    sx={{ bgcolor: "grey.800" }}
+                                    sx={{ bgcolor: "var(--color-dimmer)" }}
                                     animation="wave"
                                     width={300}
                                     height={10}

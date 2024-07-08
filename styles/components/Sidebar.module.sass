@@ -17,18 +17,18 @@
                 list-style: none
                 cursor: pointer
 
-                color: #f5f5f5be
+                color: var(--color)
                 text-shadow:  0 0 1.3rem #f5f5f500
 
                 transition:  all 0.3s ease
                 user-select: none
 
                 &:hover
-                    text-shadow:  0 0 0.8rem #e4e2e2c4
+                    text-shadow:  0 0 0.8rem var(--color-dimmed)
                     color: #f5f5f5
                     
                 &:active
-                    text-shadow:  0 0 0.5rem #f5f5f57c
+                    text-shadow:  0 0 0.5rem var(--color-dimmer)
 
                 &.yesThisIsMe
                     // background-color: #ff0000

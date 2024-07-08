@@ -1,0 +1,63 @@
+@import ../Var
+    
+.container
+    h1
+    > ul
+        padding: 2rem 0.5rem
+        
+        display: grid
+        grid-template-columns:  repeat(auto-fill, minmax(500px, 1fr))
+        gap: 1rem
+
+        .noOrganizations
+
+
+        .skeletonContainer
+            display: flex
+            flex-direction: row
+            gap: 1rem
+            padding: 1rem
+
+            > div
+                display: flex
+                flex-direction: column
+                gap: 1rem
+
+        > li
+            list-style: none
+
+            display: flex
+            flex-direction: column
+            gap: 1rem
+
+            padding: 1rem
+            border: 1px var(--color-dimmer) solid
+            border-radius: 5px
+
+            .titleHeader
+                display: flex
+                flex-direction: row
+                gap: 1.2rem
+
+            .userStatus
+                color: var(--color-dimmed)
+
+
+            a
+                width: min-content
+
+                &:hover
+                    color: $acc
+
+            ul
+                padding: 0 1rem
+                margin-top: -.5rem
+                li
+                    list-style: none
+                    opacity: 0.8
+
+                    display: flex
+                    // grid-template-columns: repeat(auto-fit, minmax(300px,1fr))
+                    justify-content: space-between
+
+                    // font-size: 0.9rem
