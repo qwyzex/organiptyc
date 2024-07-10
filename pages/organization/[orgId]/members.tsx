@@ -74,13 +74,15 @@ export default function OrganizationMembers() {
                         {orgData?.members.filter((x: any) => x.role === "admin").length}{" "}
                         admin
                     </p>
-                    <InvitationLink
-                        open={openInviteModal}
-                        handleOpen={handleOpenInviteModal}
-                        handleClose={handleCloseInviteModal}
-                        userDoc={userDoc}
-                        orgId={orgId as string}
-                    />
+                    {isAdmin && (
+                        <InvitationLink
+                            open={openInviteModal}
+                            handleOpen={handleOpenInviteModal}
+                            handleClose={handleCloseInviteModal}
+                            userDoc={userDoc}
+                            orgId={orgId as string}
+                        />
+                    )}
                 </section>
             </header>
             <main>
