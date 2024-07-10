@@ -7,13 +7,29 @@ import { auth } from "@/firebase";
 import type { AppProps } from "next/app";
 import { UserProvider } from "@/context/UserContext";
 import getLayoutByRoute from "@/utils/layouts";
-import { SnackbarProvider, VariantType, useSnackbar } from "notistack";
+import { SnackbarProvider } from "notistack";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 import Head from "next/head";
 
 export default function App({ Component, pageProps }: AppProps) {
     const router = useRouter();
     const Layout = getLayoutByRoute(router.pathname);
+
+    const theme = createTheme({
+        palette: {
+            primary: {
+                light: "#8A8FF8",
+                main: "#9fa4fa",
+                dark: "#787ee9",
+            },
+            secondary: {
+                light: "#8A8FF8",
+                main: "#9fa4fa",
+                dark: "#787ee9",
+            },
+        },
+    });
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -33,11 +49,13 @@ export default function App({ Component, pageProps }: AppProps) {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/logo.ico" />
             </Head>
-            <SnackbarProvider maxSnack={4}>
-                <Layout {...pageProps}>
-                    <Component {...pageProps} />
-                </Layout>
-            </SnackbarProvider>
+            <ThemeProvider theme={theme}>
+                <SnackbarProvider maxSnack={4}>
+                    <Layout {...pageProps}>
+                        <Component {...pageProps} />
+                    </Layout>
+                </SnackbarProvider>
+            </ThemeProvider>
         </UserProvider>
     );
 }

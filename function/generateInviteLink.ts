@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 const generateInviteLink = async (orgId: string, expiresIn: number, userDoc: DocumentData) => {
     const inviteToken = nanoid(); // Generate a unique token
     const expiresAt = Timestamp.fromDate(
-        new Date(Date.now() + expiresIn * 60 * 1000)
+        new Date(Date.now() + expiresIn * 60 * 60 * 1000)
     ); // Set expiration time
 
     const invitesRef = collection(db, `invites`);
@@ -14,10 +14,7 @@ const generateInviteLink = async (orgId: string, expiresIn: number, userDoc: Doc
 
     // Delete existing invite tokens for the same organization
     querySnapshot.forEach(async (doc) => {
-        const data = doc.data();
-        if (data.expiresAt.toDate() > new Date()) {
-            await deleteDoc(doc.ref);
-        }
+        await deleteDoc(doc.ref);
     });
 
     const inviteLinkRef = doc(invitesRef, inviteToken);
@@ -29,7 +26,7 @@ const generateInviteLink = async (orgId: string, expiresIn: number, userDoc: Doc
         invitedToUID: orgId,
     });
 
-    return `http://localhost:3000/organization/join/${inviteToken}`;
+    return {link:`http://localhost:3000/organization/join/${inviteToken}`, expiresAt};
 };
 
 export default generateInviteLink;

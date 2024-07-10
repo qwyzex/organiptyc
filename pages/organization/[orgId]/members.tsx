@@ -18,10 +18,22 @@ import createLog from "@/function/createLog";
 import styles from "@/styles/organization/orgId/Members.module.sass";
 import Link from "next/link";
 import generateInviteLink from "@/function/generateInviteLink";
-import { Box, Modal } from "@mui/material";
+import { Box, Button, Divider, Modal } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 
 import { SnackbarProvider, VariantType, useSnackbar } from "notistack";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+
+import InputLabel from "@mui/material/InputLabel";
+import { WhisperSpinner } from "react-spinners-kit";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+
+import IconButton from "@mui/material/IconButton";
+import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 
 export default function OrganizationMembers() {
     const router = useRouter();
@@ -35,19 +47,32 @@ export default function OrganizationMembers() {
         (member: any) => member.userId === authUser?.uid
     );
 
+    const [sortBy, setSortBy] = useState<string>("role");
+    const [sortIt, setSortIt] = useState<"asc" | "des">("asc");
+
     const [openInviteModal, setOpenInviteModal] = useState<boolean>(false);
     const handleOpenInviteModal = () => setOpenInviteModal(true);
     const handleCloseInviteModal = () => setOpenInviteModal(false);
+
+    const handleChangeSort = (by: string) => {
+        if (sortBy == by) {
+            setSortIt(sortIt == "asc" ? "des" : "asc");
+            return;
+        }
+        setSortBy(by);
+        setSortIt("asc");
+        return;
+    };
 
     return (
         <div className={styles.container}>
             <header>
                 <h1>MEMBERS</h1>
                 <section>
-                    <p>TOTAL MEMBERS : {orgData?.members.length}</p>
                     <p>
-                        TOTAL ADMIN :{" "}
-                        {orgData?.members.filter((x: any) => x.role === "admin").length}
+                        Total Members : {orgData?.members.length}, including{" "}
+                        {orgData?.members.filter((x: any) => x.role === "admin").length}{" "}
+                        admin
                     </p>
                     <InvitationLink
                         open={openInviteModal}
@@ -68,103 +93,150 @@ export default function OrganizationMembers() {
                 <hr />
                 <header className={styles.memberListHeader}>
                     <h2>Other Members</h2>
-                    <div className={styles.memberListParam}>
-                        <p>Name</p>
-                        <p>Date Joined</p>
-                        <p>Role</p>
+                    <div
+                        className={`${styles.memberListParam} ${
+                            sortIt === "asc" && styles.asc
+                        }`}
+                    >
+                        <p
+                            className={sortBy === "name" ? styles.sortBySelected : ""}
+                            onClick={() => handleChangeSort("name")}
+                        >
+                            Name
+                        </p>
+                        <p
+                            className={
+                                sortBy === "dateJoined" ? styles.sortBySelected : ""
+                            }
+                            onClick={() => handleChangeSort("dateJoined")}
+                        >
+                            Date Joined
+                        </p>
+                        <p
+                            className={sortBy === "role" ? styles.sortBySelected : ""}
+                            onClick={() => handleChangeSort("role")}
+                        >
+                            Role
+                        </p>
                     </div>
                 </header>
                 <ul className={styles.otherMembers}>
                     {orgData && authUser && userDoc ? (
-                        orgData.members.map((member: any) => {
-                            return !(member.userId === authUser.uid) ? (
-                                <li key={member.userId}>
-                                    <p>
-                                        <Link href={`/profile/${member.userId}`}>
-                                            {member.user.fullName}
-                                        </Link>
-                                    </p>
-                                    <p>{member.joinedAt.toDate().toDateString()}</p>
-                                    {isAdmin && !(member.userId === authUser.uid) ? (
-                                        // && !(member.userId === authUser.uid)
-                                        <select
-                                            defaultValue={member.role}
-                                            onChange={async (e) => {
-                                                e.preventDefault();
-                                                const newRole = e.target.value;
-                                                const confirmChange = window.confirm(
-                                                    `ARE YOU SURE YOU WANT TO CHANGE ${member.user.fullName}'s ROLE FROM '${member.role}' to '${newRole}'`
-                                                );
-                                                if (confirmChange) {
-                                                    try {
-                                                        const userOrgDocRef = doc(
-                                                            db,
-                                                            `organizations/${orgId}/members`,
-                                                            member.userId
-                                                        );
-                                                        const userDocRef = doc(
-                                                            db,
-                                                            `users/${member.userId}/organizations`,
-                                                            orgId as string
-                                                        );
+                        orgData.members
+                            .sort((a: any, b: any) => {
+                                if (sortBy === "name") {
+                                    return sortIt === "asc"
+                                        ? a.user.fullName.localeCompare(b.user.fullName)
+                                        : b.user.fullName.localeCompare(a.user.fullName);
+                                } else if (sortBy === "dateJoined") {
+                                    return sortIt === "asc"
+                                        ? Math.round(a.joinedAt.toDate() / 1000) -
+                                              Math.round(b.joinedAt.toDate() / 1000)
+                                        : Math.round(b.joinedAt.toDate() / 1000) -
+                                              Math.round(a.joinedAt.toDate() / 1000);
+                                } else if (sortBy === "role") {
+                                    return sortIt === "asc"
+                                        ? a.role.localeCompare(b.role)
+                                        : b.role.localeCompare(a.role);
+                                }
+                            })
+                            .map((member: any) => {
+                                return !(member.userId === authUser.uid) ? (
+                                    <li key={member.userId}>
+                                        <p>
+                                            <Link href={`/profile/${member.userId}`}>
+                                                {member.user.fullName}
+                                            </Link>
+                                        </p>
+                                        <p>{member.joinedAt.toDate().toDateString()}</p>
+                                        {isAdmin && !(member.userId === authUser.uid) ? (
+                                            <FormControl size="small">
+                                                <Select
+                                                    defaultValue={member.role}
+                                                    onChange={async (e) => {
+                                                        e.preventDefault();
+                                                        const newRole = e.target.value;
+                                                        const confirmChange =
+                                                            window.confirm(
+                                                                `ARE YOU SURE YOU WANT TO CHANGE ${member.user.fullName}'s ROLE FROM '${member.role}' to '${newRole}'`
+                                                            );
+                                                        if (confirmChange) {
+                                                            try {
+                                                                const userOrgDocRef = doc(
+                                                                    db,
+                                                                    `organizations/${orgId}/members`,
+                                                                    member.userId
+                                                                );
+                                                                const userDocRef = doc(
+                                                                    db,
+                                                                    `users/${member.userId}/organizations`,
+                                                                    orgId as string
+                                                                );
 
-                                                        const batch = writeBatch(db);
+                                                                const batch =
+                                                                    writeBatch(db);
 
-                                                        // Update role in organization document
-                                                        batch.update(userOrgDocRef, {
-                                                            role: newRole,
-                                                        });
+                                                                // Update role in organization document
+                                                                batch.update(
+                                                                    userOrgDocRef,
+                                                                    {
+                                                                        role: newRole,
+                                                                    }
+                                                                );
 
-                                                        // Update role in user document (inside organizations field)
-                                                        batch.update(userDocRef, {
-                                                            role: newRole,
-                                                        });
+                                                                // Update role in user document (inside organizations field)
+                                                                batch.update(userDocRef, {
+                                                                    role: newRole,
+                                                                });
 
-                                                        await batch.commit();
+                                                                await batch.commit();
 
-                                                        await createLog(
-                                                            orgId as string,
-                                                            member.userId,
-                                                            `${userDoc.firstName} changes ${member.user.firstName} role from ${member.role} to ${newRole}`,
-                                                            userDoc.photoURL
-                                                        );
+                                                                await createLog(
+                                                                    orgId as string,
+                                                                    member.userId,
+                                                                    `${userDoc.firstName} changes ${member.user.firstName} role from ${member.role} to ${newRole}`,
+                                                                    userDoc.photoURL
+                                                                );
 
-                                                        alert(
-                                                            `${member.user.fullName}'s role has been updated to ${newRole}`
-                                                        );
+                                                                alert(
+                                                                    `${member.user.fullName}'s role has been updated to ${newRole}`
+                                                                );
 
-                                                        setRerenderer(rerenderer + 1);
-                                                    } catch (error) {
-                                                        console.error(
-                                                            "Error updating role: ",
-                                                            error
-                                                        );
-                                                        alert(
-                                                            "Failed to update role. Please try again."
-                                                        );
-                                                    }
-                                                }
-                                            }}
-                                        >
-                                            <option
-                                                disabled={member.role == "member"}
-                                                value={"member"}
-                                            >
-                                                {"Member"}
-                                            </option>
-                                            <option
-                                                disabled={member.role == "admin"}
-                                                value={"admin"}
-                                            >
-                                                {"Admin"}
-                                            </option>
-                                        </select>
-                                    ) : (
-                                        <p>{member.role}</p>
-                                    )}
-                                </li>
-                            ) : null;
-                        })
+                                                                setRerenderer(
+                                                                    rerenderer + 1
+                                                                );
+                                                            } catch (error) {
+                                                                console.error(
+                                                                    "Error updating role: ",
+                                                                    error
+                                                                );
+                                                                alert(
+                                                                    "Failed to update role. Please try again."
+                                                                );
+                                                            }
+                                                        }
+                                                    }}
+                                                >
+                                                    <MenuItem
+                                                        disabled={member.role == "member"}
+                                                        value={"member"}
+                                                    >
+                                                        {"Member"}
+                                                    </MenuItem>
+                                                    <MenuItem
+                                                        disabled={member.role == "admin"}
+                                                        value={"admin"}
+                                                    >
+                                                        {"Admin"}
+                                                    </MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        ) : (
+                                            <p>{member.role}</p>
+                                        )}
+                                    </li>
+                                ) : null;
+                            })
                     ) : (
                         <></>
                     )}
@@ -177,7 +249,15 @@ export default function OrganizationMembers() {
 const InvitationLink = ({ open, handleOpen, handleClose, userDoc, orgId }: any) => {
     const [newOldLink, setNewOldLink] = useState<string>("");
     const [inviteLink, setInviteLink] = useState<string>("");
+    const [inviteExpiredAt, setInviteExpiredAt] = useState<string>("");
     const [loading, setLoading] = useState<boolean>();
+    const [generateLoading, setGenerateLoading] = useState<boolean>();
+
+    const [generateNew, setGenerateNew] = useState<boolean>(false);
+
+    //       1H  6H  1D   3D   1W    1M    3M
+    const [expiry, setExpiry] = useState<1 | 6 | 24 | 72 | 168 | 720 | 2160>(24);
+
     const { enqueueSnackbar } = useSnackbar();
 
     const style = {
@@ -185,7 +265,7 @@ const InvitationLink = ({ open, handleOpen, handleClose, userDoc, orgId }: any) 
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
-        width: '500',
+        width: "500",
         // height: 400,
         bgcolor: "var(--background)",
         border: "2px solid #8A8FF8",
@@ -195,11 +275,12 @@ const InvitationLink = ({ open, handleOpen, handleClose, userDoc, orgId }: any) 
     };
 
     const handleSuccessCopy = () => {
-        enqueueSnackbar('Link Copied To Clipboard!!', { variant: 'success' });
+        enqueueSnackbar("Link Copied To Clipboard!!", { variant: "success" });
     };
 
     useEffect(() => {
         const checkExistingLinks = async () => {
+            setGenerateNew(false);
             if (userDoc) {
                 const invitesRef = collection(db, `invites`);
                 const now = new Date();
@@ -213,6 +294,7 @@ const InvitationLink = ({ open, handleOpen, handleClose, userDoc, orgId }: any) 
                     const data = doc.data();
                     if (data.expiresAt.toDate() > now) {
                         setNewOldLink("old");
+                        setInviteExpiredAt(data.expiresAt.toDate().toLocaleString());
                         setInviteLink(
                             `http://localhost:3000/organization/join/${data.token}`
                         );
@@ -226,51 +308,134 @@ const InvitationLink = ({ open, handleOpen, handleClose, userDoc, orgId }: any) 
     }, [userDoc, orgId, open]);
 
     const handleGenerateLink = async () => {
+        setGenerateLoading(true);
         if (userDoc) {
-            const link = await generateInviteLink(orgId as string, 60 * 6, userDoc);
+            const { link, expiresAt } = await generateInviteLink(
+                orgId as string,
+                expiry,
+                userDoc
+            );
             setNewOldLink("new");
             setInviteLink(link);
+            setInviteExpiredAt(expiresAt.toDate().toLocaleString());
+            setGenerateNew(false);
         } else {
             console.error("NO USER");
         }
+        setGenerateLoading(false);
+    };
+
+    const handleChangeExpiry = (e: any) => {
+        e.preventDefault();
+        setExpiry(e.target.value);
     };
 
     return (
         <>
-            <button onClick={handleOpen}>INVITE YOUR FRIEND</button>
+            <Button className="btn-def" onClick={handleOpen}>
+                <p>INVITE NEW MEMBER</p>
+                <PersonAddIcon fontSize="small" />
+            </Button>
             <Modal
                 open={open}
                 // onClose={handleClose}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={style}>
-                    <h2>INVITATION LINK</h2>
+                <Box sx={style} className={styles.inviteLinkModal}>
+                    <header>
+                        <h2>INVITATION LINK</h2>
+                        <IconButton onClick={handleClose}>
+                            <CloseIcon />
+                        </IconButton>
+                    </header>
                     {loading ? (
-                        <p>Loading...</p>
+                        <WhisperSpinner
+                            size={50}
+                            color="#8A8FF8"
+                            frontColor="#8A8FF8"
+                            backColor="#8A8FF8"
+                        />
                     ) : inviteLink && newOldLink == "old" ? (
-                        <div>
-                            <p>Existing Invite Link: {inviteLink}</p>
-                            <button
-                                onClick={() => {
-                                    navigator.clipboard.writeText(inviteLink);
-                                    // alert("Copied to clipboard!");
-                                    handleSuccessCopy();
-                                }}
-                            >
-                                COPY
-                            </button>
-                            <button onClick={handleGenerateLink}>REGENERATE</button>
+                        <div className={`${styles.linkContainer} fadeIn`}>
+                            <p>Existing Invite Link (Expires in {inviteExpiredAt})</p>
+                            <div>
+                                <input type="text" value={inviteLink} />
+                                <IconButton
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(inviteLink);
+                                        // alert("Copied to clipboard!");
+                                        handleSuccessCopy();
+                                    }}
+                                >
+                                    <ContentCopyIcon />
+                                </IconButton>
+                            </div>
                         </div>
                     ) : inviteLink && newOldLink === "new" ? (
                         <div>
-                            <a>LINK : {inviteLink}</a>
-                            <button onClick={handleGenerateLink}>GENERATE</button>
+                            {inviteLink && (
+                                <div className={`${styles.linkContainer} fadeIn`}>
+                                    <p>
+                                        NEW LINK GENERATED (Expires in {inviteExpiredAt})
+                                    </p>
+                                    <div>
+                                        <input type="text" value={inviteLink} />
+                                        <IconButton
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(inviteLink);
+                                                // alert("Copied to clipboard!");
+                                                handleSuccessCopy();
+                                            }}
+                                        >
+                                            <ContentCopyIcon />
+                                        </IconButton>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     ) : (
-                        <button onClick={handleGenerateLink}>GENERATE</button>
+                        <div>
+                            <p>No invitation link exists for this organization</p>
+                        </div>
                     )}
-                    <button onClick={handleClose}>CLOSE</button>
+                    <Divider />
+                    {generateNew ? (
+                        <div className={styles.generateNewContainer}>
+                            <h2>GENERATE NEW INVITATION LINK</h2>
+                            <div>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel id="demo-simple-select-label">
+                                        Token Expiry
+                                    </InputLabel>
+                                    <Select
+                                        value={expiry}
+                                        onChange={handleChangeExpiry}
+                                        label="Token Expiry"
+                                    >
+                                        <MenuItem value={1}>1 Hour</MenuItem>
+                                        <MenuItem value={6}>6 Hour</MenuItem>
+                                        <MenuItem value={24}>1 Day</MenuItem>
+                                        <MenuItem value={72}>3 Days</MenuItem>
+                                        <MenuItem value={168}>7 Days</MenuItem>
+                                        <MenuItem value={672}>30 Days</MenuItem>
+                                        <MenuItem value={2016}>90 Days</MenuItem>
+                                    </Select>
+                                </FormControl>
+                                <Button
+                                    className="btn-def"
+                                    onClick={handleGenerateLink}
+                                    disabled={generateLoading}
+                                >
+                                    <p>GENERATE</p> <AddIcon fontSize={"small"} />
+                                </Button>
+                            </div>
+                        </div>
+                    ) : (
+                        <Button className="btn-def" onClick={() => setGenerateNew(true)}>
+                            <p>GENERATE NEW</p> <AddIcon fontSize={"small"} />
+                        </Button>
+                    )}
                 </Box>
             </Modal>
         </>

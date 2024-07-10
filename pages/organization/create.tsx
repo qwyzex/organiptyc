@@ -125,6 +125,7 @@ const CreateOrganizationForm = () => {
             });
 
             const uploadFile = async (file: File, folder: string) => {
+                const fileExtension = file.name.substring(file.name.lastIndexOf(".") + 1);
                 const customFilename = `${folder}_${orgId}`;
                 const storageRef = ref(
                     storage,
