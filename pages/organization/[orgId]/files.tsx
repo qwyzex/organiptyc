@@ -25,6 +25,7 @@ import { Breadcrumbs, Button, Divider, IconButton } from "@mui/material";
 import FolderIcon from "@mui/icons-material/Folder";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import InfoIcon from "@mui/icons-material/Info";
 
 export interface FileItem {
     name: string;
@@ -64,6 +65,7 @@ const FileDisplay = () => {
 
     const itemListRef = useRef<HTMLTableElement>(null);
     const detailsPaneRef = useRef<HTMLDivElement>(null);
+    const detailsPaneToggleRef = useRef<HTMLSpanElement>(null);
 
     const clearSelection = () => {
         setSelectedItems([]);
@@ -74,8 +76,10 @@ const FileDisplay = () => {
         if (
             itemListRef.current &&
             detailsPaneRef.current &&
+            detailsPaneToggleRef.current &&
             !itemListRef.current.contains(event.target as Node) &&
-            !detailsPaneRef.current.contains(event.target as Node)
+            !detailsPaneRef.current.contains(event.target as Node) &&
+            !detailsPaneToggleRef.current.contains(event.target as Node)
         ) {
             clearSelection();
         }
@@ -136,7 +140,7 @@ const FileDisplay = () => {
     };
 
     const navigateToFolder = (folderRef: FolderItem) => {
-        setPath(`${path}${folderRef.name}/`);
+        setPath(`${path}/${folderRef.name}`);
     };
 
     const navigateBack = () => {
@@ -223,11 +227,12 @@ const FileDisplay = () => {
                         <ArrowUpwardIcon fontSize="small" />
                     </IconButton>
                     <Breadcrumbs maxItems={6}>
-                        <p>{""}</p>
+                        {/* <p>{""}</p> */}
                         {path.split("/").map((address, index) => (
                             <a key={index}>{address}</a>
                         ))}
                     </Breadcrumbs>
+                    {/* <p>{path}</p> */}
                 </section>
                 <Button className="btn-def">UPLOAD FILE</Button>
             </header>
@@ -260,7 +265,7 @@ const FileDisplay = () => {
                             <tr
                                 onClick={() => {
                                     setSelectedItems([folder]);
-                                    setSelectedType("folder")
+                                    setSelectedType("folder");
                                 }}
                                 onDoubleClick={() => navigateToFolder(folder)}
                                 key={index}
@@ -328,16 +333,18 @@ const FileDisplay = () => {
                         ))}
                     </tbody>
                 </table>
+                <span ref={detailsPaneToggleRef} className={openDetails ? styles.openDetailsSpan : ""}>
+                    <IconButton className="btn-ref" onClick={handleOpenDetailsPane}>
+                        <InfoIcon />
+                        {/* {openDetails ? "CLOSE" : "OPEN"} DETAILS PANE */}
+                    </IconButton>
+                </span>
                 <div
                     ref={detailsPaneRef}
                     className={`${styles.detailsPaneContainer} ${
                         openDetails ? styles.openDetailsPane : ""
                     }`}
                 >
-                    <Button className="btn-ref" onClick={handleOpenDetailsPane}>
-                        {openDetails ? "CLOSE" : "OPEN"} DETAILS PANE
-                    </Button>
-                    <Divider />
                     <FileFolderDetails items={selectedItems} type={selectedType} />
                 </div>
                 {/* <input

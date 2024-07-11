@@ -257,7 +257,7 @@ const InvitationLink = ({ open, handleOpen, handleClose, userDoc, orgId }: any) 
 
     const [generateNew, setGenerateNew] = useState<boolean>(false);
 
-    //       1H  6H  1D   3D   1W    1M    3M
+    //////////////////////////////       1H  6H  1D   3D   1W    1M    3M
     const [expiry, setExpiry] = useState<1 | 6 | 24 | 72 | 168 | 720 | 2160>(24);
 
     const { enqueueSnackbar } = useSnackbar();
@@ -306,6 +306,7 @@ const InvitationLink = ({ open, handleOpen, handleClose, userDoc, orgId }: any) 
             }
         };
 
+        setExpiry(24);
         checkExistingLinks();
     }, [userDoc, orgId, open]);
 

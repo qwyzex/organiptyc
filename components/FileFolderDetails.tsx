@@ -1,4 +1,4 @@
-import React from "react";
+import React, { LegacyRef, Reference } from "react";
 import { FileItem, FolderItem } from "@/pages/organization/[orgId]/files"; // adjust the import path as necessary
 
 interface Props {
@@ -54,7 +54,7 @@ const FileFolderDetails: React.FC<Props> = ({ items, type }) => {
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                {items[0].url}
+                                Download Link
                             </a>
                         </p>
                         <p>
@@ -82,7 +82,7 @@ const FileFolderDetails: React.FC<Props> = ({ items, type }) => {
         <div>
             <p>No item selected.</p>
         </div>
-    )
+    );
 };
 
 export default FileFolderDetails;
