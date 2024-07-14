@@ -10,6 +10,41 @@
         flex-direction: column
         gap: 1rem
 
+        > div
+            display: flex
+            flex-direction: row
+            justify-content: space-between
+
+            > div
+                display: flex
+                flex-direction: row
+                gap: 1rem
+                // justify-content: space-between
+
+            // > span
+            //     background-color: var(--background)
+            //     border-radius: 1000px
+            //     padding: 2px
+
+            //     width: 30%
+
+            //     transition: all 0.2s ease
+
+            //     button 
+            //         padding: 0.5rem
+
+            //     &.openDetailsSpan
+            //         background-color: var(--acc-light)
+            //         svg
+            //             color: var(--color-reverse)
+
+            //     svg
+            //         transition: all 0.2s ease
+            //         color: var(--acc)
+
+            // > button
+            //     width: 70%
+
         > section
             display: flex
             align-items: center
@@ -25,6 +60,21 @@
                                 a
                                     text-decoration: none
 
+.dropzone
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    border: 2px dashed #8A8FF8
+    padding: 20px
+    cursor: pointer
+
+    &.active
+        border-color: #5A67D8
+        background-color: #f0f4f8
+
+.fileInput
+    display: none
 
 
 @media only screen and ( max-width:  600px)
@@ -42,7 +92,7 @@
                             display: none !important
 
 .tableContainer
-    overflow: hidden
+    // overflow: hidden
     height: 100%
     max-width: 100%
     border: 1px solid var(--color-dimmer)   
@@ -50,143 +100,157 @@
     min-height: 20rem
 
     display: flex
-    flex-direction: column
+    flex-direction: row
     justify-content: space-between
     overflow-x: hidden
 
     position: relative
 
-    > span
-        position: absolute  
-        bottom: 12px
-        right: 12px
-        z-index: 2
-
-        background-color: var(--background)
-        border-radius: 100px
-        padding: 2px
-
-        transition: all 0.2s ease
-
-        &.openDetailsSpan
-            background-color: var(--acc-light)
-            svg
-                color: var(--color-reverse)
-
-        svg
-            transition: all 0.2s ease
-            color: var(--acc)
-
     .detailsPaneContainer
-        padding: 1rem 5rem 1rem 1rem
+        padding: 1rem
+        // padding: 1rem 5rem 1rem 1rem
         background-color: var(--background)
         transition: all 0.3s ease
-        transform: translateY(100%)
+        border-left: 1px solid var(--color-dimmer)
 
         display: flex
         flex-direction: column
         gap: 1rem
         box-shadow: -5px 0 20px #20202020
 
-        overflow: hidden
-        // max-width: max-content
+        overflow: scroll
 
-        > div
-            overflow: hidden
+        position: sticky
+        left: 0
+        top: 0
 
-            text-overflow: ellipsis
-
-        &.openDetailsPane
-            // background-color: var(--color)
-            transform: translateY(0)
-
-    table
+        height: 100%
         width: 100%
-        border-collapse: collapse
-        overflow-x: hidden
 
-        h4
-            padding: 1rem
-            color: var(--color-dimmed)
+        .primitiveDetailsContainer
+            display: flex
+            flex-direction: column
+            height: 100%
+            justify-content: space-between
+            position: relative
 
-        thead
-            display: table-header-group
+            > section
+                position: absolute
+                top: 50%
+                left: 50%
+                transform: translate(-50%, -50%)
+                // width: min-content
 
-            tr
-                th
-                    padding: 1rem
-                    text-align: left
-                    border-bottom: 1px solid var(--color-dimmer)
-            
-        tbody
-            tr
-                height: 2rem
-                min-height: 2rem
-                max-height: 2rem
-                // background-color: #00000000
-                transition: all 0.2s ease
+                display: flex
+                flex-direction: column
+                justify-content: center
+                align-items: center
+                gap: 0.6rem
 
-                td
+                color: var(--color-dimmed)
+
+            > div
+                display: flex
+                flex-direction: column
+                gap: 1rem
+
+                > article
+                    display: flex
+                    flex-direction: column
+                    gap: 0.5rem
+
+    section
+        width: 100%
+
+        table
+            width: 100%
+            border-collapse: collapse
+            overflow-x: hidden
+
+            h4
+                padding: 1rem
+                color: var(--color-dimmed)
+
+            thead
+                display: table-header-group
+
+                position: sticky
+                top: 0
+                background-color: var(--background)
+                outline: 1px solid var(--color-dimmer)
+
+                tr
+                    th
+                        padding: 1rem
+                        text-align: left
+                        border-bottom: 1px solid var(--color-dimmer)
+                
+            tbody
+                tr
                     height: 2rem
                     min-height: 2rem
                     max-height: 2rem
-                    // display: flex
-                    // height: 40px
-                    padding: 0.6rem 1rem
-                    // outline: 1px solid var(--color-dimmer)
-                    text-align: left
-                    // display: flex
-                    // align-items: center
+                    // background-color: #00000000
+                    transition: all 0.2s ease
+
+                    td
+                        // display: flex
+                        // height: 40px
+                        padding: 0.6rem 1rem
+                        // outline: 1px solid var(--color-dimmer)
+                        text-align: left
+                        // display: flex
+                        // align-items: center
 
 
 
-                    &:first-child
-                        min-width: 20vw
-                        width: auto
-                        max-width: auto
+                        &:first-child
+                            min-width: 20vw
+                            width: auto
+                            max-width: auto
 
-                        overflow: hidden
-                        white-space: nowrap
-                        text-overflow: ellipsis
-
-                        a
                             overflow: hidden
                             white-space: nowrap
                             text-overflow: ellipsis
 
-                            &::selection
-                                color: var(--color)
-                                background: #00000000
+                            a
+                                overflow: hidden
+                                white-space: nowrap
+                                text-overflow: ellipsis
 
-                            &::-moz-selection
-                                color: var(--color)
-                                background: #00000000
+                                &::selection
+                                    color: var(--color)
+                                    background: #00000000
+
+                                &::-moz-selection
+                                    color: var(--color)
+                                    background: #00000000
+                                
+                                &:hover
+                                    cursor: pointer
+
+                            div
+                                display: flex
+                                align-items: center
                             
-                            &:hover
-                                cursor: pointer
+                                gap: 0.5rem
 
-                        div
-                            display: flex
-                            align-items: center
+                                > div
+                                    height: 20px
+                                    width: 20px
                         
-                            gap: 0.5rem
-
-                            > div
-                                height: 20px
-                                width: 20px
-                    
-                    &:not(:first-child)
-                        width: 14vw
-                        max-width: 14vw
-                        overflow: hidden
-                        white-space: nowrap
-                        text-overflow: ellipsis
-
-                        p
+                        &:not(:first-child)
+                            width: 14vw
+                            max-width: 14vw
                             overflow: hidden
                             white-space: nowrap
                             text-overflow: ellipsis
-                        
+
+                            p
+                                overflow: hidden
+                                white-space: nowrap
+                                text-overflow: ellipsis
+                            
 
 
 
@@ -195,4 +259,4 @@
     color: var(--acc)
 
 .selected
-    background-color: #f5f5f540
+    background-color: var(--color-dimmer)
