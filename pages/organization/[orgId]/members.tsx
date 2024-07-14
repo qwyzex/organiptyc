@@ -18,7 +18,7 @@ import createLog from "@/function/createLog";
 import styles from "@/styles/organization/orgId/Members.module.sass";
 import Link from "next/link";
 import generateInviteLink from "@/function/generateInviteLink";
-import { Box, Button, Divider, Modal } from "@mui/material";
+import { Box, Button, Divider, Modal, Skeleton } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 
 import { SnackbarProvider, VariantType, useSnackbar } from "notistack";
@@ -34,6 +34,7 @@ import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import Loading from "@/components/Loading";
 
 export default function OrganizationMembers() {
     const router = useRouter();
@@ -42,7 +43,7 @@ export default function OrganizationMembers() {
     const { orgId } = router.query;
     const { orgData } = useOrganizationData(orgId as string, rerenderer);
     const { authUser, loading, userDoc } = useContext(UserContext);
-    const { isAdmin } = useIsAdmin(orgId as string);
+    const { isAdmin, loading: isAdminLoading } = useIsAdmin(orgId as string);
     const yourStatus = orgData?.members.find(
         (member: any) => member.userId === authUser?.uid
     );
@@ -69,12 +70,24 @@ export default function OrganizationMembers() {
             <header>
                 <h1>MEMBERS</h1>
                 <section>
-                    <p>
-                        Total Members : {orgData?.members.length}, including{" "}
-                        {orgData?.members.filter((x: any) => x.role === "admin").length}{" "}
-                        admin
-                    </p>
-                    {isAdmin && (
+                    {orgData?.members ? (
+                        <p className="fadeIn">
+                            Total Members : {orgData?.members.length}, including{" "}
+                            {
+                                orgData?.members.filter((x: any) => x.role === "admin")
+                                    .length
+                            }{" "}
+                            admin
+                        </p>
+                    ) : (
+                        <Skeleton
+                            variant="text"
+                            sx={{ bgcolor: "var(--color-dimmer)" }}
+                            height={20}
+                            width={300}
+                        />
+                    )}
+                    {!isAdminLoading && isAdmin ? (
                         <InvitationLink
                             open={openInviteModal}
                             handleOpen={handleOpenInviteModal}
@@ -82,15 +95,34 @@ export default function OrganizationMembers() {
                             userDoc={userDoc}
                             orgId={orgId as string}
                         />
-                    )}
+                    ) : isAdminLoading ? (
+                        <>
+                            <Skeleton
+                                variant="text"
+                                sx={{ bgcolor: "var(--color-dimmer)" }}
+                                height={40.5}
+                                width={197.75}
+                            />
+                        </>
+                    ) : null}
                 </section>
             </header>
             <main>
                 <h2>Your Status</h2>
                 <div className={styles.yourStatus}>
-                    <p>{yourStatus?.user.fullName}</p>
-                    <p>{yourStatus?.joinedAt.toDate().toDateString()}</p>
-                    <p>{yourStatus?.role == "admin" ? "Admin" : "Member"}</p>
+                    {yourStatus ? (
+                        <>
+                            <p className="fadeIn">{yourStatus?.user.fullName}</p>
+                            <p className="fadeIn">{yourStatus?.joinedAt.toDate().toDateString()}</p>
+                            <p className="fadeIn">{yourStatus?.role == "admin" ? "Admin" : "Member"}</p>
+                        </>
+                    ) : (
+                        <>
+                            <Skeleton variant="text" sx={{ bgcolor: "var(--color-dimmer"}} width={100} />
+                            <Skeleton variant="text" sx={{ bgcolor: "var(--color-dimmer"}} width={70} />
+                            <Skeleton variant="text" sx={{ bgcolor: "var(--color-dimmer"}} width={60} />
+                        </>
+                    )}
                 </div>
                 <hr />
                 <header className={styles.memberListHeader}>
@@ -144,7 +176,7 @@ export default function OrganizationMembers() {
                             })
                             .map((member: any) => {
                                 return !(member.userId === authUser.uid) ? (
-                                    <li key={member.userId}>
+                                    <li key={member.userId} className="fadeIn">
                                         <p>
                                             <Link href={`/profile/${member.userId}`}>
                                                 {member.user.fullName}
@@ -237,10 +269,14 @@ export default function OrganizationMembers() {
                                             <p>{member.role}</p>
                                         )}
                                     </li>
-                                ) : null;
+                                ) : (
+                                    <></>
+                                );
                             })
                     ) : (
-                        <></>
+                        <section>
+                            <Loading />
+                        </section>
                     )}
                 </ul>
             </main>
@@ -335,7 +371,7 @@ const InvitationLink = ({ open, handleOpen, handleClose, userDoc, orgId }: any) 
 
     return (
         <>
-            <Button className="btn-def" onClick={handleOpen}>
+            <Button className="btn-def fadeIn" onClick={handleOpen}>
                 <p>INVITE NEW MEMBER</p>
                 <PersonAddIcon fontSize="small" />
             </Button>
