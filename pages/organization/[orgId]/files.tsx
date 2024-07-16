@@ -427,7 +427,7 @@ const UploadFileModal = ({
               authUser.uid,
               {
                 type: "upload_file",
-                text: `${userDoc.fullName} uploaded three files to ${path}.`,
+                text: `${userDoc.fullName} uploaded ${filesName.length} ${filesName.length > 1 ? "files" : "file"} to ${path}`,
                 files: filesName,
               },
               userDoc.photoURL
