@@ -90,7 +90,7 @@ export default function OrganizationMembers() {
               width={300}
             />
           )}
-          {!isAdminLoading && isAdmin ? (
+          {!isAdminLoading && isAdmin && orgData ? (
             <InvitationLink
               open={openInviteModal}
               handleOpen={handleOpenInviteModal}
@@ -98,7 +98,7 @@ export default function OrganizationMembers() {
               userDoc={userDoc}
               orgId={orgId as string}
             />
-          ) : isAdminLoading ? (
+          ) : isAdminLoading && !orgData ? (
             <>
               <Skeleton
                 variant="text"
@@ -107,7 +107,9 @@ export default function OrganizationMembers() {
                 width={197.75}
               />
             </>
-          ) : null}
+          ) : (
+            <div style={{ height: 40.5 }}></div>
+          )}
         </section>
       </header>
       <main>
@@ -393,7 +395,7 @@ const InvitationLink = ({
       </Button>
       <Modal
         open={open}
-        // onClose={handleClose}
+        onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -433,7 +435,7 @@ const InvitationLink = ({
                 <div className={`${styles.linkContainer} fadeIn`}>
                   <p>NEW LINK GENERATED (Expires in {inviteExpiredAt})</p>
                   <div>
-                    <input type="text" value={inviteLink} />
+                    <input className="inp-dis" type="text" value={inviteLink} />
                     <IconButton
                       onClick={() => {
                         navigator.clipboard.writeText(inviteLink);
