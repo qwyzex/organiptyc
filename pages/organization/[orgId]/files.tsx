@@ -38,6 +38,7 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import InfoIcon from "@mui/icons-material/Info";
 import Loading from "@/components/Loading";
 import createLog from "@/function/createLog";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 export interface FileItem {
   name: string;
@@ -162,6 +163,10 @@ const FileDisplay = () => {
     setSelectedType(type);
   };
 
+  const handleRefreshFiles = () => {
+    setRerenderer((prevRerenderer) => prevRerenderer + 1);
+  }
+
   const navigateToFolder = (folderRef: FolderItem) => {
     setPath(`${path}${folderRef.name}/`);
   };
@@ -205,6 +210,9 @@ const FileDisplay = () => {
           </div>
         </div>
         <section>
+          <IconButton onClick={handleRefreshFiles}>
+            <RefreshIcon fontSize="small" />
+          </IconButton>
           <IconButton onClick={navigateBack} disabled={!path}>
             <ArrowUpwardIcon fontSize="small" />
           </IconButton>
@@ -214,7 +222,6 @@ const FileDisplay = () => {
               <a key={index}>{address}</a>
             ))}
           </Breadcrumbs>
-          {/* <p>{path}</p> */}
         </section>
         {/* <Button className="btn-def">UPLOAD FILE</Button> */}
       </header>
