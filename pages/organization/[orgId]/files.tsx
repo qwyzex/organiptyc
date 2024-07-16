@@ -165,7 +165,7 @@ const FileDisplay = () => {
 
   const handleRefreshFiles = () => {
     setRerenderer((prevRerenderer) => prevRerenderer + 1);
-  }
+  };
 
   const navigateToFolder = (folderRef: FolderItem) => {
     setPath(`${path}${folderRef.name}/`);
@@ -226,6 +226,7 @@ const FileDisplay = () => {
         {/* <Button className="btn-def">UPLOAD FILE</Button> */}
       </header>
       <main className={styles.tableContainer}>
+        {filesLoading && <Loading />}
         <section ref={!openDetails ? detailsPaneRef : null}>
           <table ref={itemListRef}>
             <thead>
@@ -241,13 +242,6 @@ const FileDisplay = () => {
               </tr>
             </thead>
             <tbody>
-              {filesLoading && (
-                <tr>
-                  <td>
-                    <Loading />
-                  </td>
-                </tr>
-              )}
               {folders.length === 0 && files.length === 0 && !filesLoading && (
                 <tr className="fadeIn">
                   <td>
@@ -427,7 +421,9 @@ const UploadFileModal = ({
               authUser.uid,
               {
                 type: "upload_file",
-                text: `${userDoc.fullName} uploaded ${filesName.length} ${filesName.length > 1 ? "files" : "file"} to ${path}`,
+                text: `${userDoc.fullName} uploaded ${filesName.length} ${
+                  filesName.length > 1 ? "files" : "file"
+                } to ${path}`,
                 files: filesName,
               },
               userDoc.photoURL
