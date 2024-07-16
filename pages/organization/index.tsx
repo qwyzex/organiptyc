@@ -108,7 +108,7 @@ const Organization = () => {
                                     .reverse()
                                     .map((log: any, index: number) => (
                                         <li key={index}>
-                                            <p>{log.action}</p>
+                                            <p>{log.action.text}</p>
                                             <p>
                                                 {log.timestamp.toDate().toLocaleString()}
                                             </p>

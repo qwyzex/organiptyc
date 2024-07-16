@@ -186,7 +186,7 @@ const LogContainer = ({ logs }: any) => {
                     return (
                         <li key={log.id}>
                             <Image
-                                src={log.photoURL}
+                                src={log.photoURL ? log.photoURL : '/placeholder/pfpPlaceholder.png'}
                                 alt=""
                                 height={50}
                                 width={50}
@@ -195,7 +195,7 @@ const LogContainer = ({ logs }: any) => {
                                 <p className={styles.logDate}>
                                     {log.timestamp.toDate().toLocaleString()}
                                 </p>
-                                <p className={styles.logAction}>{log.action}</p>
+                                <p className={styles.logAction}>{log.action.text}</p>
                             </div>
                         </li>
                     );

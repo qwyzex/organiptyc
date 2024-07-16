@@ -37,6 +37,7 @@ import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import InfoIcon from "@mui/icons-material/Info";
 import Loading from "@/components/Loading";
+import createLog from "@/function/createLog";
 
 export interface FileItem {
   name: string;
@@ -381,9 +382,12 @@ const UploadFileModal = ({
     };
 
     const totalFiles = files.length;
+    const filesName: any[] = [];
     let uploadedFiles = 0;
 
     for (const file of files) {
+      filesName.push(file.name);
+
       const storageRef = ref(
         storage,
         `organization/${orgId}/${path}/${file.name}`
@@ -411,6 +415,16 @@ const UploadFileModal = ({
             console.log("All files uploaded successfully.");
             setRerenderer((prev: number) => prev + 1);
             setProgress(100);
+            createLog(
+              orgId as string,
+              authUser.uid,
+              {
+                type: "upload_file",
+                text: `${userDoc.fullName} uploaded three files to ${path}.`,
+                files: filesName,
+              },
+              userDoc.photoURL
+            );
             setTimeout(() => setProgress(0), 2000); // Reset progress after upload completion
           }
         }
