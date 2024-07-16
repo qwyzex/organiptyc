@@ -118,7 +118,9 @@ const FileFolderDetails: React.FC<Props> = ({ items, type, setrerenderer }: any)
                     </header>
                     <article>
                         <label>
-                            <h6>Name:</h6> {items[0].name}
+                            <h6>Name:</h6>
+                            <input value={items[0].name}>
+                            </input>
                         </label>
                         <label>
                             <h6>URL:</h6>
