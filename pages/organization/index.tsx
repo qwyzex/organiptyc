@@ -110,7 +110,7 @@ const Organization = () => {
                                         <li key={index}>
                                             <p>{log.action.text}</p>
                                             <p>
-                                                {log.timestamp.toDate().toLocaleString()}
+                                                {log.timestamp.toDate().toLocaleDateString()}
                                             </p>
                                         </li>
                                     ))}
