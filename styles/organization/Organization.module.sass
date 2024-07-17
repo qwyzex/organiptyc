@@ -57,7 +57,10 @@
                     opacity: 0.8
 
                     display: flex
-                    // grid-template-columns: repeat(auto-fit, minmax(300px,1fr))
                     justify-content: space-between
 
-                    // font-size: 0.9rem
+                    > p
+                        &:first-child
+                            overflow: hidden
+                            white-space: nowrap
+                            text-overflow: ellipsis
