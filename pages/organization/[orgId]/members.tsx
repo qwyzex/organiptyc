@@ -466,10 +466,18 @@ export default function OrganizationMembers() {
                                                         handleRemoveUser([
                                                             {
                                                                 uid: member.userId,
-                                                                fullName: member.user.fullName,
-                                                                firstName: member.user.firstName,
-                                                                lastName: member.user.lastName,
-                                                                photoURL: member.user.photoURL
+                                                                fullName:
+                                                                    member.user
+                                                                        .fullName,
+                                                                firstName:
+                                                                    member.user
+                                                                        .firstName,
+                                                                lastName:
+                                                                    member.user
+                                                                        .lastName,
+                                                                photoURL:
+                                                                    member.user
+                                                                        .photoURL,
                                                             },
                                                         ]);
                                                     }}
@@ -511,6 +519,7 @@ export default function OrganizationMembers() {
                                         },
                                         memberList: membersToRemove,
                                     });
+                                    setRerenderer((prev: number) => prev + 1);
                                 }
                                 handleCloseRemoveMemberModal();
                             }}
