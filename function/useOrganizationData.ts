@@ -76,6 +76,7 @@ const useOrganizationData = (orgId: string, rerenderer: number = 0) => {
         };
 
         fetchOrganizationData();
+        // eslint-disable-next-line
     }, [orgId, rerenderer]);
 
     return { orgData, loading, error };

@@ -14,6 +14,7 @@ const InviteJoin = () => {
                 .then((orgId) => router.push(`/organization/${orgId}`))
                 .catch((error) => alert(error.message));
         }
+        // eslint-disable-next-line
     }, [authUser, inviteToken]);
 
     if (!loading && !authUser) {
