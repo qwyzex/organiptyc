@@ -36,7 +36,8 @@ type OrganizationProps = {
 const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
-
+    
+    const { loading, authUser, userDoc } = useContext(UserContext);
     const { isAdmin, error: isAdminError } = useIsAdmin(orgId);
     const { orgData, error: orgDataError } = useOrganizationData(orgId);
 
@@ -48,7 +49,6 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
     const [hasMoreLogs, setHasMoreLogs] = useState<boolean>(true);
     const [logIsLoading, setLogIsLoading] = useState<boolean>(false);
 
-    const { loading, authUser, userDoc } = useContext(UserContext);
 
     const fetchLazyLogs = async (
         orgId: string,

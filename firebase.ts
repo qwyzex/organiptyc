@@ -1,23 +1,37 @@
-import { initializeApp, FirebaseApp } from "firebase/app";
+import { initializeApp, FirebaseApp, getApps } from "firebase/app";
 import { getAuth, Auth } from "firebase/auth";
 import { getFirestore, Firestore } from "firebase/firestore";
-// import { getAnalytics, Analytics } from "firebase/analytics";
+import { getAnalytics, Analytics } from "firebase/analytics";
 import { FirebaseStorage, getStorage } from "firebase/storage";
 
+console.log("PROCESS API KEY:", process.env.NEXT_PUBLIC_FIREBASE_API_KEY)
+
 const firebaseConfig = {
-    apiKey: "AIzaSyAbOHbnGy_H3ak9kJo4oKk7icPpiGfEBuA",
-    authDomain: "organiptyc.firebaseapp.com",
-    projectId: "organiptyc",
-    storageBucket: "organiptyc.appspot.com",
-    messagingSenderId: "741015929286",
-    appId: "1:741015929286:web:004888001005c9b576f2c7",
-    measurementId: "G-RZ2GV6WXGV",
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+    measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-const app: FirebaseApp = initializeApp(firebaseConfig);
-// const analytics: Analytics = getAnalytics(app);
+const app = initializeApp(firebaseConfig);
+
+// let app = initializeApp(firebaseConfig);
+// if (!getApps().length) {
+//     app = initializeApp(firebaseConfig);
+// } else {
+//     app = getApps()[0];
+// }
+
 const auth: Auth = getAuth(app);
 const db: Firestore = getFirestore(app);
 const storage: FirebaseStorage = getStorage(app);
 
-export { auth, db, storage };
+let analytics;
+if (typeof window !== "undefined") {
+    analytics = getAnalytics(app);
+}
+
+export { auth, db, storage, analytics };

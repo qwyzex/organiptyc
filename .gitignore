@@ -39,3 +39,7 @@ next-env.d.ts
 /functions
 
 */*test*
+
+# env variables
+.env.local
+.env
