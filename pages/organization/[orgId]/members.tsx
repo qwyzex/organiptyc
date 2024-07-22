@@ -24,11 +24,19 @@ import createLog from "@/function/createLog";
 import styles from "@/styles/organization/orgId/Members.module.sass";
 import Link from "next/link";
 import generateInviteLink from "@/function/generateInviteLink";
-import { Box, Button, Divider, Modal, Skeleton } from "@mui/material";
+import {
+    Box,
+    Button,
+    Divider,
+    Modal,
+    Skeleton,
+    styled,
+    Typography,
+} from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 
 import { SnackbarProvider, VariantType, useSnackbar } from "notistack";
-import MenuItem from "@mui/material/MenuItem";
+import { default as MaterialMenuItem } from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
@@ -41,6 +49,26 @@ import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import Loading from "@/components/Loading";
+import { Dropdown } from "@mui/base/Dropdown";
+import { MenuButton as BaseMenuButton } from "@mui/base/MenuButton";
+import { Menu } from "@mui/base/Menu";
+import { MenuItem as BaseMenuItem, menuItemClasses } from "@mui/base/MenuItem";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import removeMember from "@/function/removeMember";
+
+const modalBoxStyle = {
+    position: "absolute" as "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "500",
+    // height: 400,
+    bgcolor: "var(--background)",
+    border: "2px solid #8A8FF8",
+    borderRadius: 2,
+    boxShadow: 24,
+    p: 4,
+};
 
 export default function OrganizationMembers() {
     const router = useRouter();
@@ -61,6 +89,12 @@ export default function OrganizationMembers() {
     const handleOpenInviteModal = () => setOpenInviteModal(true);
     const handleCloseInviteModal = () => setOpenInviteModal(false);
 
+    const [membersToRemove, setMembersToRemove] = useState([]);
+    const [openRemoveMemberModal, setOpenRemoveMemberModal] =
+        useState<boolean>(false);
+    const handleOpenRemoveMemberModal = () => setOpenRemoveMemberModal(true);
+    const handleCloseRemoveMemberModal = () => setOpenRemoveMemberModal(false);
+
     const handleChangeSort = (by: string) => {
         if (sortBy == by) {
             setSortIt(sortIt == "asc" ? "des" : "asc");
@@ -70,6 +104,85 @@ export default function OrganizationMembers() {
         setSortIt("asc");
         return;
     };
+
+    const handleRemoveUser = (memberList: any) => {
+        if (isAdmin) {
+            setMembersToRemove(memberList);
+            handleOpenRemoveMemberModal();
+        }
+        return;
+    };
+
+    const Listbox = styled("ul")(
+        ({ theme }) => `
+        box-sizing: border-box;
+        padding: 0.5rem;
+
+        margin: 12px 0;
+        border: 1px solid var(--color-dimmer);
+        border-radius: 5px;
+        overflow: auto;
+        outline: 0px;
+        list-style: none;
+        background-color: var(--background);
+        box-shadow: 0px 4px 6px ${
+            theme.palette.mode === "dark"
+                ? "rgba(0,0,0, 0.50)"
+                : "rgba(0,0,0, 0.05)"
+        };
+        z-index: 1000;
+        cursor: pointer;
+        `
+    );
+
+    const StyledBaseMenuItem: any = styled(BaseMenuItem)(
+        ({ theme }) => `
+        list-style: none;
+        padding: 0.5rem 0.8rem;
+        border-radius: 3px;
+        cursor: default;
+        user-select: none;
+        transition: background-color 0.2s ease, color 0.2s ease;
+        font-weight: 600;
+      
+        &:last-of-type {
+          border-bottom: none;
+        }
+
+        &:hover {
+            background-color: var(--hover-background);
+            color: #f03020;
+            cursor: pointer;
+        }
+    
+        &.${menuItemClasses.disabled} {
+            background-color: var(--transparent-background);
+            color: var(--color-dimmed);
+            cursor: disable;
+        }
+        `
+    );
+
+    const StyledMenuButton = styled(BaseMenuButton)(
+        ({ theme }) => `
+        border-radius: 3px;
+        width: 35px;
+        height: 35px;
+        color: white;
+        border: 1px solid var(--color-dimmer);
+        transition: all 150ms ease;
+        cursor: pointer;
+        background-color: var(--highlight-button);
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &:hover {
+            background-color: var(--hover-highlight-button);
+        }
+        `
+    );
 
     return (
         <div className={styles.container}>
@@ -188,6 +301,7 @@ export default function OrganizationMembers() {
                         >
                             Role
                         </p>
+                        <p></p>
                     </div>
                 </header>
                 <ul className={styles.otherMembers}>
@@ -318,7 +432,7 @@ export default function OrganizationMembers() {
                                                         }
                                                     }}
                                                 >
-                                                    <MenuItem
+                                                    <MaterialMenuItem
                                                         disabled={
                                                             member.role ==
                                                             "member"
@@ -326,8 +440,8 @@ export default function OrganizationMembers() {
                                                         value={"member"}
                                                     >
                                                         {"Member"}
-                                                    </MenuItem>
-                                                    <MenuItem
+                                                    </MaterialMenuItem>
+                                                    <MaterialMenuItem
                                                         disabled={
                                                             member.role ==
                                                             "admin"
@@ -335,12 +449,35 @@ export default function OrganizationMembers() {
                                                         value={"admin"}
                                                     >
                                                         {"Admin"}
-                                                    </MenuItem>
+                                                    </MaterialMenuItem>
                                                 </Select>
                                             </FormControl>
                                         ) : (
                                             <p>{member.role}</p>
                                         )}
+                                        <Dropdown>
+                                            <StyledMenuButton>
+                                                <MoreVertIcon fontSize="small" />
+                                            </StyledMenuButton>
+                                            <Menu slots={{ listbox: Listbox }}>
+                                                <StyledBaseMenuItem
+                                                    disabled={!isAdmin}
+                                                    onClick={() => {
+                                                        handleRemoveUser([
+                                                            {
+                                                                uid: member.userId,
+                                                                fullName: member.user.fullName,
+                                                                firstName: member.user.firstName,
+                                                                lastName: member.user.lastName,
+                                                                photoURL: member.user.photoURL
+                                                            },
+                                                        ]);
+                                                    }}
+                                                >
+                                                    <p>Remove Member</p>
+                                                </StyledBaseMenuItem>
+                                            </Menu>
+                                        </Dropdown>
                                     </li>
                                 ) : (
                                     <></>
@@ -352,6 +489,42 @@ export default function OrganizationMembers() {
                         </section>
                     )}
                 </ul>
+                <Modal
+                    open={openRemoveMemberModal}
+                    onClose={handleCloseRemoveMemberModal}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={modalBoxStyle}>
+                        <Typography variant="h6" component="h2">
+                            Are you sure you want to remove this member?
+                        </Typography>
+                        <Button
+                            className="btn-def"
+                            onClick={() => {
+                                if (membersToRemove) {
+                                    removeMember({
+                                        orgId: orgId as string,
+                                        perpetrator: {
+                                            uid: authUser?.uid,
+                                            ...userDoc,
+                                        },
+                                        memberList: membersToRemove,
+                                    });
+                                }
+                                handleCloseRemoveMemberModal();
+                            }}
+                        >
+                            <p>Yes, Remove Member</p>
+                        </Button>
+                        <Button
+                            className="btn-ref"
+                            onClick={() => handleCloseRemoveMemberModal()}
+                        >
+                            <p>Cancel</p>
+                        </Button>
+                    </Box>
+                </Modal>
             </main>
         </div>
     );
@@ -379,20 +552,6 @@ const InvitationLink = ({
     );
 
     const { enqueueSnackbar } = useSnackbar();
-
-    const style = {
-        position: "absolute" as "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        width: "500",
-        // height: 400,
-        bgcolor: "var(--background)",
-        border: "2px solid #8A8FF8",
-        borderRadius: 2,
-        boxShadow: 24,
-        p: 4,
-    };
 
     const handleSuccessCopy = () => {
         enqueueSnackbar("Link Copied To Clipboard!!", { variant: "success" });
@@ -474,7 +633,7 @@ const InvitationLink = ({
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={style} className={styles.inviteLinkModal}>
+                <Box sx={modalBoxStyle} className={styles.inviteLinkModal}>
                     <header>
                         <h2>INVITATION LINK</h2>
                         <IconButton onClick={handleClose}>
@@ -561,15 +720,27 @@ const InvitationLink = ({
                                         onChange={handleChangeExpiry}
                                         label="Token Expiry"
                                     >
-                                        <MenuItem value={1}>1 Hour</MenuItem>
-                                        <MenuItem value={6}>6 Hour</MenuItem>
-                                        <MenuItem value={24}>1 Day</MenuItem>
-                                        <MenuItem value={72}>3 Days</MenuItem>
-                                        <MenuItem value={168}>7 Days</MenuItem>
-                                        <MenuItem value={672}>30 Days</MenuItem>
-                                        <MenuItem value={2016}>
+                                        <MaterialMenuItem value={1}>
+                                            1 Hour
+                                        </MaterialMenuItem>
+                                        <MaterialMenuItem value={6}>
+                                            6 Hour
+                                        </MaterialMenuItem>
+                                        <MaterialMenuItem value={24}>
+                                            1 Day
+                                        </MaterialMenuItem>
+                                        <MaterialMenuItem value={72}>
+                                            3 Days
+                                        </MaterialMenuItem>
+                                        <MaterialMenuItem value={168}>
+                                            7 Days
+                                        </MaterialMenuItem>
+                                        <MaterialMenuItem value={672}>
+                                            30 Days
+                                        </MaterialMenuItem>
+                                        <MaterialMenuItem value={2016}>
                                             90 Days
-                                        </MenuItem>
+                                        </MaterialMenuItem>
                                     </Select>
                                 </FormControl>
                                 <Button

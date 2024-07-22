@@ -19,8 +19,8 @@
 
         .yourStatus
             display: grid
-            grid-template-columns: repeat(6, 1fr)
-            grid-template-areas: "q q q w w e"
+            grid-template-columns: repeat(13, 1fr)
+            grid-template-areas: "q q q q q w w w w e e e m"
 
             padding: 0 1.5rem
 
@@ -31,9 +31,12 @@
                 &:nth-child(2)
                     grid-area: w
                     justify-self: center
+                &:nth-child(3)
+                    grid-area: e
+                    justify-self: center
                         
                 &:last-child
-                    grid-area: e
+                    grid-area: m
                     justify-self: center
 
         .memberListHeader
@@ -42,8 +45,8 @@
             
             .memberListParam
                 display: grid
-                grid-template-columns: repeat(6, 1fr)
-                grid-template-areas: "q q q w w e"
+                grid-template-columns: repeat(13, 1fr)
+                grid-template-areas: "q q q q q w w w w e e e m"
 
                 padding: 1rem 1.5rem 0 1.5rem
 
@@ -95,9 +98,13 @@
                     &:nth-child(2)
                         grid-area: w
                         justify-self: center
+
+                    &:nth-child(3)
+                        grid-area: e
+                        justify-self: center
                         
                     &:last-child
-                        grid-area: e
+                        grid-area: m
                         justify-self: center
                     
         .otherMembers
@@ -119,8 +126,8 @@
 
             li
                 display: grid
-                grid-template-columns: repeat(6, 1fr)
-                grid-template-areas: "q q q w w e"
+                grid-template-columns: repeat(13, 1fr)
+                grid-template-areas: "q q q q q w w w w e e e m"
 
                 align-items: center
                 
@@ -139,9 +146,13 @@
                     &:nth-child(2)
                         grid-area: w
                         justify-self: center
+
+                    &:nth-child(3)
+                        grid-area: e
+                        justify-self: center
                         
                     &:last-child
-                        grid-area: e
+                        grid-area: m
                         justify-self: center
 
                         // // width: 100%
