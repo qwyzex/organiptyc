@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
     doc,
     getDoc,
@@ -9,14 +9,17 @@ import {
     limit,
 } from "firebase/firestore";
 import { db } from "@/firebase";
+import { UserContext } from "@/context/UserContext";
 
 const useOrganizationData = (orgId: string, rerenderer: number = 0) => {
+    const { authUser } = useContext(UserContext);
     const [orgData, setOrgData] = useState<DocumentData | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<any>(null);
 
     useEffect(() => {
         const fetchOrganizationData = async () => {
+            if (!authUser) return;
             try {
                 const orgRef = doc(db, "organizations", orgId);
                 const orgSnap = await getDoc(orgRef);
@@ -42,11 +45,17 @@ const useOrganizationData = (orgId: string, rerenderer: number = 0) => {
                             allDocsSnap.docs.map(async (docu) => {
                                 const data = docu.data();
                                 if (subcollectionName === "members") {
-                                    const userRef = doc(db, "users", data.userId);
+                                    const userRef = doc(
+                                        db,
+                                        "users",
+                                        data.userId
+                                    );
                                     const userSnap = await getDoc(userRef);
                                     return {
                                         ...data,
-                                        user: userSnap.exists() ? userSnap.data() : null,
+                                        user: userSnap.exists()
+                                            ? userSnap.data()
+                                            : null,
                                     };
                                 }
                                 return { id: docu.id, ...data };

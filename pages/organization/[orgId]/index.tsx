@@ -12,7 +12,13 @@ import {
     getDocs,
     QueryDocumentSnapshot,
 } from "firebase/firestore";
-import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+    useContext,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState,
+} from "react";
 import { db } from "@/firebase";
 import { UserContext } from "@/context/UserContext";
 import Image from "next/image";
@@ -30,9 +36,9 @@ type OrganizationProps = {
 const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
-    const { isAdmin } = useIsAdmin(orgId);
 
-    const { orgData } = useOrganizationData(orgId);
+    const { isAdmin, error: isAdminError } = useIsAdmin(orgId);
+    const { orgData, error: orgDataError } = useOrganizationData(orgId);
 
     const [logs, setLogs] = useState<Array<any> | null>(null);
     const [lastLog, setLastLog] = useState<QueryDocumentSnapshot<
@@ -41,23 +47,8 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
     > | null>(null);
     const [hasMoreLogs, setHasMoreLogs] = useState<boolean>(true);
     const [logIsLoading, setLogIsLoading] = useState<boolean>(false);
-    // const containerRef = useRef(null);
-    // const [containerHeight, setContainerHeight] = useState("auto");
 
     const { loading, authUser, userDoc } = useContext(UserContext);
-
-    // useEffect(() => {
-    //     if (orgId) {
-    //         fetchLogs(orgId).then(setLogs).catch(setError);
-    //     }
-    // }, [orgId]);
-
-    // useEffect(() => {
-    //     if (containerRef.current) {
-    //         const newHeight = containerRef.current.scrollHeight;
-    //         setContainerHeight(newHeight);
-    //     }
-    // }, [logs]);
 
     const fetchLazyLogs = async (
         orgId: string,
@@ -78,7 +69,10 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
         }
 
         const logsSnapshot = await getDocs(logsQuery);
-        const logs = logsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        const logs = logsSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
         const lastVisible = logsSnapshot.docs[logsSnapshot.docs.length - 1];
         const hasMoreLogs = logs.length === 3;
 
@@ -110,10 +104,15 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
     };
 
     useEffect(() => {
-        if (orgId) {
+        if (orgId && authUser) {
             loadInitialLogs(orgId);
         }
+        // eslint-disable-next-line
     }, []);
+
+    if (isAdminError || orgDataError) {
+        return <></>;
+    }
 
     if (error) {
         return <div>{error}</div>;
@@ -135,13 +134,20 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
                 ></Image>
                 <article>
                     <h1>{orgData.name}</h1>
-                    <p>Created on : {orgData.createdAt.toDate().toDateString()}</p>
+                    <p>
+                        Created on : {orgData.createdAt.toDate().toDateString()}
+                    </p>
                     <p>
                         <strong>{orgData.members.length} </strong>
                         members |<strong> You </strong>
-                        are {isAdmin ? "an admin and a member" : "a member"} since{" "}
+                        are {isAdmin
+                            ? "an admin and a member"
+                            : "a member"}{" "}
+                        since{" "}
                         {orgData.members
-                            .find((member: any) => member.userId === authUser?.uid)
+                            .find(
+                                (member: any) => member.userId === authUser?.uid
+                            )
                             ?.joinedAt.toDate()
                             .toLocaleDateString()
                             .replaceAll("/", " / ")}
@@ -149,7 +155,7 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
                 </article>
             </header>
             <main className={styles.orgMain}>
-                <LogContainer logs={logs}/>
+                <LogContainer logs={logs} />
                 <input
                     type="button"
                     disabled={!hasMoreLogs}
@@ -186,7 +192,11 @@ const LogContainer = ({ logs }: any) => {
                     return (
                         <li key={log.id}>
                             <Image
-                                src={log.photoURL ? log.photoURL : '/placeholder/pfpPlaceholder.png'}
+                                src={
+                                    log.photoURL
+                                        ? log.photoURL
+                                        : "/placeholder/pfpPlaceholder.png"
+                                }
                                 alt=""
                                 height={50}
                                 width={50}
@@ -195,7 +205,9 @@ const LogContainer = ({ logs }: any) => {
                                 <p className={styles.logDate}>
                                     {log.timestamp.toDate().toLocaleString()}
                                 </p>
-                                <p className={styles.logAction}>{log.action.text}</p>
+                                <p className={styles.logAction}>
+                                    {log.action.text}
+                                </p>
                             </div>
                         </li>
                     );

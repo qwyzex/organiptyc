@@ -27,7 +27,8 @@ const useIsAdmin = (orgId: string) => {
                     setIsAdmin(false);
                 }
             } catch (error) {
-                setError(JSON.stringify(error));
+                setError(error);
+                console.error("Error fetching user role:", error);
             } finally {
                 setLoading(false);
             }

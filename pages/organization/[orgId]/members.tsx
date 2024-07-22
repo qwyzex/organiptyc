@@ -278,12 +278,11 @@ export default function OrganizationMembers() {
                     <div className={styles.memberListTitle}>
                         <h2>Other Members</h2>
                         <IconButton onClick={handleRerender}>
-                            <Tooltip
+                            {/* <Tooltip
                                 title={"Refresh"}
-                                sx={{ fontWeight: "bold" }}
-                            >
+                            > */}
                                 <RefreshIcon fontSize="small" />
-                            </Tooltip>
+                            {/* </Tooltip> */}
                         </IconButton>
                     </div>
                     <div
@@ -469,9 +468,11 @@ export default function OrganizationMembers() {
                                             <p>{member.role}</p>
                                         )}
                                         <Dropdown>
-                                            <StyledMenuButton>
-                                                <MoreVertIcon fontSize="small" />
-                                            </StyledMenuButton>
+                                            {/* <Tooltip title={"More"}> */}
+                                                <StyledMenuButton>
+                                                    <MoreVertIcon fontSize="small" />
+                                                </StyledMenuButton>
+                                            {/* </Tooltip> */}
                                             <Menu slots={{ listbox: Listbox }}>
                                                 <StyledBaseMenuItem
                                                     disabled={!isAdmin}
