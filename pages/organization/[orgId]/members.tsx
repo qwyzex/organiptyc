@@ -257,18 +257,21 @@ export default function OrganizationMembers() {
                         <>
                             <Skeleton
                                 variant="text"
-                                sx={{ bgcolor: "var(--color-dimmer" }}
+                                sx={{ bgcolor: "var(--color-dimmer)" }}
                                 width={100}
+                                height={20.8}
                             />
                             <Skeleton
                                 variant="text"
-                                sx={{ bgcolor: "var(--color-dimmer" }}
+                                sx={{ bgcolor: "var(--color-dimmer)" }}
                                 width={70}
+                                height={20.8}
                             />
                             <Skeleton
                                 variant="text"
-                                sx={{ bgcolor: "var(--color-dimmer" }}
+                                sx={{ bgcolor: "var(--color-dimmer)" }}
                                 width={60}
+                                height={20.8}
                             />
                         </>
                     )}
