@@ -281,7 +281,7 @@ export default function OrganizationMembers() {
                             {/* <Tooltip
                                 title={"Refresh"}
                             > */}
-                                <RefreshIcon fontSize="small" />
+                            <RefreshIcon fontSize="small" />
                             {/* </Tooltip> */}
                         </IconButton>
                     </div>
@@ -469,9 +469,9 @@ export default function OrganizationMembers() {
                                         )}
                                         <Dropdown>
                                             {/* <Tooltip title={"More"}> */}
-                                                <StyledMenuButton>
-                                                    <MoreVertIcon fontSize="small" />
-                                                </StyledMenuButton>
+                                            <StyledMenuButton>
+                                                <MoreVertIcon fontSize="small" />
+                                            </StyledMenuButton>
                                             {/* </Tooltip> */}
                                             <Menu slots={{ listbox: Listbox }}>
                                                 <StyledBaseMenuItem
@@ -677,7 +677,7 @@ const InvitationLink = ({
                                 {inviteExpiredAt})
                             </p>
                             <div>
-                                <input type="text" value={inviteLink} />
+                                <input readOnly className="inp-dis" type="text" value={inviteLink} />
                                 <IconButton
                                     onClick={() => {
                                         navigator.clipboard.writeText(
@@ -703,6 +703,7 @@ const InvitationLink = ({
                                     </p>
                                     <div>
                                         <input
+                                            readOnly
                                             className="inp-dis"
                                             type="text"
                                             value={inviteLink}

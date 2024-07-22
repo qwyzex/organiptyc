@@ -119,7 +119,7 @@ const FileFolderDetails: React.FC<Props> = ({ items, type, setrerenderer }: any)
                     <article>
                         <label>
                             <h6>Name:</h6>
-                            <input className="inp-dis" value={items[0].name}>
+                            <input readOnly className="inp-dis" value={items[0].name}>
                             </input>
                         </label>
                         <label>
