@@ -320,7 +320,20 @@ export default function OrganizationMembers() {
                     </div>
                 </header>
                 <ul className={styles.otherMembers}>
-                    {orgData && authUser && userDoc ? (
+                    {orgData &&
+                    authUser &&
+                    userDoc &&
+                    orgData.members.length < 2 ? (
+                        <section className="fadeIn">
+                            <h3 className="dim italic">
+                                Whoa... It&apos;s lonely down here!
+                            </h3>
+                            <p className="dim italic">
+                                <a className="pointer dim bold" onClick={handleOpenInviteModal}>Invite</a>{" "}
+                                other people.
+                            </p>
+                        </section>
+                    ) : orgData && authUser && userDoc ? (
                         orgData.members
                             .sort((a: any, b: any) => {
                                 if (sortBy === "name") {
@@ -677,7 +690,12 @@ const InvitationLink = ({
                                 {inviteExpiredAt})
                             </p>
                             <div>
-                                <input readOnly className="inp-dis" type="text" value={inviteLink} />
+                                <input
+                                    readOnly
+                                    className="inp-dis"
+                                    type="text"
+                                    value={inviteLink}
+                                />
                                 <IconButton
                                     onClick={() => {
                                         navigator.clipboard.writeText(
