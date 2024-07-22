@@ -55,6 +55,7 @@ import { Menu } from "@mui/base/Menu";
 import { MenuItem as BaseMenuItem, menuItemClasses } from "@mui/base/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import removeMember from "@/function/removeMember";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 const modalBoxStyle = {
     position: "absolute" as "absolute",
@@ -73,6 +74,10 @@ const modalBoxStyle = {
 export default function OrganizationMembers() {
     const router = useRouter();
     const [rerenderer, setRerenderer] = useState<number>(0);
+
+    const handleRerender = () => {
+        setRerenderer((r) => r + 1);
+    };
 
     const { orgId } = router.query;
     const { orgData } = useOrganizationData(orgId as string, rerenderer);
@@ -269,7 +274,12 @@ export default function OrganizationMembers() {
                 </div>
                 <hr />
                 <header className={styles.memberListHeader}>
-                    <h2>Other Members</h2>
+                    <div className={styles.memberListTitle}>
+                        <h2>Other Members</h2>
+                        <IconButton onClick={handleRerender}>
+                            <RefreshIcon fontSize="small" />
+                        </IconButton>
+                    </div>
                     <div
                         className={`${styles.memberListParam} ${
                             sortIt === "asc" && styles.asc
@@ -416,10 +426,7 @@ export default function OrganizationMembers() {
                                                                     `${member.user.fullName}'s role has been updated to ${newRole}`
                                                                 );
 
-                                                                setRerenderer(
-                                                                    rerenderer +
-                                                                        1
-                                                                );
+                                                                handleRerender();
                                                             } catch (error) {
                                                                 console.error(
                                                                     "Error updating role: ",
@@ -519,7 +526,7 @@ export default function OrganizationMembers() {
                                         },
                                         memberList: membersToRemove,
                                     });
-                                    setRerenderer((prev: number) => prev + 1);
+                                    handleRerender();
                                 }
                                 handleCloseRemoveMemberModal();
                             }}
