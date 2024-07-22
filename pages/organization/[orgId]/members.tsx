@@ -31,6 +31,7 @@ import {
     Modal,
     Skeleton,
     styled,
+    Tooltip,
     Typography,
 } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
@@ -156,7 +157,7 @@ export default function OrganizationMembers() {
 
         &:hover {
             background-color: var(--hover-background);
-            color: #f03020;
+            color: var(--danger);
             cursor: pointer;
         }
     
@@ -277,7 +278,12 @@ export default function OrganizationMembers() {
                     <div className={styles.memberListTitle}>
                         <h2>Other Members</h2>
                         <IconButton onClick={handleRerender}>
-                            <RefreshIcon fontSize="small" />
+                            <Tooltip
+                                title={"Refresh"}
+                                sx={{ fontWeight: "bold" }}
+                            >
+                                <RefreshIcon fontSize="small" />
+                            </Tooltip>
                         </IconButton>
                     </div>
                     <div
@@ -515,7 +521,7 @@ export default function OrganizationMembers() {
                             Are you sure you want to remove this member?
                         </Typography>
                         <Button
-                            className="btn-def"
+                            className="btn-def btn-danger"
                             onClick={() => {
                                 if (membersToRemove) {
                                     removeMember({

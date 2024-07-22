@@ -15,6 +15,8 @@
         --hover-background: #383841
         --highlight-button: #383841
         --hover-highlight-button: #4f4f5e
+        --danger: #ec5656
+        --danger-dark: #bc4a4a
     
     body
         background: url('/bg.png') no-repeat
@@ -31,6 +33,8 @@
         --hover-background: #c9cbe3
         --highlight-button: #c9cbe3
         --hover-highlight-button: #b3b5c6
+        --danger: #f03020
+        --danger-dark: #941a1a
 
     body
         background: url('/bg1.png') no-repeat
@@ -109,6 +113,12 @@ a
         background-color: var(--acc)
         &:hover
             background-color: var(--acc-dark)
+
+    &.btn-danger
+        color: var(--color-reverse)
+        background-color: var(--danger)
+        &:hover
+            background-color: var(--danger-dark)
 
     &.btn-ref
         color: var(--acc-dark)
