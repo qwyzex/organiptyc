@@ -168,18 +168,18 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
 };
 
 const LogContainer = ({ logs }: any) => {
-    const containerRef = useRef(null);
+    const containerRef = useRef<HTMLUListElement>(null);
     const [containerHeight, setContainerHeight] = useState("auto");
 
     useLayoutEffect(() => {
         if (containerRef.current) {
-            setContainerHeight(containerRef.current.scrollHeight);
+            setContainerHeight(containerRef.current.scrollHeight + "px");
         }
     }, []); // Set initial height before first render
 
     useEffect(() => {
         if (containerRef.current) {
-            const newHeight = containerRef.current.scrollHeight;
+            const newHeight = containerRef.current.scrollHeight + "px";
             setContainerHeight(newHeight);
         }
     }, [logs]); // Update height when logs change
