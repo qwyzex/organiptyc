@@ -1,13 +1,7 @@
 import Loading from "@/components/Loading";
 import { db } from "@/firebase";
 import styles from "@/styles/organization/Join.module.sass";
-import {
-    Button,
-    Divider,
-    FormControl,
-    InputLabel,
-    TextField,
-} from "@mui/material";
+import { Button, Divider, FormControl, TextField } from "@mui/material";
 import { doc, getDoc } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
@@ -69,9 +63,7 @@ export default function JoinOrganization() {
                         value="Check Organization"
                     />
                 </form>
-                {extractedToken && (
-                    <Invitee key={extractedToken} token={extractedToken} />
-                )}
+                {extractedToken && <Invitee token={extractedToken} />}
             </main>
         </div>
     );
@@ -83,8 +75,9 @@ export const Invitee = ({ token }: { token: string }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [orgData, setOrgData] = useState<any>(null);
     const [error, setError] = useState<string>("");
+    const [isMember, setIsMember] = useState<boolean>(false);
 
-    const { authUser } = useContext(UserContext);
+    const { authUser, userDoc } = useContext(UserContext);
 
     useEffect(() => {
         const fetchOrgData = async () => {
@@ -99,6 +92,14 @@ export const Invitee = ({ token }: { token: string }) => {
                 if (docSnap.exists()) {
                     const orgId = docSnap.data().invitedToUID;
 
+                    // Check if the user is already a member
+                    if (
+                        userDoc &&
+                        userDoc.organizations &&
+                        userDoc.organizations[orgId]
+                    ) {
+                        setIsMember(true);
+                    }
                     try {
                         const orgDocRef = doc(db, "organizations", orgId);
                         const orgDocSnap = await getDoc(orgDocRef);
@@ -122,6 +123,7 @@ export const Invitee = ({ token }: { token: string }) => {
         };
 
         fetchOrgData();
+        // eslint-disable-next-line
     }, [token]);
 
     return (
@@ -162,29 +164,41 @@ export const Invitee = ({ token }: { token: string }) => {
                                 </div>
                                 <Divider variant="fullWidth" flexItem />
                                 <div>
-                                    <Button
-                                        disabled={loading}
-                                        onClick={() => {
-                                            setLoading(true)
-                                            if (authUser)
-                                                handleInviteLink(
-                                                    token,
-                                                    authUser.uid
-                                                )
-                                                    .then((orgId) =>
-                                                        router.push(
-                                                            `/organization/${orgId}`
-                                                        )
+                                    {isMember ? (
+                                        <p className="dim italic">
+                                            You are already a member of this{" "}
+                                            <Link
+                                                href={`/organization/${orgData.uid}`}
+                                            >
+                                                organization
+                                            </Link>
+                                            .
+                                        </p>
+                                    ) : (
+                                        <Button
+                                            disabled={loading}
+                                            onClick={() => {
+                                                setLoading(true);
+                                                if (authUser)
+                                                    handleInviteLink(
+                                                        token,
+                                                        authUser.uid
                                                     )
-                                                    .catch((error) =>
-                                                        alert(error.message)
-                                                    );
-                                            setLoading(false)
-                                        }}
-                                        className="btn-def"
-                                    >
-                                        JOIN
-                                    </Button>
+                                                        .then((orgId) =>
+                                                            router.push(
+                                                                `/organization/${orgId}`
+                                                            )
+                                                        )
+                                                        .catch((error) =>
+                                                            alert(error.message)
+                                                        );
+                                                setLoading(false);
+                                            }}
+                                            className="btn-def"
+                                        >
+                                            JOIN
+                                        </Button>
+                                    )}
                                 </div>
                             </article>
                         </section>
