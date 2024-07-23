@@ -331,10 +331,17 @@ export default function OrganizationMembers() {
                             <h3 className="dim italic">
                                 Whoa... It&apos;s lonely down here!
                             </h3>
-                            <p className="dim italic">
-                                <a className="pointer dim bold" onClick={handleOpenInviteModal}>Invite</a>{" "}
-                                other people.
-                            </p>
+                            {isAdmin && (
+                                <p className="dim italic">
+                                    <a
+                                        className="pointer dim bold"
+                                        onClick={handleOpenInviteModal}
+                                    >
+                                        Invite
+                                    </a>{" "}
+                                    other people.
+                                </p>
+                            )}
                         </section>
                     ) : orgData && authUser && userDoc ? (
                         orgData.members
