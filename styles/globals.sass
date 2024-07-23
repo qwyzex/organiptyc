@@ -53,7 +53,11 @@ body
 
 @font-face
     font-family: DMSans
-    src: url('DMSans.ttf')
+    src: url('./fonts/DMSans.ttf')
+
+@font-face
+    font-family: Inconsolata
+    src: url('./fonts/Inconsolata.ttf')
 
 body
     min-height: 100vh
@@ -69,6 +73,12 @@ body
 ::-moz-selection
     color: #ffffff
     background: var(--acc)
+
+code
+    font-family: Inconsolata
+    padding: 0.3rem
+    background-color: var(--highlight-button)
+    border-radius: 3px
 
 a 
     text-decoration: none
@@ -110,7 +120,7 @@ a
         outline: 2px solid var(--acc)
 
 // UNIQUE BUTTON CLASS
-.btn-def, .btn-ref
+.btn-def, .btn-ref, .btn-danger
     padding: 0.5rem 0.8rem
     border: none
 
@@ -121,6 +131,10 @@ a
     font-family: DMSans
     font-weight: 600
     transition: all 0.2s ease
+
+    &:disabled
+        color: var(--color-dimmed) !important
+        background-color: var(--background) !important
 
     &.btn-def
         color: var(--color-reverse)
