@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
 import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import { auth, db } from "../firebase"; // Adjust the import based on your file structure
 
 interface UserDocument {
@@ -49,7 +49,20 @@ export function UserProvider({ children }: UserProviderProps) {
                 const userDocRef = doc(db, "users", user.uid);
                 const userDocSnap = await getDoc(userDocRef);
                 if (userDocSnap.exists()) {
-                    setUserDoc(userDocSnap.data() as UserDocument);
+                    const userDocData = userDocSnap.data() as UserDocument;
+                    const orgsCollectionRef = collection(
+                        db,
+                        `users/${user.uid}/organizations`
+                    );
+                    const orgsSnap = await getDocs(orgsCollectionRef);
+                    const organizations = orgsSnap.docs.reduce(
+                        (acc, doc) => ({
+                            ...acc,
+                            [doc.id]: doc.data(),
+                        }),
+                        {}
+                    );
+                    setUserDoc({ ...userDocData, organizations });
                 } else {
                     setUserDoc(null);
                 }
