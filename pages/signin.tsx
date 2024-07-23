@@ -28,9 +28,6 @@ export default function SigninPage() {
 
         try {
             const result = await signInWithEmailAndPassword(auth, email, password);
-            console.log("Logged in:", result.user);
-            // Redirect to home page
-            // history.push("/home");
         } catch (error) {
             setError("error");
         } finally {

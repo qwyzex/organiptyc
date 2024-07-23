@@ -3,7 +3,6 @@ import { deleteDoc, doc } from "firebase/firestore";
 import createLog from "./createLog";
 
 const removeMember = async ({ orgId, perpetrator, memberList }: any) => {
-    console.log(orgId, memberList);
     if (memberList) {
         try {
             memberList.forEach(

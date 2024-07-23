@@ -45,16 +45,4 @@ const OrgLayout: NextPage<OrgLayoutProps> = ({ children }) => {
     );
 };
 
-// export const getServerSideProps = async (context: any) => {
-//     console.log(0);
-//     const { orgId } = context.params;
-//     console.log(1);
-
-//     return {
-//         props: {
-//             orgId,
-//         },
-//     };
-// };
-
 export default OrgLayout;

@@ -122,8 +122,6 @@ const FileDisplay = () => {
                 const url = await getDownloadURL(itemRef);
                 const metadata = await getMetadata(itemRef);
 
-                // console.log("INDIVIDUAL ITEM : ", metadata);
-
                 return {
                     name: itemRef.name,
                     url,
@@ -142,7 +140,6 @@ const FileDisplay = () => {
                 res.prefixes.map((folderRef) => ({ name: folderRef.name }))
             );
             setFilesLoading(false);
-            // console.log()
         };
 
         fetchFilesAndFolders();

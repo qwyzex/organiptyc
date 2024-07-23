@@ -4,8 +4,6 @@ import { getFirestore, Firestore } from "firebase/firestore";
 import { getAnalytics, Analytics } from "firebase/analytics";
 import { FirebaseStorage, getStorage } from "firebase/storage";
 
-console.log("PROCESS API KEY:", process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
-
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
     authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
