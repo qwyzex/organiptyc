@@ -97,7 +97,7 @@ const Organization = () => {
                             </div>
                             <h4>Latest Acivity</h4>
                             <ul>
-                                {org.logs
+                                {org.logs.length > 0 ? org.logs
                                     .sort((a: any, b: any) => {
                                         return (
                                             Math.round(a.timestamp.toDate() / 1000) -
@@ -113,7 +113,7 @@ const Organization = () => {
                                                 {log.timestamp.toDate().toLocaleDateString()}
                                             </p>
                                         </li>
-                                    ))}
+                                    )) : <p className="dim italic">No activity recorded</p>}
                             </ul>
                         </li>
                     ))
