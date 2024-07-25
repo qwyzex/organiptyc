@@ -540,35 +540,40 @@ export default function OrganizationMembers() {
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >
-                    <Box sx={modalBoxStyle}>
+                    <Box
+                        sx={modalBoxStyle}
+                        className={styles.removeMemberModalBox}
+                    >
                         <Typography variant="h6" component="h2">
                             Are you sure you want to remove this member?
                         </Typography>
-                        <Button
-                            className="btn-def btn-danger"
-                            onClick={() => {
-                                if (membersToRemove) {
-                                    removeMember({
-                                        orgId: orgId as string,
-                                        perpetrator: {
-                                            uid: authUser?.uid,
-                                            ...userDoc,
-                                        },
-                                        memberList: membersToRemove,
-                                    });
-                                    handleRerender();
-                                }
-                                handleCloseRemoveMemberModal();
-                            }}
-                        >
-                            <p>Yes, Remove Member</p>
-                        </Button>
-                        <Button
-                            className="btn-ref"
-                            onClick={() => handleCloseRemoveMemberModal()}
-                        >
-                            <p>Cancel</p>
-                        </Button>
+                        <section>
+                            <Button
+                                className="btn-def btn-danger"
+                                onClick={() => {
+                                    if (membersToRemove) {
+                                        removeMember({
+                                            orgId: orgId as string,
+                                            perpetrator: {
+                                                uid: authUser?.uid,
+                                                ...userDoc,
+                                            },
+                                            memberList: membersToRemove,
+                                        });
+                                        handleRerender();
+                                    }
+                                    handleCloseRemoveMemberModal();
+                                }}
+                            >
+                                <p>Yes, Remove Member</p>
+                            </Button>
+                            <Button
+                                className="btn-ref"
+                                onClick={() => handleCloseRemoveMemberModal()}
+                            >
+                                <p>Cancel</p>
+                            </Button>
+                        </section>
                     </Box>
                 </Modal>
             </main>
