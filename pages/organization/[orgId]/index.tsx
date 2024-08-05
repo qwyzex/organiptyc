@@ -36,7 +36,7 @@ type OrganizationProps = {
 const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
-    
+
     const { loading, authUser, userDoc } = useContext(UserContext);
     const { isAdmin, error: isAdminError } = useIsAdmin(orgId);
     const { orgData, error: orgDataError } = useOrganizationData(orgId);
@@ -48,7 +48,6 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
     > | null>(null);
     const [hasMoreLogs, setHasMoreLogs] = useState<boolean>(true);
     const [logIsLoading, setLogIsLoading] = useState<boolean>(false);
-
 
     const fetchLazyLogs = async (
         orgId: string,
@@ -188,30 +187,36 @@ const LogContainer = ({ logs }: any) => {
         <div className={styles.logsCard}>
             <h3>Last Activities</h3>
             <ul ref={containerRef} style={{ height: containerHeight }}>
-                {logs?.map((log: any) => {
-                    return (
-                        <li key={log.id}>
-                            <Image
-                                src={
-                                    log.photoURL
-                                        ? log.photoURL
-                                        : "/placeholder/pfpPlaceholder.png"
-                                }
-                                alt=""
-                                height={50}
-                                width={50}
-                            ></Image>
-                            <div>
-                                <p className={styles.logDate}>
-                                    {log.timestamp.toDate().toLocaleString()}
-                                </p>
-                                <p className={styles.logAction}>
-                                    {log.action.text}
-                                </p>
-                            </div>
-                        </li>
-                    );
-                })}
+                {logs.length > 0 ? (
+                    logs.map((log: any) => {
+                        return (
+                            <li key={log.id}>
+                                <Image
+                                    src={
+                                        log.photoURL
+                                            ? log.photoURL
+                                            : "/placeholder/pfpPlaceholder.png"
+                                    }
+                                    alt=""
+                                    height={50}
+                                    width={50}
+                                ></Image>
+                                <div>
+                                    <p className={styles.logDate}>
+                                        {log.timestamp
+                                            .toDate()
+                                            .toLocaleString()}
+                                    </p>
+                                    <p className={styles.logAction}>
+                                        {log.action.text}
+                                    </p>
+                                </div>
+                            </li>
+                        );
+                    })
+                ) : (
+                    <p className="dim italic">No activity recorded</p>
+                )}
             </ul>
         </div>
     );
