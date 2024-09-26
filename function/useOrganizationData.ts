@@ -29,7 +29,7 @@ const useOrganizationData = (orgId: string, rerenderer: number = 0) => {
                 }
 
                 const orgData = orgSnap.data();
-                const subcollections = ["members"]; // Add other subcollection names here
+                const subcollections = ["members", "programs"]; // Add other subcollection names here
 
                 for (const subcollectionName of subcollections) {
                     const subcollectionRef = collection(

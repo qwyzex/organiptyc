@@ -1,0 +1,246 @@
+.container
+    display: flex
+    flex-direction: column
+
+    > header
+        display: flex
+        flex-direction: column
+
+        section
+            display: flex
+            align-items: center
+            justify-content: space-between
+
+    > main
+        display: flex
+        flex-direction: column
+        gap: 1.5rem
+        padding: 1rem 0
+
+        .yourStatus
+            display: grid
+            grid-template-columns: repeat(13, 1fr)
+            grid-template-areas: "q q q q q w w w w e e e m"
+
+            padding: 0 1.5rem
+
+            > *
+                &:first-child
+                    grid-area: q
+
+                &:nth-child(2)
+                    grid-area: w
+                    justify-self: center
+                &:nth-child(3)
+                    grid-area: e
+                    justify-self: center
+                        
+                &:last-child
+                    grid-area: m
+                    justify-self: center
+
+        .memberListHeader
+            display: flex
+            flex-direction: column
+
+            .memberListTitle
+                display: flex
+                justify-content: space-between
+            
+            .memberListParam
+                display: grid
+                grid-template-columns: repeat(13, 1fr)
+                grid-template-areas: "q q q q q w w w w e e e m"
+
+                padding: 1rem 1.5rem 0 1.5rem
+
+                p
+                    width: max-content
+
+                    &:hover
+                        cursor: pointer
+
+                        text-decoration: underline
+                    
+                &.asc
+                    .sortBySelected
+                        &::after
+                            rotate: 180deg
+                            transform: translateY(-80%)
+                            // bottom: 50%
+                            // top: auto
+                            
+                .sortBySelected
+                    position: relative
+
+                    &::after
+                        content: ''
+                        z-index: 9
+                        position: absolute
+                        // top: 50%
+                        right: -22px
+                        transform: translateY(80%)
+
+                        width: 0
+                        height: 0
+                        border-left: 7px solid transparent
+                        border-right: 7px solid transparent
+                        border-bottom: 9px solid var(--color)
+                        border-radius: 90px
+
+                        transition: all 0.3s ease
+                        user-select: none
+                        -ms-user-select: none
+                        -moz-user-select: none
+                        -webkit-user-select: none
+                        cursor: default
+                        
+                > *
+                    &:first-child
+                        grid-area: q
+
+                    &:nth-child(2)
+                        grid-area: w
+                        justify-self: center
+
+                    &:nth-child(3)
+                        grid-area: e
+                        justify-self: center
+                        
+                    &:last-child
+                        grid-area: m
+                        justify-self: center
+                    
+        .otherMembers
+            display: flex
+            flex-direction: column
+
+            position: relative
+
+            padding: 0 0.5rem
+            border: 1px var(--color-dimmer) solid
+            border-radius: 5px
+
+            > section
+                height: 210px
+                width: 100%
+
+                display: flex
+                flex-direction: column
+                justify-content: center
+                align-items: center
+
+            li
+                display: grid
+                grid-template-columns: repeat(13, 1fr)
+                grid-template-areas: "q q q q q w w w w e e e m"
+
+                align-items: center
+                
+                list-style: none
+
+                padding: 1rem
+                border-bottom: 1px solid #00000000
+
+                &:not(:last-child)
+                    border-bottom: 1px solid var(--color-dimmer)
+
+                > *
+                    &:first-child
+                        grid-area: q
+
+                    &:nth-child(2)
+                        grid-area: w
+                        justify-self: center
+
+                    &:nth-child(3)
+                        grid-area: e
+                        justify-self: center
+                        
+                    &:last-child
+                        grid-area: m
+                        justify-self: center
+
+                        // // width: 100%
+
+                        // border: 1px var(--color-dimmed) solid
+                        // border-radius: 3px
+
+                        // // background-color: var(--color-dimmer)
+                        // background-color: #00000000
+                        // color: var(--color)
+
+                        // // padding: 0.3rem 0.6rem
+                        // transition: all 0.3s ease
+
+                        // &:hover
+                        //     cursor: pointer
+
+                        //     box-shadow: var(--shadow-light)
+                    
+
+.inviteLinkModal
+    display: flex
+    flex-direction: column
+    gap: 1rem
+
+    padding: 1.5rem 2rem
+
+    hr
+        background-color: var(--color-dimmer)
+
+    header
+        display: flex
+        flex-direction: row
+        align-items: center
+        justify-content: space-between
+
+        button
+            svg
+                color: var(--color-dimmed)
+
+    .linkContainer
+        display: flex
+        flex-direction: column
+        gap: 0.5rem
+
+        > div
+            display: flex
+            flex-direction: row
+            gap: 0.5rem
+
+            input
+                width: 100%
+
+                padding: 0.4rem
+
+                border: none
+                border-radius: 3px
+                transition: all 0.3s ease
+                outline: 2px solid #00000000
+
+                &:focus
+                    border: none
+                    outline: 2px solid var(--acc)
+
+            button
+                &:hover
+                    svg
+                        color: var(--color-dimmed)
+
+                svg
+                    color: var(--color-dimmer)
+                    transition: all 0.3s ease
+    
+    .generateNewContainer
+        display: flex
+        flex-direction: column
+        gap: 1rem
+
+        > div
+            display: flex
+            flex-direction: row
+            gap: 1rem
+
+            button
+                width: 100%
