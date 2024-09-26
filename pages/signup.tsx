@@ -43,8 +43,7 @@ const Signup = () => {
             router.push("/home");
             return;
         }
-        // eslint-disable-next-line
-    }, []);
+    });
 
     const checkEmailAvailability = async (email: string) => {
         try {
@@ -147,7 +146,9 @@ const Signup = () => {
                                 type="password"
                                 placeholder="Confirm Password"
                                 value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                onChange={(e) =>
+                                    setConfirmPassword(e.target.value)
+                                }
                                 required
                             />
                             <button type="submit" disabled={isLoading}>
@@ -188,7 +189,9 @@ const Signup = () => {
                         </form>
                     )}
                     <div>
-                        <button onClick={() => router.push("/signin")}>Sign In</button>
+                        <button onClick={() => router.push("/signin")}>
+                            Sign In
+                        </button>
                     </div>
                 </div>
             ) : (

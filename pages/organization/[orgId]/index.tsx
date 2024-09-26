@@ -28,6 +28,8 @@ import fetchLogs from "@/function/fetchLogs";
 import fetchAnyUser from "@/function/fetchAnyUser";
 import styles from "@/styles/organization/orgId/Dashboard.module.sass";
 import useIsAdmin from "@/function/useIsAdmin";
+import { Button } from "@mui/material";
+import Loading from "@/components/Loading";
 
 type OrganizationProps = {
     orgId: string;
@@ -36,7 +38,7 @@ type OrganizationProps = {
 const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
-    
+
     const { loading, authUser, userDoc } = useContext(UserContext);
     const { isAdmin, error: isAdminError } = useIsAdmin(orgId);
     const { orgData, error: orgDataError } = useOrganizationData(orgId);
@@ -48,7 +50,6 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
     > | null>(null);
     const [hasMoreLogs, setHasMoreLogs] = useState<boolean>(true);
     const [logIsLoading, setLogIsLoading] = useState<boolean>(false);
-
 
     const fetchLazyLogs = async (
         orgId: string,
@@ -110,6 +111,10 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
         // eslint-disable-next-line
     }, []);
 
+    const handleEditOrg = () => {
+        router.push(`/organization/${orgId}/edit`);
+    };
+
     if (isAdminError || orgDataError) {
         return <></>;
     }
@@ -119,7 +124,11 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
     }
 
     if (!orgData) {
-        return <div>Loading...</div>;
+        return (
+            <main className={styles.loadingContainer}>
+                <Loading />
+            </main>
+        );
     }
 
     return (
@@ -153,15 +162,21 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
                             .replaceAll("/", " / ")}
                     </p>
                 </article>
+                <div>
+                    <Button className="btn-def fadeIn" onClick={handleEditOrg}>
+                        <p>EDIT ORGANIZATION</p>
+                    </Button>
+                </div>
             </header>
             <main className={styles.orgMain}>
                 <LogContainer logs={logs} />
-                <input
-                    type="button"
+                <Button
+                    className="btn-def fadeIn"
                     disabled={!hasMoreLogs}
                     onClick={() => loadMoreLogs(orgId)}
-                    value={logIsLoading ? "Loading" : "Load More"}
-                />
+                >
+                    {logIsLoading ? "Loading" : "Load More"}
+                </Button>
             </main>
         </div>
     );
