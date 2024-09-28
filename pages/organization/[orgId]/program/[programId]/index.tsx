@@ -26,6 +26,22 @@ export const ProgramDashboard = ({ children }: { children: ReactNode }) => {
         programId: programId as string,
     });
 
+    const returnProgramStatus = (status: string) => {
+        switch (status) {
+            case "upcoming":
+                return "Upcoming";
+            case "ongoing":
+                return "Ongoing";
+            case "completed":
+                return "Successfull";
+            case "failed":
+                return "Failed";
+            default:
+                "Unset";
+                break;
+        }
+    };
+
     useEffect(() => {
         console.log(router.asPath.split("/"));
     }, [router.asPath]);
@@ -50,6 +66,11 @@ export const ProgramDashboard = ({ children }: { children: ReactNode }) => {
                         ) : (
                             <Skeleton animation="wave" width={140} />
                         )}
+                        <div>{returnProgramStatus(programData?.status)}</div>
+                    </div>
+                    <div className={styles.programDates}>
+                        {programData?.dateStart.toDate().toDateString()} -{" "}
+                        {programData?.dateEnd.toDate().toDateString()}
                     </div>
                 </header>
                 <nav className={styles.tabs}>
@@ -105,6 +126,57 @@ export const ProgramDashboard = ({ children }: { children: ReactNode }) => {
                                 Tasks
                             </Link>
                         </li>
+                        <li
+                            className={
+                                router.asPath.split("/").includes("budgets")
+                                    ? styles.selected
+                                    : ""
+                            }
+                        >
+                            <Link
+                                href={
+                                    programData
+                                        ? `/organization/${orgId}/program/${programId}/budgets`
+                                        : ""
+                                }
+                            >
+                                Budgets
+                            </Link>
+                        </li>
+                        <li
+                            className={
+                                router.asPath.split("/").includes("files")
+                                    ? styles.selected
+                                    : ""
+                            }
+                        >
+                            <Link
+                                href={
+                                    programData
+                                        ? `/organization/${orgId}/program/${programId}/files`
+                                        : ""
+                                }
+                            >
+                                Files
+                            </Link>
+                        </li>
+                        <li
+                            className={
+                                router.asPath.split("/").includes("settings")
+                                    ? styles.selected
+                                    : ""
+                            }
+                        >
+                            <Link
+                                href={
+                                    programData
+                                        ? `/organization/${orgId}/program/${programId}/settings`
+                                        : ""
+                                }
+                            >
+                                Settings
+                            </Link>
+                        </li>
                     </ul>
                 </nav>
                 <Divider />
@@ -123,9 +195,25 @@ export const ProgramDashboard = ({ children }: { children: ReactNode }) => {
 };
 
 const ProgramOverview = () => {
+    const router = useRouter();
+    const { orgId, programId } = router.query;
+
+    const { orgData, loading, error } = useOrganizationData(orgId as string);
+    const {
+        programData,
+        loading: programLoading,
+        error: programError,
+    } = useProgramData({
+        orgId: orgId as string,
+        programId: programId as string,
+    });
+
     return (
         <div>
-            <h2>Program Overview</h2>
+            <header>
+                <h2>Program Overview</h2>
+            </header>
+            <section>{programData?.description}</section>
         </div>
     );
 };

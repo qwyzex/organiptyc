@@ -1,21 +1,42 @@
 .container
     display: flex
     flex-direction: column
-    gap: 1.5rem
+    gap: 1rem
 
     .programHeader
         display: flex
-        justify-content: space-between
-        align-items: center
+        // justify-content: space-between
+        // align-items: center
+        flex-direction: column
 
         > div
             display: flex
             justify-content: center
             align-items: center
-            height: 3rem
+
+            padding: 0.5rem 0
+
+            gap: 1rem
+
+            // height: 3rem
+            width: max-content
+
+            &.programDates
+                font-size: 0.8rem
+                color: var(--color-dimmed)
 
             > span
                 height: 100% !important
+            
+            > div
+                padding: 0.4rem
+                border-radius: 5px
+                background-color: var(--color-dimmer)
+
+                font-size: 0.7rem
+                font-weight: 700
+
+
     .tabs
         ul
             display: flex
@@ -23,7 +44,6 @@
 
             li
                 list-style: none
-
 
                 a
                     padding: 0.5rem 1rem
@@ -45,7 +65,7 @@
                         background-color: #00000000
 
                         position: absolute
-                        bottom: -10px
+                        bottom: -0.5rem
                         left: 0
 
                         border-radius: 2px

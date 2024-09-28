@@ -250,19 +250,17 @@ export default function OrganizationPrograms() {
                                     } else if (sortBy === "toex") {
                                         return sortIt === "asc"
                                             ? Math.round(
-                                                  a.timeofExecution.toDate() /
-                                                      1000
+                                                  a.dateStart.toDate() / 1000
                                               ) -
                                                   Math.round(
-                                                      b.timeofExecution.toDate() /
+                                                      b.dateStart.toDate() /
                                                           1000
                                                   )
                                             : Math.round(
-                                                  b.timeofExecution.toDate() /
-                                                      1000
+                                                  b.dateStart.toDate() / 1000
                                               ) -
                                                   Math.round(
-                                                      a.timeofExecution.toDate() /
+                                                      a.dateStart.toDate() /
                                                           1000
                                                   );
                                     } else if (sortBy === "chief") {
@@ -285,7 +283,7 @@ export default function OrganizationPrograms() {
                                                 </Link>
                                             </p>
                                             <p>
-                                                {member.timeofExecution
+                                                {member.dateStart
                                                     .toDate()
                                                     .toDateString()}
                                             </p>
