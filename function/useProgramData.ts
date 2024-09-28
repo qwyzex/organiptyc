@@ -1,6 +1,18 @@
 import { UserContext } from "@/context/UserContext";
 import { db } from "@/firebase";
-import { doc, DocumentData, getDoc } from "firebase/firestore";
+import {
+    addDoc,
+    collection,
+    deleteDoc,
+    doc,
+    DocumentData,
+    getDoc,
+    getDocs,
+    limit,
+    query,
+    setDoc,
+    updateDoc,
+} from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 
 type ProgramProps = {
@@ -34,6 +46,86 @@ const useProgramData = ({ orgId, programId, rerenderer = 0 }: ProgramProps) => {
                 }
 
                 const snapData = programSnap.data();
+                const subcollections = ["committee", "tasks"];
+
+                for (const subcollectionName of subcollections) {
+                    const subcollectionRef = collection(
+                        db,
+                        `organizations/${orgId}/programs/${programId}/${subcollectionName}`
+                    );
+                    const subcollectionSnap = await getDocs(
+                        query(subcollectionRef, limit(1))
+                    ); // Fetch only 1 document to check existence
+                    if (!subcollectionSnap.empty) {
+                        const allDocsSnap = await getDocs(subcollectionRef); // Fetch all documents if the collection exists
+                        snapData[subcollectionName] = await Promise.all(
+                            allDocsSnap.docs.map(async (docu) => {
+                                const data = docu.data();
+                                return { id: docu.id, ...data };
+                            })
+                        );
+                    } else {
+                        snapData[subcollectionName] = []; // Initialize empty array if the collection doesn't exist
+                    }
+                }
+
+                snapData["addCommitteeMember"] = async (
+                    name: string,
+                    role: string
+                ) => {
+                    const commitRef = collection(
+                        db,
+                        "organizations",
+                        orgId,
+                        "programs",
+                        programId,
+                        "committee"
+                    );
+
+                    await addDoc(commitRef, {
+                        name,
+                        role,
+                    });
+                };
+
+                snapData["updateCommitteeMember"] = async (
+                    id: string,
+                    change: "name" | "role",
+                    value: string
+                ) => {
+                    const commitRef = doc(
+                        db,
+                        "organizations",
+                        orgId,
+                        "programs",
+                        programId,
+                        "committee",
+                        id
+                    );
+
+                    await updateDoc(
+                        commitRef,
+                        change == "name"
+                            ? {
+                                  name: value,
+                              }
+                            : { role: value }
+                    );
+                };
+
+                snapData["deleteCommitteeMember"] = async (id: string) => {
+                    const commitRef = doc(
+                        db,
+                        "organizations",
+                        orgId,
+                        "programs",
+                        programId,
+                        "committee",
+                        id
+                    );
+
+                    await deleteDoc(commitRef);
+                };
 
                 setProgramData(snapData);
             } catch (error) {
@@ -47,7 +139,7 @@ const useProgramData = ({ orgId, programId, rerenderer = 0 }: ProgramProps) => {
         fetchProgramData();
 
         // eslint-disable-next-line
-    }, [rerenderer, orgId, programId]);
+    }, [rerenderer, orgId, programId, authUser]);
 
     return { programData, loading, error };
 };
