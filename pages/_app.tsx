@@ -13,6 +13,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import Head from "next/head";
+import ProgramDashboardLayout from "@/components/layouts/ProgramDashboardLayout";
 
 export default function App({ Component, pageProps }: AppProps) {
     const router = useRouter();
@@ -54,13 +55,18 @@ export default function App({ Component, pageProps }: AppProps) {
     return (
         <UserProvider>
             <Head>
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1"
+                />
                 <link rel="icon" href="/logo.ico" />
             </Head>
             <ThemeProvider theme={theme}>
                 <SnackbarProvider maxSnack={4}>
                     <Layout {...pageProps}>
-                        <Component {...pageProps} />
+                        <ProgramDashboardLayout>
+                            <Component {...pageProps} />
+                        </ProgramDashboardLayout>
                     </Layout>
                 </SnackbarProvider>
             </ThemeProvider>

@@ -57,7 +57,7 @@ import { MenuItem as BaseMenuItem, menuItemClasses } from "@mui/base/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import removeMember from "@/function/removeMember";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import fetchPrograms from "@/function/fetchPrograms";
+import Head from "next/head";
 
 export default function OrganizationPrograms() {
     const router = useRouter();
@@ -172,138 +172,159 @@ export default function OrganizationPrograms() {
     // }, [orgId, rerenderer, programs]);
 
     return (
-        <div className={styles.container}>
-            <header>
-                <h1>PROGRAMS</h1>
-                <section></section>
-            </header>
-            <main>
-                <header className={styles.memberListHeader}>
-                    <div className={styles.memberListTitle}>
-                        <h2>List of programs</h2>
-                        <IconButton onClick={handleRerender}>
-                            <RefreshIcon fontSize="small" />
-                        </IconButton>
-                    </div>
-                    <div
-                        className={`${styles.memberListParam} ${
-                            sortIt === "asc" && styles.asc
-                        }`}
-                    >
-                        <p
-                            className={
-                                sortBy === "name" ? styles.sortBySelected : ""
-                            }
-                            onClick={() => handleChangeSort("name")}
-                        >
-                            Name
-                        </p>
-                        <p
-                            className={
-                                sortBy === "toex" ? styles.sortBySelected : ""
-                            }
-                            onClick={() => handleChangeSort("toex")}
-                        >
-                            Time of Execution
-                        </p>
-                        <p
-                            className={
-                                sortBy === "chief" ? styles.sortBySelected : ""
-                            }
-                            onClick={() => handleChangeSort("chief")}
-                        >
-                            Chief Executive
-                        </p>
-                        <p></p>
-                    </div>
+        <>
+            <Head>
+                <title>{orgData?.name} Programs</title>
+            </Head>
+            <div className={styles.container}>
+                <header>
+                    <h1>PROGRAMS</h1>
+                    <section></section>
                 </header>
-                <ul className={styles.otherMembers}>
-                    {orgData &&
-                    authUser &&
-                    userDoc &&
-                    orgData.programs.length < 1 ? (
-                        <section className="fadeIn">
-                            <h3 className="dim italic">
-                                Hmmm... It&apos;s empty!
-                            </h3>
-                        </section>
-                    ) : orgData && authUser && userDoc && orgData.programs ? (
-                        orgData.programs
-                            .sort((a: any, b: any) => {
-                                if (sortBy === "name") {
-                                    return sortIt === "asc"
-                                        ? a.name.localeCompare(b.name)
-                                        : b.name.localeCompare(a.name);
-                                } else if (sortBy === "toex") {
-                                    return sortIt === "asc"
-                                        ? Math.round(
-                                              a.timeofExecution.toDate() / 1000
-                                          ) -
-                                              Math.round(
-                                                  b.timeofExecution.toDate() /
-                                                      1000
-                                              )
-                                        : Math.round(
-                                              b.timeofExecution.toDate() / 1000
-                                          ) -
-                                              Math.round(
+                <main>
+                    <header className={styles.memberListHeader}>
+                        <div className={styles.memberListTitle}>
+                            <h2>List of programs</h2>
+                            <IconButton onClick={handleRerender}>
+                                <RefreshIcon fontSize="small" />
+                            </IconButton>
+                        </div>
+                        <div
+                            className={`${styles.memberListParam} ${
+                                sortIt === "asc" && styles.asc
+                            }`}
+                        >
+                            <p
+                                className={
+                                    sortBy === "name"
+                                        ? styles.sortBySelected
+                                        : ""
+                                }
+                                onClick={() => handleChangeSort("name")}
+                            >
+                                Name
+                            </p>
+                            <p
+                                className={
+                                    sortBy === "toex"
+                                        ? styles.sortBySelected
+                                        : ""
+                                }
+                                onClick={() => handleChangeSort("toex")}
+                            >
+                                Time of Execution
+                            </p>
+                            <p
+                                className={
+                                    sortBy === "chief"
+                                        ? styles.sortBySelected
+                                        : ""
+                                }
+                                onClick={() => handleChangeSort("chief")}
+                            >
+                                Chief Executive
+                            </p>
+                            <p></p>
+                        </div>
+                    </header>
+                    <ul className={styles.otherMembers}>
+                        {orgData &&
+                        authUser &&
+                        userDoc &&
+                        orgData.programs.length < 1 ? (
+                            <section className="fadeIn">
+                                <h3 className="dim italic">
+                                    Hmmm... It&apos;s empty!
+                                </h3>
+                            </section>
+                        ) : orgData &&
+                          authUser &&
+                          userDoc &&
+                          orgData.programs ? (
+                            orgData.programs
+                                .sort((a: any, b: any) => {
+                                    if (sortBy === "name") {
+                                        return sortIt === "asc"
+                                            ? a.name.localeCompare(b.name)
+                                            : b.name.localeCompare(a.name);
+                                    } else if (sortBy === "toex") {
+                                        return sortIt === "asc"
+                                            ? Math.round(
                                                   a.timeofExecution.toDate() /
                                                       1000
-                                              );
-                                } else if (sortBy === "chief") {
-                                    return sortIt === "asc"
-                                        ? a.chief.localeCompare(b.chief)
-                                        : b.chief.localeCompare(a.chief);
-                                }
-                            })
-                            .map((member: any) => {
-                                return !(member.userId === authUser.uid) ? (
-                                    <li key={member.userId} className="fadeIn">
-                                        <p>
-                                            <Link
-                                                href={`/profile/${member.userId}`}
-                                            >
-                                                {member.name}
-                                            </Link>
-                                        </p>
-                                        <p>
-                                            {member.timeofExecution
-                                                .toDate()
-                                                .toDateString()}
-                                        </p>
-                                        <p>{member.chief}</p>
-
-                                        <Dropdown>
-                                            {/* <Tooltip title={"More"}> */}
-                                            <StyledMenuButton>
-                                                <MoreVertIcon fontSize="small" />
-                                            </StyledMenuButton>
-                                            {/* </Tooltip> */}
-                                            <Menu slots={{ listbox: Listbox }}>
-                                                <StyledBaseMenuItem
-                                                    disabled={!isAdmin}
-                                                    onClick={() => {
-                                                        console.log(
-                                                            "I DONT KNOW THAT THIS DOES"
-                                                        );
-                                                    }}
+                                              ) -
+                                                  Math.round(
+                                                      b.timeofExecution.toDate() /
+                                                          1000
+                                                  )
+                                            : Math.round(
+                                                  b.timeofExecution.toDate() /
+                                                      1000
+                                              ) -
+                                                  Math.round(
+                                                      a.timeofExecution.toDate() /
+                                                          1000
+                                                  );
+                                    } else if (sortBy === "chief") {
+                                        return sortIt === "asc"
+                                            ? a.chief.localeCompare(b.chief)
+                                            : b.chief.localeCompare(a.chief);
+                                    }
+                                })
+                                .map((member: any) => {
+                                    return !(member.userId === authUser.uid) ? (
+                                        <li
+                                            key={member.userId}
+                                            className="fadeIn"
+                                        >
+                                            <p>
+                                                <Link
+                                                    href={`/organization/${orgId}/program/${member.id}`}
                                                 >
-                                                    <p>Manage Program</p>
-                                                </StyledBaseMenuItem>
-                                            </Menu>
-                                        </Dropdown>
-                                    </li>
-                                ) : (
-                                    <></>
-                                );
-                            })
-                    ) : (
-                        <section>
-                            <Loading />
-                        </section>
-                    )}
-                </ul>
-            </main>
-        </div>
+                                                    {member.name}
+                                                </Link>
+                                            </p>
+                                            <p>
+                                                {member.timeofExecution
+                                                    .toDate()
+                                                    .toDateString()}
+                                            </p>
+                                            <p>{member.chief}</p>
+
+                                            <Dropdown>
+                                                {/* <Tooltip title={"More"}> */}
+                                                <StyledMenuButton>
+                                                    <MoreVertIcon fontSize="small" />
+                                                </StyledMenuButton>
+                                                {/* </Tooltip> */}
+                                                <Menu
+                                                    slots={{ listbox: Listbox }}
+                                                >
+                                                    <StyledBaseMenuItem
+                                                        disabled={!isAdmin}
+                                                        onClick={() => {
+                                                            console.log(
+                                                                "I DONT KNOW THAT THIS DOES"
+                                                            );
+                                                        }}
+                                                    >
+                                                        <p>Manage Program</p>
+                                                    </StyledBaseMenuItem>
+                                                </Menu>
+                                            </Dropdown>
+                                        </li>
+                                    ) : (
+                                        <></>
+                                    );
+                                })
+                        ) : (
+                            <section>
+                                <Loading />
+                            </section>
+                        )}
+                    </ul>
+                </main>
+            </div>
+        </>
     );
 }

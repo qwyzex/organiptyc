@@ -1,0 +1,61 @@
+.container
+    display: flex
+    flex-direction: column
+    gap: 1.5rem
+
+    .programHeader
+        display: flex
+        justify-content: space-between
+        align-items: center
+
+        > div
+            display: flex
+            justify-content: center
+            align-items: center
+            height: 3rem
+
+            > span
+                height: 100% !important
+    .tabs
+        ul
+            display: flex
+            gap: 0.5rem
+
+            li
+                list-style: none
+
+
+                a
+                    padding: 0.5rem 1rem
+                    border-radius: 7px
+
+                    background-color: #00000000
+
+                    transition: all 0.3s ease
+                    text-decoration: none
+                    position: relative
+
+                    &:hover
+                        background-color: var(--hover-highlight-button)
+
+                    &::before
+                        content: ''
+                        height: 2px
+                        width: 100%
+                        background-color: #00000000
+
+                        position: absolute
+                        bottom: -10px
+                        left: 0
+
+                        border-radius: 2px
+                        transition: all 0.3s ease
+
+                &.selected
+                    a
+                        // color: var(--color-reverse)
+                        font-weight: 700
+                        // background-color: var(--color-dimmed)
+
+                        &::before
+                            background-color: var(--acc)

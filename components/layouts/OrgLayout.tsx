@@ -5,6 +5,7 @@ import Header from "../Header";
 import Sidebar from "../Sidebar";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
+import collapseIconLibrary from "@/utils/collapseIconLibrary";
 
 type OrgLayoutProps = {
     children: ReactNode;
@@ -22,19 +23,45 @@ const OrgLayout: NextPage<OrgLayoutProps> = ({ children }) => {
                 <div className="sideAndMain">
                     <Sidebar
                         list={[
-                            { title: "Homepage", href: "/home" },
-                            { title: "Organization", href: "/organization" },
-                            { title: "Dashboard", href: `/organization/${orgId}` },
-                            { title: "Members", href: `/organization/${orgId}/members` },
+                            {
+                                title: "Homepage",
+                                href: "/home",
+                                collapseIcon: collapseIconLibrary.Homepage,
+                            },
+                            {
+                                title: "Organization",
+                                href: "/organization",
+                                collapseIcon: collapseIconLibrary.Organization,
+                            },
+                            {
+                                title: "Dashboard",
+                                href: `/organization/${orgId}`,
+                                collapseIcon: collapseIconLibrary.Dashboard,
+                            },
+                            {
+                                title: "Members",
+                                href: `/organization/${orgId}/members`,
+                                collapseIcon: collapseIconLibrary.Members,
+                            },
                             {
                                 title: "Programs",
                                 href: `/organization/${orgId}/programs`,
+                                collapseIcon: collapseIconLibrary.Programs,
                             },
-                            { title: "Files", href: `/organization/${orgId}/files` },
-                            { title: "Message", href: `/organization/${orgId}/message` },
+                            {
+                                title: "Files",
+                                href: `/organization/${orgId}/files`,
+                                collapseIcon: collapseIconLibrary.Files,
+                            },
+                            {
+                                title: "Message",
+                                href: `/organization/${orgId}/message`,
+                                collapseIcon: collapseIconLibrary.Messages,
+                            },
                             {
                                 title: "Settings",
                                 href: `/organization/${orgId}/settings`,
+                                collapseIcon: collapseIconLibrary.Settings,
                             },
                         ]}
                     />
