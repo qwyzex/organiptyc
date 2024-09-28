@@ -66,7 +66,21 @@ export const ProgramDashboard = ({ children }: { children: ReactNode }) => {
                         ) : (
                             <Skeleton animation="wave" width={140} />
                         )}
-                        <div>{returnProgramStatus(programData?.status)}</div>
+                        <div
+                            className={
+                                programData?.status == "upcoming"
+                                    ? styles.upcoming
+                                    : programData?.status == "ongoing"
+                                    ? styles.ongoing
+                                    : programData?.status == "completed"
+                                    ? styles.completed
+                                    : programData?.status == "failed"
+                                    ? styles.failed
+                                    : styles.unset
+                            }
+                        >
+                            {returnProgramStatus(programData?.status)}
+                        </div>
                     </div>
                     <div className={styles.programDates}>
                         {programData?.dateStart.toDate().toDateString()} -{" "}
@@ -181,11 +195,9 @@ export const ProgramDashboard = ({ children }: { children: ReactNode }) => {
                 </nav>
                 <Divider />
                 {!loading && !programLoading && programData ? (
-                    <>
-                        <section className={`${styles.openTab} fadeIn`}>
-                            {children}
-                        </section>
-                    </>
+                    <section className={`${styles.openTab} fadeIn`}>
+                        {children}
+                    </section>
                 ) : (
                     <Loading />
                 )}
@@ -197,8 +209,6 @@ export const ProgramDashboard = ({ children }: { children: ReactNode }) => {
 const ProgramOverview = () => {
     const router = useRouter();
     const { orgId, programId } = router.query;
-
-    const { orgData, loading, error } = useOrganizationData(orgId as string);
     const {
         programData,
         loading: programLoading,
@@ -213,7 +223,14 @@ const ProgramOverview = () => {
             <header>
                 <h2>Program Overview</h2>
             </header>
-            <section>{programData?.description}</section>
+            <section>
+                <p>{programData?.description}</p>
+                <div>
+                    {programData?.usefulLinks.map((link: any, i: number) => (
+                        <p key={i}>{link}</p>
+                    ))}
+                </div>
+            </section>
         </div>
     );
 };
