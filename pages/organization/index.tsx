@@ -40,7 +40,10 @@ const Organization = () => {
         const fetchOrganizations = async () => {
             if (authUser) {
                 try {
-                    const orgs = await fetchUserOrgs(authUser.uid, setListLoading);
+                    const orgs = await fetchUserOrgs(
+                        authUser.uid,
+                        setListLoading
+                    );
                     setOrganizations(orgs);
                     const roles: DocumentData = {};
                     for (const org of orgs) {
@@ -65,59 +68,68 @@ const Organization = () => {
             <ul>
                 {roles !== null && !listLoading && organizations.length > 0 ? (
                     organizations.map((org: any) => (
-                        <li key={org.uid} className="fadeIn">
-                            <div className={styles.titleHeader}>
-                                <div>
-                                    <Link href={`organization/${org.uid}`}>
+                        <Link href={`organization/${org.uid}`} key={org.uid}>
+                            <li className="fadeIn">
+                                <div className={styles.titleHeader}>
+                                    <div>
                                         <Image
                                             src={org.logoURL}
                                             alt={`${org.name} logo`}
                                             width={75}
                                             height={75}
                                         />
-                                    </Link>
-                                </div>
-                                <div>
-                                    <Link href={`organization/${org.uid}`}>
-                                        <h2>{org.name}</h2>
-                                    </Link>
-                                    <div className={styles.userStatus}>
-                                        <p>
-                                            {userDoc?.firstName} {userDoc?.lastName} -{" "}
-                                            {roles[org.uid].role}
-                                        </p>
-                                        <p>
-                                            Joined{" "}
-                                            {roles[org.uid].joinedAt
-                                                .toDate()
-                                                .toDateString()}
-                                        </p>
+                                    </div>
+                                    <div>
+                                        <Link href={`organization/${org.uid}`}>
+                                            <h2>{org.name}</h2>
+                                        </Link>
+                                        <div className={styles.userStatus}>
+                                            <p>
+                                                {userDoc?.firstName}{" "}
+                                                {userDoc?.lastName} -{" "}
+                                                {roles[org.uid].role}
+                                            </p>
+                                            <p>
+                                                Joined{" "}
+                                                {roles[org.uid].joinedAt
+                                                    .toDate()
+                                                    .toDateString()}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <h4>Latest Acivity</h4>
-                            <ul>
-                                {org.logs
-                                    .sort((a: any, b: any) => {
-                                        return (
-                                            Math.round(a.timestamp.toDate() / 1000) -
-                                            Math.round(b.timestamp.toDate() / 1000)
-                                        );
-                                    })
-                                    .slice(-3)
-                                    .reverse()
-                                    .map((log: any, index: number) => (
-                                        <li key={index}>
-                                            <p>{log.action.text}</p>
-                                            <p>
-                                                {log.timestamp.toDate().toLocaleDateString()}
-                                            </p>
-                                        </li>
-                                    ))}
-                            </ul>
-                        </li>
+                                <h4>Latest Acivity</h4>
+                                <ul>
+                                    {org.logs
+                                        .sort((a: any, b: any) => {
+                                            return (
+                                                Math.round(
+                                                    a.timestamp.toDate() / 1000
+                                                ) -
+                                                Math.round(
+                                                    b.timestamp.toDate() / 1000
+                                                )
+                                            );
+                                        })
+                                        .slice(-3)
+                                        .reverse()
+                                        .map((log: any, index: number) => (
+                                            <li key={index}>
+                                                <p>{log.action.text}</p>
+                                                <p>
+                                                    {log.timestamp
+                                                        .toDate()
+                                                        .toLocaleDateString()}
+                                                </p>
+                                            </li>
+                                        ))}
+                                </ul>
+                            </li>
+                        </Link>
                     ))
-                ) : roles !== null && !listLoading && organizations.length < 1 ? (
+                ) : roles !== null &&
+                  !listLoading &&
+                  organizations.length < 1 ? (
                     <div className={`fadeIn ${styles.noOrganizations}`}>
                         You have no organizations.{" "}
                         <Link href="/organization/new">Join</Link> now!

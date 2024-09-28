@@ -23,44 +23,56 @@
                 flex-direction: column
                 gap: 1rem
 
-        > li
-            list-style: none
+        a 
+            text-decoration: none
 
-            display: flex
-            flex-direction: column
-            gap: 1rem
+            > li
+                // background: var(--background-img)
+                box-shadow: 0 10px 10px #20202000
+                transition: all 0.3s ease
 
-            padding: 1rem
-            border: 1px var(--color-dimmer) solid
-            border-radius: 5px
+                list-style: none
 
-            .titleHeader
                 display: flex
-                flex-direction: row
-                gap: 1.2rem
+                flex-direction: column
+                gap: 1rem
 
-            .userStatus
-                color: var(--color-dimmed)
-
-
-            a
-                width: min-content
+                padding: 1rem
+                border: 1px var(--transparent) solid
+                border-radius: 15px
 
                 &:hover
-                    color: $acc
+                    background-color: var(--background)
+                    border: 1px var(--color-dimmer) solid
+                    box-shadow: 0 3px 15px var(--shadow-reverse)
 
-            ul
-                padding: 0 1rem
-                margin-top: -.5rem
-                li
-                    list-style: none
-                    opacity: 0.8
-
+                .titleHeader
                     display: flex
-                    justify-content: space-between
+                    flex-direction: row
+                    gap: 1.2rem
 
-                    > p
-                        &:first-child
-                            overflow: hidden
-                            white-space: nowrap
-                            text-overflow: ellipsis
+                .userStatus
+                    color: var(--color-dimmed)
+
+                a
+                    width: min-content
+                    transition: all 0.2s ease
+
+                    &:hover
+                        color: $acc
+
+                ul
+                    padding: 0 1rem
+                    margin-top: -.5rem
+                    li
+                        list-style: none
+                        opacity: 0.8
+
+                        display: flex
+                        justify-content: space-between
+
+                        > p
+                            &:first-child
+                                overflow: hidden
+                                white-space: nowrap
+                                text-overflow: ellipsis

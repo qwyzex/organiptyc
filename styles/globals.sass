@@ -10,7 +10,8 @@
         --color-reverse: #1c1c1f
         --color-dimmed: #9c98a8
         --color-dimmer: #524f5c
-        --shadow-light: 0 3px 8px #11111196
+        --shadow-light: #11111196
+        --shadow-reverse: #69696960
         --background: #2d2d36
         --transparent-background: #2d2d3610
         --hover-background: #383841
@@ -18,9 +19,7 @@
         --hover-highlight-button: #4f4f5e
         --danger: #ec5656
         --danger-dark: #bc4a4a
-    
-    body
-        background: url('/bg.png') no-repeat
+        --background-img: url('/bg.png')
 
 @media (prefers-color-scheme: light) 
     :root
@@ -28,17 +27,16 @@
         --color-reverse: #f5f5f5
         --color-dimmed: #525261
         --color-dimmer: #b4b4c5
-        --shadow-light: 0 3px 8px #acacac96
-        --background: #e6e7f8
+        --shadow-light: #acacac96
+        --shadow-reverse: #20202020
+        --background: #f6f7ff
         --transparent-background: #1c1c1f10
         --hover-background: #c9cbe3
         --highlight-button: #c9cbe3
         --hover-highlight-button: #b3b5c6
         --danger: #f03020
         --danger-dark: #941a1a
-
-    body
-        background: url('/bg1.png') no-repeat
+        --background-img: url('/bg1.png')
     
 * 
   box-sizing: border-box
@@ -63,6 +61,7 @@ body
 body
     min-height: 100vh
     color: var(--color)
+    background: var(--background-img) no-repeat
 
     *
         font-family: DMSans
