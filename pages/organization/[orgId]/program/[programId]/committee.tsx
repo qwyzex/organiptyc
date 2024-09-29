@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import useProgramData from "@/function/useProgramData";
 import Loading from "@/components/Loading";
 import styles from "@/styles/organization/orgId/programs/Committee.module.sass";
-import { Button, Divider, IconButton } from "@mui/material";
+import { Button, Divider, IconButton, Skeleton } from "@mui/material";
 import { useEffect, useState } from "react";
 import useIsAdmin from "@/function/useIsAdmin";
 import { Delete } from "@mui/icons-material";
@@ -103,8 +103,17 @@ export default function ProgramCommittee() {
 
     return (
         <div className={styles.container}>
-            <header>
-                <h2>Commitee - {programData?.committee.length}</h2>
+            <header className={editMode ? styles.displayBg : ""}>
+                <h2>
+                    <p>Committee</p>
+                    {programData ? (
+                        <p className="fadeIn">
+                            {programData.committee.length} members
+                        </p>
+                    ) : (
+                        <Skeleton width={90} height={40} />
+                    )}
+                </h2>
                 {isAdmin && (
                     <div>
                         {loading && (
@@ -123,7 +132,7 @@ export default function ProgramCommittee() {
                     </div>
                 )}
             </header>
-            <ul>
+            <ul className={!programData ? styles.centered : ""}>
                 {programData ? (
                     programData.committee.map((person: any, i: number) => (
                         <>
