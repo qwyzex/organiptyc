@@ -96,11 +96,6 @@ export default function ProgramCommittee() {
             });
     };
 
-    useEffect(() => {
-        console.log("FULL : ", programData);
-        console.log("COMMITTEE : ", programData?.committee);
-    }, [programData]);
-
     return (
         <div className={styles.container}>
             <header className={editMode ? styles.displayBg : ""}>

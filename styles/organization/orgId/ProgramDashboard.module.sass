@@ -37,6 +37,23 @@
                 font-size: 0.7rem
                 font-weight: 700
 
+                min-width: 4rem
+
+                display: flex
+                justify-content: center
+                align-items: center
+
+                cursor: pointer
+                border: 2px solid var(--transparent)
+                transition: all 0.3s ease
+
+                > svg
+                    height: 15px
+                    width: 15px
+
+                &:hover
+                    border: 2px solid var(--color)
+
                 &.upcoming
                     background-color: #bd971a
                     box-shadow: 0 0 7px #bd971a
@@ -99,3 +116,18 @@
     .openTab
         flex: 1
         overflow-y: auto
+
+.statusModalBox
+    display: flex
+    flex-direction: column
+    align-items: flex-start
+    justify-content: center
+
+    gap: 1rem
+
+    header
+        display: flex
+        justify-content: center
+        align-items: center
+
+        gap: 4rem

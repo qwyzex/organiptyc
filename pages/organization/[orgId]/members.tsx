@@ -600,7 +600,7 @@ const InvitationLink = ({
     const { enqueueSnackbar } = useSnackbar();
 
     const handleSuccessCopy = () => {
-        enqueueSnackbar("Link Copied To Clipboard!!", { variant: "success" });
+        enqueueSnackbar("Link Copied To Clipboard!", { variant: "success" });
     };
 
     useEffect(() => {

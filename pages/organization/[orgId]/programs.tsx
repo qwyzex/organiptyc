@@ -160,17 +160,6 @@ export default function OrganizationPrograms() {
         `
     );
 
-    // useEffect(() => {
-    //     const x = async () => {
-    //         const y = await fetchPrograms(orgId as string);
-    //         console.log(y);
-    //         setPrograms(y);
-    //     };
-
-    //     x();
-    //     console.log(programs);
-    // }, [orgId, rerenderer, programs]);
-
     return (
         <>
             <Head>
