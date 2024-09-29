@@ -131,7 +131,7 @@ export default function ProgramCommittee() {
                 {programData ? (
                     programData.committee.map((person: any, i: number) => (
                         <>
-                            {i != 0 && <Divider />}
+                            {i != 0 && <Divider key={i} />}
                             <li
                                 key={person.id}
                                 className={`${styles.committeeItem} fadeIn`}

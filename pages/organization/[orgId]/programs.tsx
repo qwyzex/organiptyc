@@ -258,52 +258,43 @@ export default function OrganizationPrograms() {
                                             : b.chief.localeCompare(a.chief);
                                     }
                                 })
-                                .map((member: any) => {
-                                    return !(member.userId === authUser.uid) ? (
-                                        <li
-                                            key={member.userId}
-                                            className="fadeIn"
-                                        >
-                                            <p>
-                                                <Link
-                                                    href={`/organization/${orgId}/program/${member.id}`}
-                                                >
-                                                    {member.name}
-                                                </Link>
-                                            </p>
-                                            <p>
-                                                {member.dateStart
-                                                    .toDate()
-                                                    .toDateString()}
-                                            </p>
-                                            <p>{member.chief}</p>
+                                .map((program: any) => (
+                                    <li key={program.id} className="fadeIn">
+                                        <p>
+                                            <Link
+                                                href={`/organization/${orgId}/program/${program.id}`}
+                                            >
+                                                {program.name}
+                                            </Link>
+                                        </p>
+                                        <p>
+                                            {program.dateStart
+                                                .toDate()
+                                                .toDateString()}
+                                        </p>
+                                        <p>{program.chief}</p>
 
-                                            <Dropdown>
-                                                {/* <Tooltip title={"More"}> */}
-                                                <StyledMenuButton>
-                                                    <MoreVertIcon fontSize="small" />
-                                                </StyledMenuButton>
-                                                {/* </Tooltip> */}
-                                                <Menu
-                                                    slots={{ listbox: Listbox }}
+                                        <Dropdown>
+                                            {/* <Tooltip title={"More"}> */}
+                                            <StyledMenuButton>
+                                                <MoreVertIcon fontSize="small" />
+                                            </StyledMenuButton>
+                                            {/* </Tooltip> */}
+                                            <Menu slots={{ listbox: Listbox }}>
+                                                <StyledBaseMenuItem
+                                                    disabled={!isAdmin}
+                                                    onClick={() => {
+                                                        console.log(
+                                                            "I DONT KNOW THAT THIS DOES"
+                                                        );
+                                                    }}
                                                 >
-                                                    <StyledBaseMenuItem
-                                                        disabled={!isAdmin}
-                                                        onClick={() => {
-                                                            console.log(
-                                                                "I DONT KNOW THAT THIS DOES"
-                                                            );
-                                                        }}
-                                                    >
-                                                        <p>Manage Program</p>
-                                                    </StyledBaseMenuItem>
-                                                </Menu>
-                                            </Dropdown>
-                                        </li>
-                                    ) : (
-                                        <></>
-                                    );
-                                })
+                                                    <p>Manage Program</p>
+                                                </StyledBaseMenuItem>
+                                            </Menu>
+                                        </Dropdown>
+                                    </li>
+                                ))
                         ) : (
                             <section>
                                 <Loading />
