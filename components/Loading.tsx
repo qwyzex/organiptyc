@@ -1,8 +1,8 @@
-const Loading = () => {
+const Loading = (className: any) => {
     return (
         <>
             <svg
-                className="loadingContainer"
+                className={`loadingContainer ${className}`}
                 x="0px"
                 y="0px"
                 viewBox="0 0 37 37"
