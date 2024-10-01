@@ -19,7 +19,7 @@
         --hover-highlight-button: #4f4f5e
         --danger: #ec5656
         --danger-dark: #bc4a4a
-        --background-img: url('/bg.png')
+        --background-img: url('/bg.png')    
 
 @media (prefers-color-scheme: light) 
     :root
@@ -62,9 +62,10 @@ body
     min-height: 100vh
     color: var(--color)
     background: var(--background-img) no-repeat
+    background-size: cover
 
     *
-        font-family: DMSans
+        font-family: DMSans !important
 
 ::selection
     color: #ffffff
