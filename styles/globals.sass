@@ -105,6 +105,21 @@ a
     &:hover
         cursor: pointer
 
+.inp-form
+    padding: 0.4rem 1rem
+
+    border: none
+    border-radius: 3px
+    outline: 2px solid #00000000
+
+    color: var(--color)
+    background-color: var(--background)                
+    transition: all 0.3s ease                
+
+    &:focus
+        border: none
+        outline: 2px solid var(--acc)
+
 // INPUT DISPLAY ONLY
 .inp-dis
     width: 100%
@@ -122,7 +137,9 @@ a
 
 // UNIQUE BUTTON CLASS
 .btn-def, .btn-ref, .btn-danger
-    padding: 0.5rem 1rem !important
+    width: max-content !important
+    height: max-content !important
+    padding: 0.3rem 0.7rem !important
     border: none
 
     display: flex !important
@@ -131,35 +148,45 @@ a
     justify-content: center !important
     gap: 0.5rem
 
+    font-size: 0.8rem
     font-family: DMSans
     font-weight: 700 !important
     transition: all 0.2s ease
+    outline: 3px solid var(--transparent)
 
     &:disabled
         color: var(--color-dimmer) !important
         background-color: var(--background) !important
+
+    &:focus-visible
+        span
+            opacity: 0
 
     &.btn-def
         color: var(--color-reverse)
         background-color: var(--acc)
         &:hover
             background-color: var(--acc-dark)
+        &:focus-visible
+            outline: 3px solid var(--color-dimmer)
 
     &.btn-danger
         color: var(--color-reverse)
         background-color: var(--danger)
         &:hover
             background-color: var(--danger-dark)
+        &:focus-visible
+            outline: 3px solid var(--hover-highlight-button)
 
     &.btn-ref
         color: var(--acc-dark)
         background-color: #00000000
-        // outline: 2px solid var(--acc-dark)
 
         &:hover
             color: var(--acc-dark)
-            // outline: 2px solid #00000000
             background-color: var(--transparent-background)
+        &:focus-visible
+            outline: 3px solid var(--acc-dark)
 
     &:hover
         cursor: pointer
