@@ -14,14 +14,14 @@ const firebaseConfig = {
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+// const app = initializeApp(firebaseConfig);
 
-// let app = initializeApp(firebaseConfig);
-// if (!getApps().length) {
-//     app = initializeApp(firebaseConfig);
-// } else {
-//     app = getApps()[0];
-// }
+let app = initializeApp(firebaseConfig);
+if (!getApps().length) {
+    app = initializeApp(firebaseConfig);
+} else {
+    app = getApps()[0];
+}
 
 const auth: Auth = getAuth(app);
 const db: Firestore = getFirestore(app);
