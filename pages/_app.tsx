@@ -35,6 +35,11 @@ export default function App({ Component, pageProps }: AppProps) {
                         main: "#9fa4fa",
                         dark: "#787ee9",
                     },
+                    error: {
+                        light: "#f03020",
+                        main: "#bc4a4a",
+                        dark: "#ec5656",
+                    },
                 },
             }),
         [prefersDarkMode]
