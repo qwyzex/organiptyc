@@ -3,7 +3,7 @@ import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
 import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import { auth, db } from "../firebase"; // Adjust the import based on your file structure
 
-interface UserDocument {
+export interface UserDocument {
     uid: string;
     firstName: string;
     lastName: string;
