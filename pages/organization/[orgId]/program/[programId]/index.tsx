@@ -19,7 +19,14 @@ import {
 import { ArrowBackIos, Close } from "@mui/icons-material";
 import Head from "next/head";
 import Link from "next/link";
-import { ReactNode, useContext, useEffect, useState } from "react";
+import {
+    Children,
+    cloneElement,
+    ReactNode,
+    useContext,
+    useEffect,
+    useState,
+} from "react";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 import createLog from "@/function/createLog";
@@ -78,8 +85,9 @@ export const ProgramDashboard = ({ children }: { children: ReactNode }) => {
                         />
                     </div>
                     <div className={styles.programDates}>
-                        Dates : {programData?.dateStart.toDate().toDateString()}{" "}
-                        - {programData?.dateEnd.toDate().toDateString()}
+                        Dates :{" "}
+                        {new Date(programData?.dateStart).toDateString()} -{" "}
+                        {new Date(programData?.dateEnd).toDateString()}
                     </div>
                 </header>
                 <nav className={styles.tabs}>
@@ -191,7 +199,9 @@ export const ProgramDashboard = ({ children }: { children: ReactNode }) => {
                 <Divider />
                 {!loading && !programLoading && programData ? (
                     <section className={`${styles.openTab} fadeIn`}>
-                        {children}
+                        {Children.map(children, (child: ReactNode | any) =>
+                            cloneElement(child, { setRerenderer })
+                        )}
                     </section>
                 ) : (
                     <Loading />
