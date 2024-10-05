@@ -3,6 +3,16 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 import { UserContext } from "@/context/UserContext";
 
+/**
+ * useIsAdmin hook
+ * Checks if the currently logged in user is an admin of the given organization.
+ *
+ * @param {string} orgId - The ID of the organization to check.
+ * @returns {Object} An object containing the following properties:
+ *  - isAdmin: A boolean indicating if the user is an admin of the organization.
+ *  - loading: A boolean indicating if the hook is currently loading.
+ *  - error: An error object if an error occurred while checking the user's role.
+ */
 const useIsAdmin = (orgId: string) => {
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);

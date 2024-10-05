@@ -17,6 +17,26 @@ type SidebarList = {
     list: Array<SidebarListItem>;
 };
 
+/**
+ * A sidebar component that displays a list of links
+ * @param {SidebarList} list The list of links to display
+ * @returns {JSX.Element} The sidebar component
+ * @example
+ * <Sidebar list={[
+ *     {
+ *         title: "Homepage",
+ *         href: "/home",
+ *         collapseIcon: collapseIconLibrary.Homepage,
+ *         selectedIcon: collapseIconLibrary.selectedHomepage,
+ *     },
+ *     {
+ *         title: "Organization",
+ *         href: "/organization",
+ *         collapseIcon: collapseIconLibrary.Organization,
+ *         selectedIcon: collapseIconLibrary.selectedOrganization,
+ *     },
+ * ]} />
+ */
 const Sidebar = ({ list }: SidebarList) => {
     const router = useRouter();
     const sidebarRef = useRef<HTMLDivElement>(null);

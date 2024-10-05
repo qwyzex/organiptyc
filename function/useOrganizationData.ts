@@ -11,6 +11,27 @@ import {
 import { db } from "@/firebase";
 import { UserContext } from "@/context/UserContext";
 
+/**
+ * Fetches data for an organization given its ID.
+ * The data includes the organization itself, and all documents in its
+ * subcollections. The subcollections currently fetched are "members" and "programs"
+ *
+ * The fetched data is stored in the component's state and returned as an object
+ * with three properties: orgData (the organization data), loading (a boolean
+ * indicating whether the data is being fetched), and error (an error object if
+ * something went wrong during the fetch).
+ *
+ * The function takes two parameters: orgId, the ID of the organization to fetch,
+ * and rerenderer, a number that, when changed, causes the function to refetch the
+ * data. This can be used to force a refetch when the user logs in or out.
+ *
+ * @param {string} orgId - The ID of the organization to fetch.
+ * @param {number} rerenderer - A number that, when changed, causes the function to
+ * refetch the data.
+ * @returns {object} An object with three properties: orgData (the organization
+ * data), loading (a boolean indicating whether the data is being fetched), and
+ * error (an error object if something went wrong during the fetch).
+ */
 const useOrganizationData = (orgId: string, rerenderer: number = 0) => {
     const { authUser } = useContext(UserContext);
     const [orgData, setOrgData] = useState<DocumentData | null>(null);

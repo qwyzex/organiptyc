@@ -12,6 +12,14 @@ import {
 } from "firebase/firestore";
 import { useRouter } from "next/router";
 
+/**
+ * Handles an invite link and adds the user to the organization if the
+ * invite link is valid and not expired. Throws an error if the invite
+ * link is invalid or expired.
+ * @param {string} inviteToken The invite link token.
+ * @param {string} userId The user ID of the user to add to the organization.
+ * @returns {string} The organization ID of the organization the user was added to.
+ */
 const handleInviteLink = async (inviteToken: string, userId: string) => {
     const inviteRef = collection(db, `invites`);
     const inviteQuery = query(inviteRef, where("token", "==", inviteToken));
@@ -35,7 +43,13 @@ const handleInviteLink = async (inviteToken: string, userId: string) => {
         joinedAt: new Date(),
     });
 
-    const orgMemberRef = doc(db, "organizations", orgId as string, "members", userId);
+    const orgMemberRef = doc(
+        db,
+        "organizations",
+        orgId as string,
+        "members",
+        userId
+    );
     await setDoc(orgMemberRef, {
         role: "member",
         joinedAt: new Date(),

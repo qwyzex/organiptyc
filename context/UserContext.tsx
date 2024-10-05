@@ -37,6 +37,14 @@ interface UserProviderProps {
     children: ReactNode;
 }
 
+/**
+ * The UserProvider component wraps the application and provides the user data
+ * to the entire app via the UserContext. It listens to the onAuthStateChanged
+ * event and fetches the user document from the database when the user is
+ * authenticated. If the user document does not exist, it sets the userDoc to
+ * null. When the user is not authenticated, it also sets the userDoc to null.
+ * The user data is then passed down to the entire app via the UserContext.
+ */
 export function UserProvider({ children }: UserProviderProps) {
     const [authUser, setAuthUser] = useState<FirebaseUser | null>(null);
     const [userDoc, setUserDoc] = useState<UserDocument | null>(null);

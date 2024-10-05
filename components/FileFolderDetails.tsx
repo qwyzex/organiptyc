@@ -14,7 +14,23 @@ interface Props {
     setrerenderer: Dispatch<SetStateAction<number>>;
 }
 
-const FileFolderDetails: React.FC<Props> = ({ items, type, setrerenderer }: any) => {
+/**
+ * Displays the details of a file or folder.
+ * If the user has selected multiple files, it displays the total size of all the selected files.
+ * If the user has selected a single file, it displays the details of that file.
+ * If the user has selected a single folder, it displays the details of that folder.
+ * If the user has not selected any items, it displays a message saying "No item selected.".
+ * It also provides buttons to download the selected files or delete them.
+ * @param {FileItem[] | FolderItem[] | null} items - The selected items.
+ * @param {"file" | "folder" | null} type - The type of the selected items.
+ * @param {Dispatch<SetStateAction<number>>} setrerenderer - A function to rerender the component with the new state.
+ * @returns {JSX.Element} The component.
+ */
+const FileFolderDetails: React.FC<Props> = ({
+    items,
+    type,
+    setrerenderer,
+}: any) => {
     const handleDownload = async (item: FileItem) => {
         const fileRef = ref(storage, item.metadata.fullPath);
         try {
@@ -93,7 +109,9 @@ const FileFolderDetails: React.FC<Props> = ({ items, type, setrerenderer }: any)
                     <article>
                         <label>
                             <p>You selected {items.length} items.</p>
-                            <p>Total size: {(totalSize / 1024).toFixed(2)} KB</p>
+                            <p>
+                                Total size: {(totalSize / 1024).toFixed(2)} KB
+                            </p>
                         </label>
                     </article>
                 </div>
@@ -119,8 +137,11 @@ const FileFolderDetails: React.FC<Props> = ({ items, type, setrerenderer }: any)
                     <article>
                         <label>
                             <h6>Name:</h6>
-                            <input readOnly className="inp-dis" value={items[0].name}>
-                            </input>
+                            <input
+                                readOnly
+                                className="inp-dis"
+                                value={items[0].name}
+                            ></input>
                         </label>
                         <label>
                             <h6>URL:</h6>
@@ -133,7 +154,8 @@ const FileFolderDetails: React.FC<Props> = ({ items, type, setrerenderer }: any)
                             </a>
                         </label>
                         <label>
-                            <h6>Size:</h6> <p>{items[0].metadata?.size} bytes</p>
+                            <h6>Size:</h6>{" "}
+                            <p>{items[0].metadata?.size} bytes</p>
                         </label>
                         <label>
                             <h6>Content Type:</h6>
@@ -149,7 +171,11 @@ const FileFolderDetails: React.FC<Props> = ({ items, type, setrerenderer }: any)
                         </label>
                         <label>
                             <h6>Last Updated:</h6>
-                            <p>{new Date(items[0].metadata?.updated).toLocaleString()}</p>
+                            <p>
+                                {new Date(
+                                    items[0].metadata?.updated
+                                ).toLocaleString()}
+                            </p>
                         </label>
                     </article>
                 </div>

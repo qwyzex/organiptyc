@@ -3,6 +3,12 @@ import { db } from "@/firebase";
 import { SetStateAction, Dispatch } from "react";
 import fetchLogs from "./fetchLogs"; // Assuming fetchLogs is a function that fetches logs for an organization
 
+/**
+ * Fetches organizations for a given user ID and returns an array of organization documents and their logs.
+ * @param {string} userId - The ID of the user to fetch the organizations for.
+ * @param {Dispatch<SetStateAction<boolean>>} setLoading - A function to update the loading state.
+ * @returns {Promise<Array>} - An array of organization documents and their logs.
+ */
 const fetchUserOrgs = async (
     userId: string,
     setLoading: Dispatch<SetStateAction<boolean>>
@@ -11,7 +17,10 @@ const fetchUserOrgs = async (
         const orgRefs: Array<any> = [];
 
         // Fetching the user's organization IDs from their subcollection
-        const userOrgCollectionRef = collection(db, `users/${userId}/organizations`);
+        const userOrgCollectionRef = collection(
+            db,
+            `users/${userId}/organizations`
+        );
         const userOrgSnapshot = await getDocs(userOrgCollectionRef);
 
         userOrgSnapshot.forEach((doc) => {

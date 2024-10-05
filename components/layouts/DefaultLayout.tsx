@@ -9,6 +9,31 @@ type LayoutProps = {
     children: ReactNode;
 };
 
+/**
+ * The default layout for pages.
+ *
+ * This layout is used by pages that are not explicitly
+ * assigned to a different layout.
+ *
+ * The layout consists of a header, a sidebar, and a main
+ * content area.
+ *
+ * The sidebar is populated with a list of links to
+ * different pages. The list is determined by the
+ * current route.
+ *
+ * If the current route is a home route (e.g. /home,
+ * /profile, /settings), the sidebar will contain links
+ * to other home routes.
+ *
+ * If the current route is an organization route (e.g.
+ * /organization/{orgId}, /organization/{orgId}/members),
+ * the sidebar will contain links to other organization
+ * routes.
+ *
+ * @param {ReactNode} children The content of the page.
+ * @returns {JSX.Element} The layout component.
+ */
 const DefaultLayout: NextPage<LayoutProps> = ({ children }) => {
     const router = useRouter();
 

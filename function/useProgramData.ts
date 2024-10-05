@@ -21,6 +21,39 @@ type ProgramProps = {
     rerenderer?: number;
 };
 
+/**
+ * Fetches program data from the database and returns it in a format that can
+ * be used directly in the component. The program data is fetched from the
+ * "organizations/<orgId>/programs/<programId>" document and includes the
+ * following subcollections:
+ *
+ * - committee: an array of committee members, each with a `name` and `role`
+ *   property.
+ * - tasks: an array of tasks, each with an `id` and `name` property.
+ *
+ * The function also returns three helper functions to update the committee
+ * members:
+ *
+ * - addCommitteeMember: adds a new committee member with the given `name` and
+ *   `role`.
+ * - updateCommitteeMember: updates the committee member with the given `id`
+ *   with the given `change` and `value`.
+ * - deleteCommitteeMember: deletes the committee member with the given `id`.
+ *
+ * The function also returns a `loading` state and an `error` state, which can
+ * be used to handle errors and loading states in the component.
+ *
+ * The function takes three parameters: `orgId`, `programId`, and `rerenderer`.
+ * The `rerenderer` parameter is optional and defaults to `0`. It can be used
+ * to force a re-render of the component when the value changes.
+ *
+ * @param {string} orgId The ID of the organization.
+ * @param {string} programId The ID of the program.
+ * @param {number} [rerenderer=0] An optional parameter to force a re-render of
+ * the component when the value changes.
+ * @returns {Object} An object with the program data, loading state, and error
+ * state.
+ */
 const useProgramData = ({ orgId, programId, rerenderer = 0 }: ProgramProps) => {
     const { authUser } = useContext(UserContext);
     const [programData, setProgramData] = useState<DocumentData | null>(null);
