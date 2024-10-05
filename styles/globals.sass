@@ -91,10 +91,15 @@ a
     &:visited
         color: var(--color)
 
+.not-dim
+    color: var(--color)
 .dim
     color: var(--color-dimmed)
 .dim-r
     color: var(--color-dimmer)
+
+.color-danger
+    color: var(--danger)
 
 .bold
     font-weight: 600
@@ -104,6 +109,10 @@ a
 .pointer
     &:hover
         cursor: pointer
+
+.link-visible
+    color: var(--acc-dark) !important
+    font-weight: 500
 
 .inp-form
     padding: 0.4rem 1rem
@@ -119,6 +128,9 @@ a
     &:focus
         border: none
         outline: 2px solid var(--acc)
+    
+    &.inp-diff
+        background-color: var(--highlight-button)
 
 // INPUT DISPLAY ONLY
 .inp-dis
@@ -136,6 +148,15 @@ a
         outline: 2px solid var(--acc)
 
 // UNIQUE BUTTON CLASS
+.btn-compact
+    padding: 6px
+    width: min-content  !important
+    min-width: 0 !important
+
+    display: flex
+    justify-content: center
+    align-items: center
+
 .btn-def, .btn-ref, .btn-danger
     width: max-content !important
     height: max-content !important
