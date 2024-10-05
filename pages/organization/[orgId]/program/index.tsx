@@ -16,6 +16,7 @@ import { MenuItem as BaseMenuItem, menuItemClasses } from "@mui/base/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import Head from "next/head";
+import AdminWrap from "@/components/AdminWrap";
 
 export default function OrganizationPrograms() {
     const router = useRouter();
@@ -132,12 +133,14 @@ export default function OrganizationPrograms() {
                             {orgData?.programs.length || "no"} programs
                         </p>
                     </section>
-                    <Link
-                        className="link-visible"
-                        href={`/organization/${orgId}/program/new`}
-                    >
-                        Create a new program
-                    </Link>
+                    <AdminWrap>
+                        <Link
+                            className="link-visible"
+                            href={`/organization/${orgId}/program/new`}
+                        >
+                            Create a new program
+                        </Link>
+                    </AdminWrap>
                 </header>
                 <main>
                     <header className={styles.memberListHeader}>

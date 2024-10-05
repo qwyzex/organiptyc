@@ -25,12 +25,13 @@ import createLog from "@/function/createLog";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/context/UserContext";
 import useIsAdmin from "@/function/useIsAdmin";
+import AdminWrap from "@/components/AdminWrap";
 
 export default function ProgramSettings({ setRerenderer }: any) {
     const router = useRouter();
     const { orgId, programId } = router.query;
     const { enqueueSnackbar } = useSnackbar();
-    const isAdmin = useIsAdmin(orgId as string);
+    const { isAdmin } = useIsAdmin(orgId as string);
 
     const [localRerender, setLocalRerender] = useState<number>(0);
 
@@ -274,7 +275,10 @@ export default function ProgramSettings({ setRerenderer }: any) {
                     </article>
                     {programData ? (
                         <>
-                            <form onSubmit={handleProgramRename}>
+                            <form
+                                onSubmit={handleProgramRename}
+                                className="fadeIn"
+                            >
                                 <label htmlFor="programName">
                                     Program Name
                                 </label>
@@ -287,10 +291,16 @@ export default function ProgramSettings({ setRerenderer }: any) {
                                         onChange={(e) => {
                                             setProgramName(e.target.value);
                                         }}
+                                        readOnly={!isAdmin}
                                     />
-                                    <Button className="btn-def" type="submit">
-                                        Rename
-                                    </Button>
+                                    <AdminWrap>
+                                        <Button
+                                            className="btn-def"
+                                            type="submit"
+                                        >
+                                            Rename
+                                        </Button>
+                                    </AdminWrap>
                                 </div>
                             </form>
                             <form onSubmit={handleProgramDescriptionUpdate}>
@@ -308,10 +318,16 @@ export default function ProgramSettings({ setRerenderer }: any) {
                                                 e.target.value
                                             );
                                         }}
+                                        readOnly={!isAdmin}
                                     />
-                                    <Button className="btn-def" type="submit">
-                                        Update
-                                    </Button>
+                                    <AdminWrap>
+                                        <Button
+                                            className="btn-def"
+                                            type="submit"
+                                        >
+                                            Update
+                                        </Button>
+                                    </AdminWrap>
                                 </div>
                             </form>
                         </>
@@ -331,7 +347,7 @@ export default function ProgramSettings({ setRerenderer }: any) {
                     </article>
                     {programData ? (
                         <>
-                            <div>
+                            <div className="fadeIn">
                                 <p>Program ID</p>
                                 <div>
                                     <input
@@ -378,11 +394,17 @@ export default function ProgramSettings({ setRerenderer }: any) {
                                                     )
                                                 )
                                             }
+                                            readOnly={!isAdmin}
                                         />
                                     </section>
-                                    <Button className="btn-def" type="submit">
-                                        Update Dates
-                                    </Button>
+                                    <AdminWrap>
+                                        <Button
+                                            className="btn-def"
+                                            type="submit"
+                                        >
+                                            Update Dates
+                                        </Button>
+                                    </AdminWrap>
                                 </div>
                                 <section>
                                     <label htmlFor="dateEnd">End Date</label>
@@ -405,6 +427,8 @@ export default function ProgramSettings({ setRerenderer }: any) {
                                                 )
                                             )
                                         }
+                                        readOnly={!isAdmin}
+                                        disabled={!isAdmin ? true : false}
                                     />
                                 </section>
                             </form>
@@ -415,32 +439,36 @@ export default function ProgramSettings({ setRerenderer }: any) {
                 </div>
 
                 {/* Danger Zone */}
-                <div className={`${styles.DangerZone} ${styles.optionSection}`}>
-                    <article>
-                        <Box>
-                            <WarningAmberRounded
-                                color="error"
-                                // fontSize="small"
-                            />
-                            <h2>Danger Zone</h2>
-                        </Box>
-                        <Divider />
-                    </article>
-                    <div>
+                <AdminWrap>
+                    <div
+                        className={`fadeIn ${styles.DangerZone} ${styles.optionSection}`}
+                    >
                         <article>
-                            <label htmlFor="">Delete Program</label>
-                            <p className="dim">
-                                Once you delete this program, it cannot be
-                                recovered.
-                            </p>
+                            <Box>
+                                <WarningAmberRounded
+                                    color="error"
+                                    // fontSize="small"
+                                />
+                                <h2>Danger Zone</h2>
+                            </Box>
+                            <Divider />
                         </article>
+                        <div>
+                            <article>
+                                <label htmlFor="">Delete Program</label>
+                                <p className="dim">
+                                    Once you delete this program, it cannot be
+                                    recovered.
+                                </p>
+                            </article>
 
-                        <DeleteProgramModals
-                            programData={programData}
-                            deleteFunction={dangerDeleteProgram}
-                        />
+                            <DeleteProgramModals
+                                programData={programData}
+                                deleteFunction={dangerDeleteProgram}
+                            />
+                        </div>
                     </div>
-                </div>
+                </AdminWrap>
             </main>
         </div>
     );

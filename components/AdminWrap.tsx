@@ -15,7 +15,7 @@ import { ReactNode } from "react";
 export default function AdminWrap({ children }: { children: ReactNode }) {
     const { orgId } = useRouter().query;
 
-    const isAdmin = useIsAdmin(orgId as string);
+    const { isAdmin } = useIsAdmin(orgId as string);
 
-    return <>{!isAdmin ? <></> : children}</>;
+    return <>{isAdmin ? children : <></>}</>;
 }

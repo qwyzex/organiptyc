@@ -32,6 +32,7 @@ import { db } from "@/firebase";
 import createLog from "@/function/createLog";
 import { UserContext } from "@/context/UserContext";
 import { useSnackbar } from "notistack";
+import useIsAdmin from "@/function/useIsAdmin";
 
 // Layout wrapper for program dashboard
 export const ProgramDashboard = ({ children }: { children: ReactNode }) => {
@@ -230,6 +231,7 @@ const ProgramStatusModal = ({
     const router = useRouter();
     const { orgId, programId } = router.query;
     const { authUser, userDoc } = useContext(UserContext);
+    const { isAdmin } = useIsAdmin(orgId as string);
 
     const { enqueueSnackbar } = useSnackbar();
     const [localStatus, setLocalStatus] = useState<any>(currentStatus);
@@ -237,7 +239,7 @@ const ProgramStatusModal = ({
     const handleUpdateStatus = async (e: any) => {
         e.preventDefault();
 
-        if (authUser && userDoc) {
+        if (authUser && userDoc && isAdmin) {
             const docRef = doc(
                 db,
                 "organizations",
@@ -307,7 +309,7 @@ const ProgramStatusModal = ({
     return (
         <>
             <div
-                onClick={handleOpen}
+                onClick={isAdmin ? handleOpen : () => {}}
                 className={
                     currentStatus == "upcoming"
                         ? styles.upcoming

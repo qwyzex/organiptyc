@@ -1,3 +1,4 @@
+import AdminWrap from "@/components/AdminWrap";
 import Loading from "@/components/Loading";
 import { UserContext } from "@/context/UserContext";
 import { storage } from "@/firebase";
@@ -362,18 +363,20 @@ const DisplayBudget = ({
                 >
                     <FileDownload fontSize="small" /> Download .XLSX file
                 </Button>
-                <Button
-                    className={`btn-ref ${styles.uploadAndReplaceButton}`}
-                    disabled={uploadReplace}
-                >
-                    <input
-                        type="file"
-                        accept=".xlsx"
-                        onChange={handleFileChange}
-                    />
-                    <UploadFileOutlined fontSize="small" /> Upload new .XLSX
-                    file
-                </Button>
+                <AdminWrap>
+                    <Button
+                        className={`btn-ref ${styles.uploadAndReplaceButton}`}
+                        disabled={uploadReplace}
+                    >
+                        <input
+                            type="file"
+                            accept=".xlsx"
+                            onChange={handleFileChange}
+                        />
+                        <UploadFileOutlined fontSize="small" /> Upload new .XLSX
+                        file
+                    </Button>
+                </AdminWrap>
             </div>
             <section>
                 <table className={styles.displaybudgetTable}>
