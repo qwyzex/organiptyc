@@ -4,10 +4,19 @@ import { useRouter } from "next/router";
 import useProgramData from "@/function/useProgramData";
 import Loading from "@/components/Loading";
 import styles from "@/styles/organization/orgId/programs/Committee.module.sass";
-import { Button, Divider, IconButton, Skeleton } from "@mui/material";
+import { Button, Divider, IconButton, Skeleton, Tooltip } from "@mui/material";
 import { useEffect, useState } from "react";
 import useIsAdmin from "@/function/useIsAdmin";
-import { Delete } from "@mui/icons-material";
+import { Delete, ManageAccounts } from "@mui/icons-material";
+import {
+    collection,
+    doc,
+    getDocs,
+    query,
+    updateDoc,
+    where,
+} from "firebase/firestore";
+import { db } from "@/firebase";
 
 type CommitteeMember = {
     name: string;
@@ -84,7 +93,6 @@ export default function ProgramCommittee() {
     ) => {
         e.preventDefault();
         setLoading(true);
-
         programData
             ?.updateCommitteeMember(id, type, e.target.value.trim())
             .then(() => {
@@ -170,36 +178,137 @@ export default function ProgramCommittee() {
                                                 }}
                                             />
                                         </div>
-                                        <IconButton
-                                            onClick={() => {
-                                                if (
-                                                    confirm(
-                                                        "Are you sure you want to remove this person?"
-                                                    )
-                                                ) {
-                                                    programData
-                                                        ?.deleteCommitteeMember(
-                                                            person.id
+                                        <div>
+                                            <Button
+                                                className="btn-compact"
+                                                onClick={async () => {
+                                                    if (person.chief == true)
+                                                        return;
+
+                                                    try {
+                                                        const committeeRef =
+                                                            collection(
+                                                                db,
+                                                                "organizations",
+                                                                orgId as string,
+                                                                "programs",
+                                                                programId as string,
+                                                                "committee"
+                                                            );
+
+                                                        // Find the current chief
+                                                        const chiefSnapshot =
+                                                            await getDocs(
+                                                                query(
+                                                                    committeeRef,
+                                                                    where(
+                                                                        "chief",
+                                                                        "==",
+                                                                        true
+                                                                    )
+                                                                )
+                                                            );
+
+                                                        // Set the current chief's status to false (if any chief exists)
+                                                        const chiefUpdatePromises =
+                                                            chiefSnapshot.docs.map(
+                                                                (doc) =>
+                                                                    updateDoc(
+                                                                        doc.ref,
+                                                                        {
+                                                                            chief: false,
+                                                                        }
+                                                                    )
+                                                            );
+                                                        await Promise.all(
+                                                            chiefUpdatePromises
+                                                        );
+
+                                                        // Set the clicked person as chief
+                                                        const personDocRef =
+                                                            doc(
+                                                                db,
+                                                                "organizations",
+                                                                orgId as string,
+                                                                "programs",
+                                                                programId as string,
+                                                                "committee",
+                                                                person.id
+                                                            );
+
+                                                        await updateDoc(
+                                                            personDocRef,
+                                                            { chief: true }
+                                                        );
+                                                        setRerenderer(
+                                                            rerenderer + 1
+                                                        );
+                                                    } catch (error) {
+                                                        console.error(
+                                                            "Error updating chief status:",
+                                                            error
+                                                        );
+                                                    }
+                                                }}
+                                            >
+                                                <Tooltip
+                                                    title="Update Chief Executive"
+                                                    arrow
+                                                    placement="left"
+                                                    enterDelay={500}
+                                                    leaveDelay={300}
+                                                >
+                                                    <ManageAccounts
+                                                        fontSize="small"
+                                                        color={
+                                                            person.chief
+                                                                ? "primary"
+                                                                : "disabled"
+                                                        }
+                                                    />
+                                                </Tooltip>
+                                            </Button>
+                                            <IconButton
+                                                onClick={() => {
+                                                    if (
+                                                        confirm(
+                                                            "Are you sure you want to remove this person?"
                                                         )
-                                                        .then(() => {
-                                                            setRerenderer(
-                                                                (prev) =>
-                                                                    prev + 1
+                                                    ) {
+                                                        programData
+                                                            ?.deleteCommitteeMember(
+                                                                person.id
+                                                            )
+                                                            .then(() => {
+                                                                setRerenderer(
+                                                                    (prev) =>
+                                                                        prev + 1
+                                                                );
+                                                            })
+                                                            .catch(
+                                                                (
+                                                                    error: any
+                                                                ) => {
+                                                                    console.error(
+                                                                        error
+                                                                    );
+                                                                }
                                                             );
-                                                        })
-                                                        .catch((error: any) => {
-                                                            console.error(
-                                                                error
-                                                            );
-                                                        });
-                                                }
-                                            }}
-                                        >
-                                            <Delete fontSize="small" />
-                                        </IconButton>
+                                                    }
+                                                }}
+                                            >
+                                                <Delete fontSize="small" />
+                                            </IconButton>
+                                        </div>
                                     </>
                                 ) : (
                                     <div>
+                                        {person.chief && (
+                                            <ManageAccounts
+                                                color="primary"
+                                                fontSize="small"
+                                            />
+                                        )}
                                         <h4>{person.name}</h4>
                                         <p>{person.role}</p>
                                     </div>
