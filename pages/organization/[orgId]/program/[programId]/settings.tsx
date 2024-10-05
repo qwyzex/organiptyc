@@ -1,4 +1,4 @@
-import { Box, Button, Divider } from "@mui/material";
+import { Box, Button, Divider, Icon, Modal } from "@mui/material";
 import styles from "@/styles/organization/orgId/programs/Settings.module.sass";
 import {
     DangerousOutlined,
@@ -12,16 +12,25 @@ import useProgramData from "@/function/useProgramData";
 import { useRouter } from "next/router";
 import Loading from "@/components/Loading";
 import { useSnackbar } from "notistack";
-import { doc, updateDoc } from "firebase/firestore";
+import {
+    collection,
+    deleteDoc,
+    doc,
+    getDocs,
+    Timestamp,
+    updateDoc,
+} from "firebase/firestore";
 import { db } from "@/firebase";
 import createLog from "@/function/createLog";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/context/UserContext";
+import useIsAdmin from "@/function/useIsAdmin";
 
 export default function ProgramSettings({ setRerenderer }: any) {
     const router = useRouter();
     const { orgId, programId } = router.query;
     const { enqueueSnackbar } = useSnackbar();
+    const isAdmin = useIsAdmin(orgId as string);
 
     const [localRerender, setLocalRerender] = useState<number>(0);
 
@@ -49,7 +58,7 @@ export default function ProgramSettings({ setRerenderer }: any) {
 
         if (!authUser || !userDoc) return;
 
-        if (programData?.name == programName) {
+        if (programData?.name == programName.trim()) {
             enqueueSnackbar("Program name unchanged", { variant: "warning" });
             return;
         } else {
@@ -63,7 +72,7 @@ export default function ProgramSettings({ setRerenderer }: any) {
                 );
 
                 await updateDoc(docRef, {
-                    name: programName,
+                    name: programName.trim(),
                 });
 
                 enqueueSnackbar("Program name changed", { variant: "info" });
@@ -74,7 +83,9 @@ export default function ProgramSettings({ setRerenderer }: any) {
                     authUser.uid,
                     {
                         type: "change_program_name",
-                        text: `${userDoc.firstName} changed ${programData?.name} to ${programName}`,
+                        text: `${userDoc.firstName} changed ${
+                            programData?.name
+                        } to ${programName.trim()}`,
                     },
                     userDoc.photoURL
                 );
@@ -91,7 +102,7 @@ export default function ProgramSettings({ setRerenderer }: any) {
 
         if (!authUser || !userDoc) return;
 
-        if (programData?.description == programDescription) {
+        if (programData?.description == programDescription.trim()) {
             enqueueSnackbar("Program description unchanged", {
                 variant: "warning",
             });
@@ -107,7 +118,7 @@ export default function ProgramSettings({ setRerenderer }: any) {
                 );
 
                 await updateDoc(docRef, {
-                    description: programDescription,
+                    description: programDescription.trim(),
                 });
 
                 enqueueSnackbar("Program description changed", {
@@ -135,6 +146,69 @@ export default function ProgramSettings({ setRerenderer }: any) {
         }
     };
 
+    const deleteCollection = async (
+        orgId: string,
+        programId: string,
+        collectionName: string
+    ) => {
+        const collectionRef = collection(
+            db,
+            "organizations",
+            orgId,
+            "programs",
+            programId,
+            collectionName
+        );
+        const snapshot = await getDocs(collectionRef);
+
+        const deletePromises = snapshot.docs.map((doc) => deleteDoc(doc.ref));
+
+        return Promise.all(deletePromises);
+    };
+
+    const dangerDeleteProgram = async () => {
+        if (authUser && userDoc && isAdmin) {
+            try {
+                const docRef = doc(
+                    db,
+                    "organizations",
+                    orgId as string,
+                    "programs",
+                    programId as string
+                );
+
+                // Delete the 'committee' subcollection first
+                await deleteCollection(
+                    orgId as string,
+                    programId as string,
+                    "committee"
+                );
+
+                // Now delete the main program document
+                await deleteDoc(docRef);
+
+                createLog(
+                    orgId as string,
+                    authUser.uid,
+                    {
+                        type: "delete_program",
+                        text: `${userDoc.firstName} deleted ${programData?.name}`,
+                    },
+                    userDoc.photoURL
+                );
+                enqueueSnackbar(
+                    "Program deleted successfully. You will be redirected in 5 seconds",
+                    { variant: "info" }
+                );
+                setTimeout(() => {
+                    router.replace(`/organization/${orgId}/program`);
+                }, 5000);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    };
+
     const handleProgramDatesUpdate = async (e: any) => {
         e.preventDefault();
 
@@ -157,8 +231,8 @@ export default function ProgramSettings({ setRerenderer }: any) {
                 );
 
                 await updateDoc(docRef, {
-                    dateStart: dateStart,
-                    dateEnd: dateEnd,
+                    dateStart,
+                    dateEnd,
                 });
 
                 enqueueSnackbar("Program dates successfully changed", {
@@ -270,7 +344,7 @@ export default function ProgramSettings({ setRerenderer }: any) {
                                         className="btn-def"
                                         onClick={() => {
                                             navigator.clipboard.writeText(
-                                                "xyz123"
+                                                programId as string
                                             );
                                             enqueueSnackbar("Copied", {
                                                 variant: "success",
@@ -289,9 +363,20 @@ export default function ProgramSettings({ setRerenderer }: any) {
                                             className="inp-form"
                                             type="date"
                                             aria-label="dateStart"
-                                            value={dateStart}
+                                            value={
+                                                dateStart
+                                                    ? dateStart
+                                                          .toDate()
+                                                          .toISOString()
+                                                          .slice(0, 10)
+                                                    : ""
+                                            }
                                             onChange={(e) =>
-                                                setDateStart(e.target.value)
+                                                setDateStart(
+                                                    Timestamp.fromDate(
+                                                        new Date(e.target.value)
+                                                    )
+                                                )
                                             }
                                         />
                                     </section>
@@ -305,9 +390,20 @@ export default function ProgramSettings({ setRerenderer }: any) {
                                         className="inp-form"
                                         type="date"
                                         aria-label="dateEnd"
-                                        value={dateEnd}
+                                        value={
+                                            dateEnd
+                                                ? dateEnd
+                                                      .toDate()
+                                                      .toISOString()
+                                                      .slice(0, 10)
+                                                : ""
+                                        }
                                         onChange={(e) =>
-                                            setDateEnd(e.target.value)
+                                            setDateEnd(
+                                                Timestamp.fromDate(
+                                                    new Date(e.target.value)
+                                                )
+                                            )
                                         }
                                     />
                                 </section>
@@ -330,9 +426,6 @@ export default function ProgramSettings({ setRerenderer }: any) {
                         </Box>
                         <Divider />
                     </article>
-
-                    {/* TODO:
-                    - Delete Program FUNCTION */}
                     <div>
                         <article>
                             <label htmlFor="">Delete Program</label>
@@ -341,20 +434,146 @@ export default function ProgramSettings({ setRerenderer }: any) {
                                 recovered.
                             </p>
                         </article>
-                        <Button
-                            disabled={!programData}
-                            className="btn-danger"
-                            onClick={() =>
-                                confirm(
-                                    "Are you sure you want to delete the program?"
-                                ) && alert("Program Deleted")
-                            }
-                        >
-                            Delete Program
-                        </Button>
+
+                        <DeleteProgramModals
+                            programData={programData}
+                            deleteFunction={dangerDeleteProgram}
+                        />
                     </div>
                 </div>
             </main>
         </div>
     );
 }
+
+const DeleteProgramModals = ({ programData, deleteFunction }: any) => {
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
+    const handleOpenDeleteModal = () => setOpenDeleteModal(true);
+    const handleCloseDeleteModal = () => setOpenDeleteModal(false);
+
+    const { enqueueSnackbar } = useSnackbar();
+
+    const [
+        programIdForDeletionConfirmation,
+        setProgramIdForDeletionConfirmation,
+    ] = useState<string>("");
+
+    const modalBoxStyle = {
+        position: "absolute" as "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: "500",
+        // height: 400,
+        bgcolor: "var(--background)",
+        border: "2px solid var(--danger)",
+        borderRadius: 2,
+        boxShadow: 24,
+        p: 4,
+    };
+    return (
+        <>
+            <Button
+                disabled={!programData}
+                className="btn-danger"
+                onClick={handleOpenDeleteModal}
+            >
+                Delete Program
+            </Button>
+            <Modal
+                open={openDeleteModal}
+                onClose={loading ? () => {} : handleCloseDeleteModal}
+            >
+                <Box sx={modalBoxStyle}>
+                    {!programData ? (
+                        <Loading />
+                    ) : (
+                        <div className={styles.modalContent}>
+                            <div>
+                                <WarningAmberRounded
+                                    color="error"
+                                    fontSize="large"
+                                />
+                                <h2 className="color-danger">Delete Program</h2>
+                            </div>
+                            <p className="">
+                                Are you sure you want to delete the program{" "}
+                                <b className="color-danger">
+                                    {programData.name}
+                                </b>
+                                ? This action is irreversible.
+                            </p>
+                            <p>
+                                Please enter the program ID to confirm the
+                                action.
+                            </p>
+                            <form onSubmit={(e) => {}}>
+                                <input
+                                    className="inp-form inp-diff"
+                                    type="text"
+                                    placeholder="Program ID"
+                                    disabled={loading}
+                                    maxLength={100}
+                                    value={programIdForDeletionConfirmation}
+                                    onChange={(e) =>
+                                        setProgramIdForDeletionConfirmation(
+                                            e.target.value
+                                        )
+                                    }
+                                />
+                            </form>
+                            <div className={styles.modalActions}>
+                                <Button
+                                    disabled={loading}
+                                    onClick={handleCloseDeleteModal}
+                                    className="btn-ref"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    disabled={
+                                        !programIdForDeletionConfirmation ||
+                                        loading
+                                    }
+                                    onClick={() => {
+                                        if (!programData) return;
+
+                                        setLoading(true);
+
+                                        if (
+                                            programIdForDeletionConfirmation !==
+                                            programData.id
+                                        ) {
+                                            enqueueSnackbar(
+                                                "Please enter the correct program ID",
+                                                { variant: "error" }
+                                            );
+                                            setLoading(false);
+                                            return;
+                                        } else if (
+                                            programIdForDeletionConfirmation ===
+                                            programData.id
+                                        ) {
+                                            deleteFunction(programData.id);
+                                            setLoading(false);
+                                            handleCloseDeleteModal();
+                                            setProgramIdForDeletionConfirmation(
+                                                ""
+                                            );
+                                        }
+                                    }}
+                                    className="btn-danger"
+                                >
+                                    Delete
+                                </Button>
+                                {loading && <Loading />}
+                            </div>
+                        </div>
+                    )}
+                </Box>
+            </Modal>
+        </>
+    );
+};
