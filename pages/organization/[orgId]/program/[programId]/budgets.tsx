@@ -62,7 +62,7 @@ export default function ProgramBudgets() {
                 await getDownloadURL(fileRef);
                 setFileExists(true); // If the URL is fetched successfully, file exists
             } catch (error) {
-                setFileExists(false); // If error (like 404), file doesn't exist
+                setFileExists(null); // If error (like 404), file doesn't exist
             }
         };
 
@@ -186,7 +186,9 @@ const UploadBudget = ({
                         file
                     </p>
                 )}
-                <Button className={styles.uploaduploadBtn}>Select Files</Button>
+                <Button className={`btn-def ${styles.uploaduploadBtn}`}>
+                    Select Files
+                </Button>
             </div>
             {progress > 0 && (
                 <Box className={styles.uploadprogressContainer}>
