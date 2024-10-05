@@ -7,6 +7,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { deleteObject, getBlob, getDownloadURL, ref } from "firebase/storage";
 import { storage } from "@/firebase";
 import DescriptionIcon from "@mui/icons-material/Description";
+import AdminWrap from "./AdminWrap";
+import useIsAdmin from "@/function/useIsAdmin";
+import { useRouter } from "next/router";
 
 interface Props {
     items: FileItem[] | FolderItem[] | null;
@@ -31,6 +34,10 @@ const FileFolderDetails: React.FC<Props> = ({
     type,
     setrerenderer,
 }: any) => {
+    const router = useRouter();
+    const { orgId } = router.query;
+    const { isAdmin } = useIsAdmin(orgId as string);
+
     const handleDownload = async (item: FileItem) => {
         const fileRef = ref(storage, item.metadata.fullPath);
         try {
@@ -49,14 +56,17 @@ const FileFolderDetails: React.FC<Props> = ({
     };
 
     const handleDelete = async (item: FileItem) => {
-        const fileRef = ref(storage, item.metadata.fullPath);
-        try {
-            await deleteObject(fileRef);
-            alert("File deleted successfully.");
-        } catch (error) {
-            console.error("Error deleting file:", error);
+        if (isAdmin) {
+            const fileRef = ref(storage, item.metadata.fullPath);
+            try {
+                await deleteObject(fileRef);
+                alert("File deleted successfully.");
+            } catch (error) {
+                console.error("Error deleting file:", error);
+            }
+            setrerenderer((prev: number) => prev + 1);
         }
-        setrerenderer((prev: number) => prev + 1);
+        return;
     };
 
     if (!items)
@@ -110,7 +120,8 @@ const FileFolderDetails: React.FC<Props> = ({
                         <label>
                             <p>You selected {items.length} items.</p>
                             <p>
-                                Total size: {(totalSize / 1024).toFixed(2)} KB
+                                Total size:{" "}
+                                {(totalSize / (1024 * 1024)).toFixed(2)} MB
                             </p>
                         </label>
                     </article>
@@ -119,9 +130,11 @@ const FileFolderDetails: React.FC<Props> = ({
                     <IconButton onClick={handleMultipleDownload}>
                         <DownloadIcon />
                     </IconButton>
-                    <IconButton onClick={handleMultipleDelete}>
-                        <DeleteIcon />
-                    </IconButton>
+                    <AdminWrap>
+                        <IconButton onClick={handleMultipleDelete}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </AdminWrap>
                 </footer>
             </div>
         );
@@ -155,7 +168,13 @@ const FileFolderDetails: React.FC<Props> = ({
                         </label>
                         <label>
                             <h6>Size:</h6>{" "}
-                            <p>{items[0].metadata?.size} bytes</p>
+                            <p>
+                                {(
+                                    items[0].metadata?.size /
+                                    (1024 * 1024)
+                                ).toFixed(2)}{" "}
+                                MB
+                            </p>
                         </label>
                         <label>
                             <h6>Content Type:</h6>
@@ -183,9 +202,11 @@ const FileFolderDetails: React.FC<Props> = ({
                     <IconButton onClick={() => handleDownload(items[0])}>
                         <DownloadIcon />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(items[0])}>
-                        <DeleteIcon />
-                    </IconButton>
+                    <AdminWrap>
+                        <IconButton onClick={() => handleDelete(items[0])}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </AdminWrap>
                 </footer>
             </div>
         );
