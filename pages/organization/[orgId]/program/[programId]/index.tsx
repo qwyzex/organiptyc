@@ -16,7 +16,7 @@ import {
     Select,
     Skeleton,
 } from "@mui/material";
-import { ArrowBackIos, Close } from "@mui/icons-material";
+import { ArrowBackIos, ArrowBackIosNew, Close } from "@mui/icons-material";
 import Head from "next/head";
 import Link from "next/link";
 import {
@@ -63,13 +63,14 @@ export const ProgramDashboard = ({ children }: { children: ReactNode }) => {
             <main className={styles.container}>
                 <header className={styles.programHeader}>
                     <div>
-                        <IconButton
+                        <Button
+                            className="btn-compact"
                             onClick={() =>
-                                router.push(`/organization/${orgId}/programs`)
+                                router.push(`/organization/${orgId}/program`)
                             }
                         >
-                            <ArrowBackIos fontSize="small" />
-                        </IconButton>
+                            <ArrowBackIosNew fontSize="small" />
+                        </Button>
                         {programData ? (
                             <h1 className="fadeIn">{programData.name}</h1>
                         ) : (
@@ -85,9 +86,8 @@ export const ProgramDashboard = ({ children }: { children: ReactNode }) => {
                         />
                     </div>
                     <div className={styles.programDates}>
-                        Dates :{" "}
-                        {new Date(programData?.dateStart).toDateString()} -{" "}
-                        {new Date(programData?.dateEnd).toDateString()}
+                        Dates : {programData?.dateStart.toDate().toDateString()}{" "}
+                        - {programData?.dateEnd.toDate().toDateString()}
                     </div>
                 </header>
                 <nav className={styles.tabs}>
