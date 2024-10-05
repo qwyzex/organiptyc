@@ -1,61 +1,19 @@
 import { useRouter } from "next/router";
-import {
-    useState,
-    useEffect,
-    useContext,
-    FormEvent,
-    SetStateAction,
-} from "react";
-import {
-    collection,
-    doc,
-    DocumentData,
-    getDocs,
-    query,
-    updateDoc,
-    where,
-    writeBatch,
-} from "firebase/firestore";
+import { useState, useContext } from "react";
 import useOrganizationData from "@/function/useOrganizationData";
 import { UserContext } from "@/context/UserContext";
 import useIsAdmin from "@/function/useIsAdmin";
-import { db } from "@/firebase";
-import createLog from "@/function/createLog";
 import styles from "@/styles/organization/orgId/Programs.module.sass";
 import Link from "next/link";
-import generateInviteLink from "@/function/generateInviteLink";
-import {
-    Box,
-    Button,
-    Divider,
-    Modal,
-    Skeleton,
-    styled,
-    Tooltip,
-    Typography,
-} from "@mui/material";
-import Snackbar from "@mui/material/Snackbar";
-
-import { SnackbarProvider, VariantType, useSnackbar } from "notistack";
-import { default as MaterialMenuItem } from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-
-import InputLabel from "@mui/material/InputLabel";
-import { WhisperSpinner } from "react-spinners-kit";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { styled } from "@mui/material";
 
 import IconButton from "@mui/material/IconButton";
-import AddIcon from "@mui/icons-material/Add";
-import CloseIcon from "@mui/icons-material/Close";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import Loading from "@/components/Loading";
 import { Dropdown } from "@mui/base/Dropdown";
 import { MenuButton as BaseMenuButton } from "@mui/base/MenuButton";
 import { Menu } from "@mui/base/Menu";
 import { MenuItem as BaseMenuItem, menuItemClasses } from "@mui/base/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import removeMember from "@/function/removeMember";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import Head from "next/head";
 
@@ -168,7 +126,18 @@ export default function OrganizationPrograms() {
             <div className={styles.container}>
                 <header>
                     <h1>PROGRAMS</h1>
-                    <section></section>
+                    <section>
+                        <p className="dim">
+                            This organization has{" "}
+                            {orgData?.programs.length || "no"} programs
+                        </p>
+                    </section>
+                    <Link
+                        className="link-visible"
+                        href={`/organization/${orgId}/program/new`}
+                    >
+                        Create a new program
+                    </Link>
                 </header>
                 <main>
                     <header className={styles.memberListHeader}>
@@ -238,19 +207,11 @@ export default function OrganizationPrograms() {
                                             : b.name.localeCompare(a.name);
                                     } else if (sortBy === "toex") {
                                         return sortIt === "asc"
-                                            ? Math.round(
-                                                  a.dateStart.toDate() / 1000
-                                              ) -
+                                            ? Math.round(a.dateStart / 1000) -
+                                                  Math.round(b.dateStart / 1000)
+                                            : Math.round(b.dateStart / 1000) -
                                                   Math.round(
-                                                      b.dateStart.toDate() /
-                                                          1000
-                                                  )
-                                            : Math.round(
-                                                  b.dateStart.toDate() / 1000
-                                              ) -
-                                                  Math.round(
-                                                      a.dateStart.toDate() /
-                                                          1000
+                                                      a.dateStart / 1000
                                                   );
                                     } else if (sortBy === "chief") {
                                         return sortIt === "asc"
@@ -273,19 +234,16 @@ export default function OrganizationPrograms() {
                                                 .toDateString()}
                                         </p>
                                         <p>{program.chief}</p>
-
                                         <Dropdown>
-                                            {/* <Tooltip title={"More"}> */}
                                             <StyledMenuButton>
                                                 <MoreVertIcon fontSize="small" />
                                             </StyledMenuButton>
-                                            {/* </Tooltip> */}
                                             <Menu slots={{ listbox: Listbox }}>
                                                 <StyledBaseMenuItem
                                                     disabled={!isAdmin}
                                                     onClick={() => {
-                                                        console.log(
-                                                            "I DONT KNOW THAT THIS DOES"
+                                                        router.push(
+                                                            `/organization/${orgId}/program/${program.id}/settings`
                                                         );
                                                     }}
                                                 >

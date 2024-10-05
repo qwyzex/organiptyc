@@ -11,7 +11,7 @@ export default function ProgramDashboardLayout({
     const router = useRouter();
 
     const programPathPattern =
-        /^\/organization\/[^\/]+\/program\/[^\/]+(\/.*)?$/;
+        /^\/organization\/[^\/]+\/program\/(?!(?:new|foo)(?:\/|$))[^\/]+(\/.*)?$/;
 
     return (
         <>

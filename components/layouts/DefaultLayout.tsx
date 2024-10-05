@@ -48,7 +48,7 @@ const DefaultLayout: NextPage<LayoutProps> = ({ children }) => {
         },
         {
             title: "Programs",
-            href: `/organization/${orgId as string}/programs`,
+            href: `/organization/${orgId as string}/program`,
             collapseIcon: collapseIconLibrary.Programs,
             selectedIcon: collapseIconLibrary.selectedPrograms,
         },
