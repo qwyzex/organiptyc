@@ -1,0 +1,69 @@
+.container
+    display: flex
+    flex-direction: column
+    gap: 1rem
+
+    height: 100%
+
+    header
+        display: flex
+        flex-direction: row
+        align-items: center
+        gap: 1rem
+
+    main
+        display: flex
+        justify-content: center
+        align-items: center
+        gap: 2rem
+
+        height: 100%
+        width: 100%
+
+        // background-color: var(--acc)
+
+        > div
+            width: 16rem
+            height: 24rem
+            cursor: pointer
+
+            border-radius: 10px
+            border: 2px solid var(--color-dimmer)
+
+            transition: all 0.3s ease
+
+            background-color: var(--background)
+            padding: 0.5rem 1rem
+
+            position: relative
+            display: flex
+            flex-direction: column
+            justify-content: center
+            align-items: center
+            text-align: center
+            gap: 0.5rem
+
+            > svg
+                transition: all 0.3s ease
+                filter: drop-shadow( 0 0 3px var(--transparent) )
+                width: 6rem
+                height: 6rem
+
+            > div
+                transition: all 0.3s ease
+                opacity: 0
+                position: absolute
+                bottom: 0
+
+            &:hover
+                border: 2px solid var(--acc)
+                box-shadow: 0 5px 10px #20202040
+
+                > div
+                    transform: translateY(-25px)
+                    opacity: 1
+
+                > svg
+                    filter: drop-shadow( 0 0 3px var(--color-dimmer) )
+                    color: var(--acc)
+
