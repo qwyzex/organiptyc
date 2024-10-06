@@ -17,7 +17,7 @@ import {
     writeBatch,
 } from "firebase/firestore";
 import useOrganizationData from "@/function/useOrganizationData";
-import { UserContext } from "@/context/UserContext";
+import { UserContext, UserDocument } from "@/context/UserContext";
 import useIsAdmin from "@/function/useIsAdmin";
 import { db } from "@/firebase";
 import createLog from "@/function/createLog";
@@ -218,9 +218,9 @@ export default function OrganizationMembers() {
                             open={openInviteModal}
                             handleOpen={handleOpenInviteModal}
                             handleClose={handleCloseInviteModal}
-                            userDoc={userDoc}
+                            userDoc={userDoc!}
                             orgId={orgId as string}
-                            userId={authUser?.uid}
+                            userId={authUser!.uid}
                         />
                     ) : isAdminLoading && !orgData ? (
                         <>
@@ -576,6 +576,30 @@ export default function OrganizationMembers() {
     );
 }
 
+type InvitationLinkType = {
+    open: boolean;
+    handleOpen: () => void;
+    handleClose: () => void;
+    userDoc: UserDocument;
+    orgId: string;
+    userId: string;
+};
+
+/**
+ * InvitationLink is a component that displays a modal for generating a new
+ * invitation link for an organization. It also shows the existing invitation
+ * link if it exists.
+ *
+ * @param {boolean} open Whether the modal is open or not.
+ * @param {function} handleOpen Function to open the modal.
+ * @param {function} handleClose Function to close the modal.
+ * @param {object} userDoc User document from firestore.
+ * @param {string} orgId Organization ID.
+ * @param {string} userId User ID.
+ *
+ * @returns {JSX.Element} JSX element for the modal.
+ */
+
 const InvitationLink = ({
     open,
     handleOpen,
@@ -583,7 +607,7 @@ const InvitationLink = ({
     userDoc,
     orgId,
     userId,
-}: any) => {
+}: InvitationLinkType) => {
     const [newOldLink, setNewOldLink] = useState<string>("");
     const [inviteLink, setInviteLink] = useState<string>("");
     const [inviteExpiredAt, setInviteExpiredAt] = useState<string>("");
