@@ -114,23 +114,24 @@ a
     color: var(--acc-dark) !important
     font-weight: 500
 
-.inp-form
-    padding: 0.4rem 1rem
+input, textarea, select
+    &.inp-form
+        padding: 0.4rem 1rem
 
-    border: none
-    border-radius: 3px
-    outline: 2px solid #00000000
-
-    color: var(--color)
-    background-color: var(--background)                
-    transition: all 0.3s ease                
-
-    &:focus
         border: none
-        outline: 2px solid var(--acc)
-    
-    &.inp-diff
-        background-color: var(--highlight-button)
+        border-radius: 3px
+        outline: 2px solid #00000000
+
+        color: var(--color)
+        background-color: var(--background)                
+        transition: all 0.3s ease                
+
+        &:focus
+            border: none
+            outline: 2px solid var(--acc)
+        
+        &.inp-diff
+            background-color: var(--highlight-button)
 
 // INPUT DISPLAY ONLY
 .inp-dis
@@ -160,7 +161,7 @@ a
     color: var(--color)
 
     svg
-        color: var(--color)
+        // color: var(--color)
 
 .btn-def, .btn-ref, .btn-danger
     width: max-content !important
