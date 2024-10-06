@@ -6,15 +6,16 @@ import { ReactNode, useEffect, useRef, useState } from "react";
 import collapseIconLibrary from "@/utils/collapseIconLibrary";
 import { Button, Divider, IconButton } from "@mui/material";
 
-type SidebarListItem = {
+export type SidebarListItem = {
     title: string;
     href: string;
     collapseIcon: ReactNode | any;
     selectedIcon: ReactNode | any;
+    activeLogic: RegExp;
 };
 
 type SidebarList = {
-    list: Array<SidebarListItem>;
+    list: SidebarListItem[];
 };
 
 /**
@@ -43,24 +44,27 @@ const Sidebar = ({ list }: SidebarList) => {
 
     const [collapse, setCollapse] = useState<boolean>(false);
 
-    const defaultList = [
+    const defaultList: SidebarListItem[] = [
         {
             title: "Homepage",
             href: "/home",
             collapseIcon: collapseIconLibrary.Homepage,
             selectedIcon: collapseIconLibrary.selectedHomepage,
+            activeLogic: /^\/home$/,
         },
         {
             title: "Organization",
             href: "/organization",
             collapseIcon: collapseIconLibrary.Organization,
             selectedIcon: collapseIconLibrary.selectedOrganization,
+            activeLogic: /^\/organization$/,
         },
         {
             title: "New",
             href: "/organization/new",
             collapseIcon: collapseIconLibrary.NewOrganization,
             selectedIcon: collapseIconLibrary.selectedNewOrganization,
+            activeLogic: /^\/organization\/(new|create|join)$/,
         },
     ];
 
@@ -110,7 +114,7 @@ const Sidebar = ({ list }: SidebarList) => {
                                     <li
                                         key={i}
                                         className={`${
-                                            item.href == router.asPath
+                                            item.activeLogic.test(router.asPath)
                                                 ? styles.yesThisIsMe
                                                 : ""
                                         }`}
@@ -118,8 +122,9 @@ const Sidebar = ({ list }: SidebarList) => {
                                         <Link href={item.href}>
                                             {collapse ? (
                                                 <Button className="fadeIn">
-                                                    {item.href ==
-                                                    router.asPath ? (
+                                                    {item.activeLogic.test(
+                                                        router.asPath
+                                                    ) ? (
                                                         <item.selectedIcon fontSize="small" />
                                                     ) : (
                                                         <item.collapseIcon fontSize="small" />
