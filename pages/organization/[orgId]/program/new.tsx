@@ -1,4 +1,10 @@
-import { ArrowBackIosNew, ManageAccountsOutlined } from "@mui/icons-material";
+import {
+    AddLink,
+    ArrowBackIosNew,
+    ManageAccountsOutlined,
+    PersonAddAlt1Outlined,
+    PostAddRounded,
+} from "@mui/icons-material";
 import { Button, Divider, Tooltip } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -136,12 +142,11 @@ const NewProgramCreation = () => {
         const programId = uuidv4();
 
         const programData = {
-            // TODO: make the chief value to grab from the committee list and return the name of the item of which chief is true
             id: programId,
             name,
             description,
             dateStart: Timestamp.fromDate(new Date(dateStart)),
-            dateEnd: Timestamp.fromDate(new Date(dateStart)),
+            dateEnd: Timestamp.fromDate(new Date(dateEnd)),
             status: currentStatus,
             usefulLinks:
                 (links.length == 1 && links[0].name == "") ||
@@ -328,6 +333,7 @@ const NewProgramCreation = () => {
                                     className="btn-def"
                                     onClick={handleAddLink}
                                 >
+                                    <AddLink />
                                     Add Link
                                 </Button>
                             </section>
@@ -442,13 +448,18 @@ const NewProgramCreation = () => {
                                     className="btn-def"
                                     onClick={handleAddCommittee}
                                 >
+                                    <PersonAddAlt1Outlined />
                                     Add Committee
                                 </Button>
                             </section>
                         </label>
-                        <Button className="btn-def" type="submit">
-                            Create
-                        </Button>
+                        <label>
+                            <p></p>
+                            <Button className="btn-def" type="submit">
+                                <PostAddRounded />
+                                Create
+                            </Button>
+                        </label>
                     </form>
                 </main>
             </div>
