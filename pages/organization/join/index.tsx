@@ -10,8 +10,10 @@ import LaunchIcon from "@mui/icons-material/Launch";
 import handleInviteLink from "@/function/handleInviteLink";
 import { UserContext } from "@/context/UserContext";
 import { useRouter } from "next/router";
+import { ArrowBackIosNew } from "@mui/icons-material";
 
 export default function JoinOrganization() {
+    const router = useRouter();
     const [inviteToken, setInviteToken] = useState<string>("");
     const [extractedToken, setExtractedToken] = useState<string | null>(null);
 
@@ -29,6 +31,12 @@ export default function JoinOrganization() {
     return (
         <div className={styles.container}>
             <header className={styles.header}>
+                <Button
+                    className="btn-compact"
+                    onClick={() => router.replace(`/organization/new`)}
+                >
+                    <ArrowBackIosNew />
+                </Button>
                 <h1>Join Organization</h1>
             </header>
             <main className={styles.main}>
@@ -56,12 +64,13 @@ export default function JoinOrganization() {
                             onChange={handleInviteTokenValueChange}
                         />
                     </FormControl>
-                    <input
+                    <Button
+                        type="submit"
                         className="btn-def"
                         disabled={!inviteToken}
-                        type="submit"
-                        value="Check Organization"
-                    />
+                    >
+                        Check Organization
+                    </Button>
                 </form>
                 {extractedToken && <Invitee token={extractedToken} />}
             </main>
