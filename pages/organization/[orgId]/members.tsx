@@ -670,19 +670,19 @@ const InvitationLink = ({
             setNewOldLink("new");
             setInviteLink(link);
             setInviteExpiredAt(expiresAt.toDate().toLocaleString());
+            await createLog(
+                orgId as string,
+                userId,
+                {
+                    type: "generate_invite_link",
+                    text: `${userDoc.firstName} generate a new Invite Link that will expires in ${inviteExpiredAt}`,
+                },
+                userDoc.photoURL
+            );
             setGenerateNew(false);
         } else {
             console.error("NO USER");
         }
-        await createLog(
-            orgId as string,
-            userId,
-            {
-                type: "generate_invite_link",
-                text: `${userDoc.firstName} generate a new Invite Link that will expires in ${inviteExpiredAt}`,
-            },
-            userDoc.photoURL
-        );
         setGenerateLoading(false);
     };
 
