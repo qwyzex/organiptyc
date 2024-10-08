@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useState, useContext } from "react";
-import useOrganizationData from "@/function/useOrganizationData";
 import { UserContext } from "@/context/UserContext";
 import useIsAdmin from "@/function/useIsAdmin";
 import styles from "@/styles/organization/orgId/Programs.module.sass";
@@ -17,17 +16,21 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import Head from "next/head";
 import AdminWrap from "@/components/AdminWrap";
+import { useOrganizationContext } from "@/context/OrganizationContext";
 
 export default function OrganizationPrograms() {
     const router = useRouter();
-    const [rerenderer, setRerenderer] = useState<number>(0);
 
     const handleRerender = () => {
-        setRerenderer((r) => r + 1);
+        refetchOrganizationData();
     };
 
     const { orgId } = router.query;
-    const { orgData } = useOrganizationData(orgId as string, rerenderer);
+    const {
+        orgData,
+        loading: orgLoading,
+        refetchOrganizationData,
+    } = useOrganizationContext();
     const { authUser, loading, userDoc } = useContext(UserContext);
     const { isAdmin, loading: isAdminLoading } = useIsAdmin(orgId as string);
     const yourStatus = orgData?.members.find(

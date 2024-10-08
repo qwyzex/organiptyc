@@ -3,7 +3,6 @@ import Loading from "@/components/Loading";
 import { UserContext } from "@/context/UserContext";
 import { storage } from "@/firebase";
 import createLog from "@/function/createLog";
-import useOrganizationData from "@/function/useOrganizationData";
 import useProgramData from "@/function/useProgramData";
 import styles from "@/styles/organization/orgId/programs/Budgets.module.sass";
 import { FileDownload, UploadFileOutlined } from "@mui/icons-material";
@@ -42,7 +41,6 @@ export default function ProgramBudgets() {
     const router = useRouter();
     const { orgId, programId } = router.query;
 
-    const { orgData, loading, error } = useOrganizationData(orgId as string);
     const {
         programData,
         loading: programLoading,

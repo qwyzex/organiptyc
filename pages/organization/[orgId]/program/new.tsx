@@ -12,7 +12,6 @@ import { useState } from "react";
 import styles from "@/styles/organization/orgId/programs/NewProgram.module.sass";
 import { addDoc, collection, doc, setDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/firebase";
-import useOrganizationData from "@/function/useOrganizationData";
 import { useSnackbar } from "notistack";
 import { v4 as uuidv4 } from "uuid";
 

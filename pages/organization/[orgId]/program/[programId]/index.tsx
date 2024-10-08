@@ -2,7 +2,6 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import styles from "@/styles/organization/orgId/ProgramDashboard.module.sass";
-import useOrganizationData from "@/function/useOrganizationData";
 import Loading from "@/components/Loading";
 import useProgramData from "@/function/useProgramData";
 import {
@@ -33,6 +32,7 @@ import createLog from "@/function/createLog";
 import { UserContext } from "@/context/UserContext";
 import { useSnackbar } from "notistack";
 import useIsAdmin from "@/function/useIsAdmin";
+import { useOrganizationContext } from "@/context/OrganizationContext";
 
 // Layout wrapper for program dashboard
 export const ProgramDashboard = ({ children }: { children: ReactNode }) => {
@@ -40,7 +40,7 @@ export const ProgramDashboard = ({ children }: { children: ReactNode }) => {
     const { orgId, programId } = router.query;
     const [rerenderer, setRerenderer] = useState<number>(0);
 
-    const { orgData, loading, error } = useOrganizationData(orgId as string);
+    const { orgData, loading, error } = useOrganizationContext();
     const {
         programData,
         loading: programLoading,
