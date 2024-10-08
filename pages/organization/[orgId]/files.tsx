@@ -1,32 +1,20 @@
-import React, {
-    useState,
-    useEffect,
-    useRef,
-    useContext,
-    ChangeEvent,
-    DragEventHandler,
-} from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
-    getStorage,
     ref,
     listAll,
     getDownloadURL,
     getMetadata,
-    uploadBytes,
     uploadBytesResumable,
 } from "firebase/storage";
 import { storage } from "@/firebase";
 import { useRouter } from "next/router";
 import FileFolderDetails from "@/components/FileFolderDetails";
-import uploadFile from "@/function/uploadFile";
 import { UserContext } from "@/context/UserContext";
 import styles from "@/styles/organization/orgId/Files.module.sass";
-import Link from "next/link";
 import {
     Box,
     Breadcrumbs,
     Button,
-    Divider,
     IconButton,
     LinearProgress,
     Modal,

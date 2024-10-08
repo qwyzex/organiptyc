@@ -14,11 +14,14 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 import Head from "next/head";
 import ProgramDashboardLayout from "@/components/layouts/ProgramDashboardLayout";
+import { OrganizationProvider } from "@/context/OrganizationContext";
 
 export default function App({ Component, pageProps }: AppProps) {
     const router = useRouter();
     const Layout = getLayoutByRoute(router.pathname);
     const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+
+    const { orgId } = router.query;
 
     const theme = useMemo(
         () =>
@@ -68,11 +71,13 @@ export default function App({ Component, pageProps }: AppProps) {
             </Head>
             <ThemeProvider theme={theme}>
                 <SnackbarProvider maxSnack={4}>
-                    <Layout {...pageProps}>
-                        <ProgramDashboardLayout>
-                            <Component {...pageProps} />
-                        </ProgramDashboardLayout>
-                    </Layout>
+                    <OrganizationProvider orgId={orgId as string}>
+                        <Layout {...pageProps}>
+                            <ProgramDashboardLayout>
+                                <Component {...pageProps} />
+                            </ProgramDashboardLayout>
+                        </Layout>
+                    </OrganizationProvider>
                 </SnackbarProvider>
             </ThemeProvider>
         </UserProvider>

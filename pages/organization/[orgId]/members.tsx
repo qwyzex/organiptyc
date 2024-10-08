@@ -16,7 +16,6 @@ import {
     where,
     writeBatch,
 } from "firebase/firestore";
-import useOrganizationData from "@/function/useOrganizationData";
 import { UserContext, UserDocument } from "@/context/UserContext";
 import useIsAdmin from "@/function/useIsAdmin";
 import { db } from "@/firebase";
@@ -57,6 +56,7 @@ import { MenuItem as BaseMenuItem, menuItemClasses } from "@mui/base/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import removeMember from "@/function/removeMember";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { useOrganizationContext } from "@/context/OrganizationContext";
 
 const modalBoxStyle = {
     position: "absolute" as "absolute",
@@ -74,19 +74,22 @@ const modalBoxStyle = {
 
 export default function OrganizationMembers() {
     const router = useRouter();
-    const [rerenderer, setRerenderer] = useState<number>(0);
-
-    const handleRerender = () => {
-        setRerenderer((r) => r + 1);
-    };
 
     const { orgId } = router.query;
-    const { orgData } = useOrganizationData(orgId as string, rerenderer);
+    const {
+        orgData,
+        loading: orgDataLoading,
+        refetchOrganizationData,
+    } = useOrganizationContext();
     const { authUser, loading, userDoc } = useContext(UserContext);
     const { isAdmin, loading: isAdminLoading } = useIsAdmin(orgId as string);
     const yourStatus = orgData?.members.find(
         (member: any) => member.userId === authUser?.uid
     );
+
+    const handleRerender = () => {
+        refetchOrganizationData();
+    };
 
     const [sortBy, setSortBy] = useState<string>("role");
     const [sortIt, setSortIt] = useState<"asc" | "des">("asc");

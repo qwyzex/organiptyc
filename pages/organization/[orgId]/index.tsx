@@ -22,7 +22,6 @@ import {
 import { db } from "@/firebase";
 import { UserContext } from "@/context/UserContext";
 import Image from "next/image";
-import useOrganizationData from "@/function/useOrganizationData";
 // import { logDoc } from "@/function/createLog";
 import fetchLogs from "@/function/fetchLogs";
 import fetchAnyUser from "@/function/fetchAnyUser";
@@ -30,6 +29,7 @@ import styles from "@/styles/organization/orgId/Dashboard.module.sass";
 import useIsAdmin from "@/function/useIsAdmin";
 import { Button } from "@mui/material";
 import Loading from "@/components/Loading";
+import { useOrganizationContext } from "@/context/OrganizationContext";
 
 type OrganizationProps = {
     orgId: string;
@@ -41,7 +41,11 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
 
     const { loading, authUser, userDoc } = useContext(UserContext);
     const { isAdmin, error: isAdminError } = useIsAdmin(orgId);
-    const { orgData, error: orgDataError } = useOrganizationData(orgId);
+    const {
+        orgData,
+        error: orgDataError,
+        refetchOrganizationData,
+    } = useOrganizationContext();
 
     const [logs, setLogs] = useState<Array<any> | null>(null);
     const [lastLog, setLastLog] = useState<QueryDocumentSnapshot<
