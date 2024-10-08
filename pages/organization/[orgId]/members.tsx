@@ -647,7 +647,9 @@ const InvitationLink = ({
                             data.expiresAt.toDate().toLocaleString()
                         );
                         setInviteLink(
-                            `http://localhost:3000/organization/join/${data.token}`
+                            process.env.NODE_ENV === "production"
+                                ? `http://organiptyc.vercel.app/organization/join/${data.token}`
+                                : `https://localhost:3000/organization/join/${data.token}`
                         );
                     }
                 });
