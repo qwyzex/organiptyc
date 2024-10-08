@@ -4,7 +4,7 @@ import { UserContext } from "@/context/UserContext";
 import useIsAdmin from "@/function/useIsAdmin";
 import styles from "@/styles/organization/orgId/Programs.module.sass";
 import Link from "next/link";
-import { styled } from "@mui/material";
+import { styled, Tooltip } from "@mui/material";
 
 import IconButton from "@mui/material/IconButton";
 import Loading from "@/components/Loading";
@@ -26,16 +26,9 @@ export default function OrganizationPrograms() {
     };
 
     const { orgId } = router.query;
-    const {
-        orgData,
-        isAdmin,
-        loading: orgLoading,
-        refetchOrganizationData,
-    } = useOrganizationContext();
-    const { authUser, loading, userDoc } = useContext(UserContext);
-    const yourStatus = orgData?.members.find(
-        (member: any) => member.userId === authUser?.uid
-    );
+    const { orgData, isAdmin, refetchOrganizationData } =
+        useOrganizationContext();
+    const { authUser, userDoc } = useContext(UserContext);
 
     // name, timeofexecution (toex), chief
     const [sortBy, setSortBy] = useState<string>("toex");
@@ -74,7 +67,7 @@ export default function OrganizationPrograms() {
     );
 
     const StyledBaseMenuItem: any = styled(BaseMenuItem)(
-        ({ theme }) => `
+        () => `
         list-style: none;
         padding: 0.5rem 0.8rem;
         border-radius: 3px;
@@ -102,7 +95,7 @@ export default function OrganizationPrograms() {
     );
 
     const StyledMenuButton = styled(BaseMenuButton)(
-        ({ theme }) => `
+        () => `
         border-radius: 3px;
         width: 35px;
         height: 35px;
@@ -168,6 +161,7 @@ export default function OrganizationPrograms() {
                             >
                                 Name
                             </p>
+                            <p>Status</p>
                             <p
                                 className={
                                     sortBy === "toex"
@@ -228,11 +222,34 @@ export default function OrganizationPrograms() {
                                 .map((program: any) => (
                                     <li key={program.id} className="fadeIn">
                                         <p>
+                                            <Tooltip
+                                                title={
+                                                    "STATUS : " +
+                                                    program.status.toUpperCase()
+                                                }
+                                                arrow
+                                                placement="top"
+                                            >
+                                                <div
+                                                    className={`${
+                                                        styles.statusIndicatorNameside
+                                                    } ${
+                                                        styles[program.status]
+                                                    }`}
+                                                />
+                                            </Tooltip>
                                             <Link
                                                 href={`/organization/${orgId}/program/${program.id}`}
                                             >
                                                 {program.name}
                                             </Link>
+                                        </p>
+                                        <p
+                                            style={{
+                                                textTransform: "capitalize",
+                                            }}
+                                        >
+                                            {program.status}
                                         </p>
                                         <p>
                                             {program.dateStart

@@ -20,28 +20,6 @@
         gap: 1.5rem
         padding: 1rem 0
 
-        .yourStatus
-            display: grid
-            grid-template-columns: repeat(13, 1fr)
-            grid-template-areas: "q q q q q w w w w e e e m"
-
-            padding: 0 1.5rem
-
-            > *
-                &:first-child
-                    grid-area: q
-
-                &:nth-child(2)
-                    grid-area: w
-                    justify-self: center
-                &:nth-child(3)
-                    grid-area: e
-                    justify-self: center
-                        
-                &:last-child
-                    grid-area: m
-                    justify-self: center
-
         .memberListHeader
             display: flex
             flex-direction: column
@@ -52,8 +30,8 @@
             
             .memberListParam
                 display: grid
-                grid-template-columns: repeat(13, 1fr)
-                grid-template-areas: "q q q q q w w w w e e e m"
+                grid-template-columns: repeat(10, 1fr)
+                grid-template-areas: "q q q w w e e r r m"
 
                 padding: 1rem 1.5rem 0 1.5rem
 
@@ -109,6 +87,10 @@
                     &:nth-child(3)
                         grid-area: e
                         justify-self: center
+
+                    &:nth-child(4)
+                        grid-area: r
+                        justify-self: center
                         
                     &:last-child
                         grid-area: m
@@ -135,8 +117,8 @@
 
             li
                 display: grid
-                grid-template-columns: repeat(13, 1fr)
-                grid-template-areas: "q q q q q w w w w e e e m"
+                grid-template-columns: repeat(10, 1fr)
+                grid-template-areas: "q q q w w e e r r m"
 
                 align-items: center
                 
@@ -148,9 +130,33 @@
                 &:not(:last-child)
                     border-bottom: 1px solid var(--color-dimmer)
 
+                .statusIndicatorNameside
+                    height: 10px
+                    width: 10px
+                    background-color: var(--color-dimmer)
+                    box-shadow: 0 0 7px var(--color-dimmer)
+
+                    border-radius: 100%
+
+                    &.upcoming
+                        background-color: #e99700
+                        box-shadow: 0 0 7px #e99700
+                    &.ongoing
+                        background-color: #6dad06
+                        box-shadow: 0 0 7px #6dad06
+                    &.completed
+                        background-color: var(--acc)
+                        box-shadow: 0 0 7px var(--acc)
+                    &.failed
+                        background-color: var(--danger)
+                        box-shadow: 0 0 7px var(--danger)
+
                 > *
                     &:first-child
                         grid-area: q
+                        display: flex
+                        gap: 0.8rem
+                        align-items: center
 
                     &:nth-child(2)
                         grid-area: w
@@ -159,91 +165,11 @@
                     &:nth-child(3)
                         grid-area: e
                         justify-self: center
+
+                    &:nth-child(4)
+                        grid-area: r
+                        justify-self: center
                         
                     &:last-child
                         grid-area: m
                         justify-self: center
-
-                        // // width: 100%
-
-                        // border: 1px var(--color-dimmed) solid
-                        // border-radius: 3px
-
-                        // // background-color: var(--color-dimmer)
-                        // background-color: #00000000
-                        // color: var(--color)
-
-                        // // padding: 0.3rem 0.6rem
-                        // transition: all 0.3s ease
-
-                        // &:hover
-                        //     cursor: pointer
-
-                        //     box-shadow: var(--shadow-light)
-                    
-
-.inviteLinkModal
-    display: flex
-    flex-direction: column
-    gap: 1rem
-
-    padding: 1.5rem 2rem
-
-    hr
-        background-color: var(--color-dimmer)
-
-    header
-        display: flex
-        flex-direction: row
-        align-items: center
-        justify-content: space-between
-
-        button
-            svg
-                color: var(--color-dimmed)
-
-    .linkContainer
-        display: flex
-        flex-direction: column
-        gap: 0.5rem
-
-        > div
-            display: flex
-            flex-direction: row
-            gap: 0.5rem
-
-            input
-                width: 100%
-
-                padding: 0.4rem
-
-                border: none
-                border-radius: 3px
-                transition: all 0.3s ease
-                outline: 2px solid #00000000
-
-                &:focus
-                    border: none
-                    outline: 2px solid var(--acc)
-
-            button
-                &:hover
-                    svg
-                        color: var(--color-dimmed)
-
-                svg
-                    color: var(--color-dimmer)
-                    transition: all 0.3s ease
-    
-    .generateNewContainer
-        display: flex
-        flex-direction: column
-        gap: 1rem
-
-        > div
-            display: flex
-            flex-direction: row
-            gap: 1rem
-
-            button
-                width: 100%
