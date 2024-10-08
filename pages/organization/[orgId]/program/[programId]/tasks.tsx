@@ -44,6 +44,7 @@ import {
 import { db } from "@/firebase";
 import { useSnackbar } from "notistack";
 import Loading from "@/components/Loading";
+import Head from "next/head";
 
 export default function ProgramTasks() {
     const router = useRouter();
@@ -104,151 +105,176 @@ export default function ProgramTasks() {
     }, [programData]);
 
     return (
-        <section className={styles.container}>
-            <header className={styles.tasksHeader}>
-                <h2>Tasks</h2>
-            </header>
-            <main className={styles.main}>
-                <div>
-                    <ListItemButton
-                        onClick={() => {
-                            setOpenTasksList(!openTasksList);
-                        }}
-                    >
-                        <ListItemIcon>
-                            <AddTask />
-                        </ListItemIcon>
-                        <ListItemText primary="Active Tasks" />
-                        <ExpandLess
-                            className={openTasksList ? styles.open : ""}
-                        />
-                    </ListItemButton>
-                    <Collapse in={openTasksList} timeout="auto" unmountOnExit>
-                        <ul className={styles.tasksList}>
-                            {programData &&
-                            programData.tasks.filter(
-                                (item: any) => item.status == false
-                            ).length > 0 ? (
-                                programData.tasks
-                                    .filter((item: any) => item.status == false)
-                                    .sort(
-                                        (a: any, b: any) =>
-                                            a.dateCreated - b.dateCreated
-                                    )
-                                    .sort(
-                                        (a: any, b: any) =>
-                                            b.priority - a.priority
-                                    )
-                                    .map((item: any, i: number) => (
-                                        <li key={i}>
-                                            <TaskItemModal
-                                                taskContent={item.content}
-                                                priority={item.priority}
-                                                status={item.status}
-                                                uid={item.id}
-                                                orgId={orgId as string}
-                                                programId={programId as string}
-                                                setRerenderer={setRerenderer}
-                                            />
-                                        </li>
-                                    ))
-                            ) : (
-                                <div>
-                                    <p>No active tasks</p>
-                                </div>
-                            )}
-                        </ul>
-                    </Collapse>
-                </div>
-                <div>
-                    <ListItemButton
-                        onClick={() => {
-                            setOpenHPTasksList(!openHPTasksList);
-                        }}
-                    >
-                        <ListItemIcon>
-                            <Done />
-                        </ListItemIcon>
-                        <ListItemText primary="Completed Tasks" />
-                        <ExpandLess
-                            className={openHPTasksList ? styles.open : ""}
-                        />
-                    </ListItemButton>
-                    <Collapse in={openHPTasksList} timeout="auto" unmountOnExit>
-                        <ul className={styles.tasksList}>
-                            {programData &&
-                            programData.tasks.filter(
-                                (item: any) => item.status == true
-                            ).length > 0 ? (
-                                programData.tasks
-                                    .filter((item: any) => item.status == true)
-                                    .sort(
-                                        (a: any, b: any) =>
-                                            a.dateCreated - b.dateCreated
-                                    )
-                                    .map((item: any, i: number) => (
-                                        <li key={i}>
-                                            <TaskItemModal
-                                                taskContent={item.content}
-                                                priority={item.priority}
-                                                status={item.status}
-                                                uid={item.id}
-                                                orgId={orgId as string}
-                                                programId={programId as string}
-                                                setRerenderer={setRerenderer}
-                                            />
-                                        </li>
-                                    ))
-                            ) : (
-                                <div>
-                                    <p>No completed tasks</p>
-                                </div>
-                            )}
-                        </ul>
-                    </Collapse>
-                </div>
-            </main>
-            <footer className={styles.footer}>
-                <form onSubmit={handleNewTaskSubmit}>
-                    <input
-                        className={styles.inputForm}
-                        placeholder="Add new task"
-                        type="text"
-                        value={newTaskContent}
-                        disabled={newTaskLoading}
-                        onChange={(e) => {
-                            e.preventDefault();
+        <>
+            <Head>
+                <title>{programData?.name} Tasks</title>
+            </Head>
+            <section className={styles.container}>
+                <header className={styles.tasksHeader}>
+                    <h2>Tasks</h2>
+                </header>
+                <main className={styles.main}>
+                    <div>
+                        <ListItemButton
+                            onClick={() => {
+                                setOpenTasksList(!openTasksList);
+                            }}
+                        >
+                            <ListItemIcon>
+                                <AddTask />
+                            </ListItemIcon>
+                            <ListItemText primary="Active Tasks" />
+                            <ExpandLess
+                                className={openTasksList ? styles.open : ""}
+                            />
+                        </ListItemButton>
+                        <Collapse
+                            in={openTasksList}
+                            timeout="auto"
+                            unmountOnExit
+                        >
+                            <ul className={styles.tasksList}>
+                                {programData &&
+                                programData.tasks.filter(
+                                    (item: any) => item.status == false
+                                ).length > 0 ? (
+                                    programData.tasks
+                                        .filter(
+                                            (item: any) => item.status == false
+                                        )
+                                        .sort(
+                                            (a: any, b: any) =>
+                                                a.dateCreated - b.dateCreated
+                                        )
+                                        .sort(
+                                            (a: any, b: any) =>
+                                                b.priority - a.priority
+                                        )
+                                        .map((item: any, i: number) => (
+                                            <li key={i}>
+                                                <TaskItemModal
+                                                    taskContent={item.content}
+                                                    priority={item.priority}
+                                                    status={item.status}
+                                                    uid={item.id}
+                                                    orgId={orgId as string}
+                                                    programId={
+                                                        programId as string
+                                                    }
+                                                    setRerenderer={
+                                                        setRerenderer
+                                                    }
+                                                />
+                                            </li>
+                                        ))
+                                ) : (
+                                    <div>
+                                        <p>No active tasks</p>
+                                    </div>
+                                )}
+                            </ul>
+                        </Collapse>
+                    </div>
+                    <div>
+                        <ListItemButton
+                            onClick={() => {
+                                setOpenHPTasksList(!openHPTasksList);
+                            }}
+                        >
+                            <ListItemIcon>
+                                <Done />
+                            </ListItemIcon>
+                            <ListItemText primary="Completed Tasks" />
+                            <ExpandLess
+                                className={openHPTasksList ? styles.open : ""}
+                            />
+                        </ListItemButton>
+                        <Collapse
+                            in={openHPTasksList}
+                            timeout="auto"
+                            unmountOnExit
+                        >
+                            <ul className={styles.tasksList}>
+                                {programData &&
+                                programData.tasks.filter(
+                                    (item: any) => item.status == true
+                                ).length > 0 ? (
+                                    programData.tasks
+                                        .filter(
+                                            (item: any) => item.status == true
+                                        )
+                                        .sort(
+                                            (a: any, b: any) =>
+                                                a.dateCreated - b.dateCreated
+                                        )
+                                        .map((item: any, i: number) => (
+                                            <li key={i}>
+                                                <TaskItemModal
+                                                    taskContent={item.content}
+                                                    priority={item.priority}
+                                                    status={item.status}
+                                                    uid={item.id}
+                                                    orgId={orgId as string}
+                                                    programId={
+                                                        programId as string
+                                                    }
+                                                    setRerenderer={
+                                                        setRerenderer
+                                                    }
+                                                />
+                                            </li>
+                                        ))
+                                ) : (
+                                    <div>
+                                        <p>No completed tasks</p>
+                                    </div>
+                                )}
+                            </ul>
+                        </Collapse>
+                    </div>
+                </main>
+                <footer className={styles.footer}>
+                    <form onSubmit={handleNewTaskSubmit}>
+                        <input
+                            className={styles.inputForm}
+                            placeholder="Add new task"
+                            type="text"
+                            value={newTaskContent}
+                            disabled={newTaskLoading}
+                            onChange={(e) => {
+                                e.preventDefault();
 
-                            setNewTaskContent(e.target.value);
-                        }}
-                    />
-                    <Button
-                        className="btn-ref"
-                        onClick={() => setNewTaskHP(!newTaskHP)}
-                        disabled={!newTaskContent.trim() || newTaskLoading}
-                    >
-                        {newTaskHP ? (
-                            <Star fontSize="small" />
-                        ) : (
-                            <StarOutline fontSize="small" />
-                        )}
-                    </Button>
-                    <Button
-                        className="btn-def"
-                        type="submit"
-                        disabled={!newTaskContent.trim() || newTaskLoading}
-                    >
-                        {newTaskLoading ? (
-                            <div>
-                                <Loading className={styles.loadingComp} />
-                            </div>
-                        ) : (
-                            <Add fontSize="small" />
-                        )}
-                    </Button>
-                </form>
-            </footer>
-        </section>
+                                setNewTaskContent(e.target.value);
+                            }}
+                        />
+                        <Button
+                            className="btn-ref"
+                            onClick={() => setNewTaskHP(!newTaskHP)}
+                            disabled={!newTaskContent.trim() || newTaskLoading}
+                        >
+                            {newTaskHP ? (
+                                <Star fontSize="small" />
+                            ) : (
+                                <StarOutline fontSize="small" />
+                            )}
+                        </Button>
+                        <Button
+                            className="btn-def"
+                            type="submit"
+                            disabled={!newTaskContent.trim() || newTaskLoading}
+                        >
+                            {newTaskLoading ? (
+                                <div>
+                                    <Loading className={styles.loadingComp} />
+                                </div>
+                            ) : (
+                                <Add fontSize="small" />
+                            )}
+                        </Button>
+                    </form>
+                </footer>
+            </section>
+        </>
     );
 }
 

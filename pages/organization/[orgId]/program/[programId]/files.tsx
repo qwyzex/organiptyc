@@ -29,6 +29,7 @@ import createLog from "@/function/createLog";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import useProgramData from "@/function/useProgramData";
 import { User } from "firebase/auth";
+import Head from "next/head";
 
 export interface FileItem {
     name: string;
@@ -67,6 +68,10 @@ const ProgramFiles = () => {
     const router = useRouter();
     const { orgId, programId } = router.query;
     const { authUser, userDoc } = useContext(UserContext);
+    const { programData } = useProgramData({
+        orgId: orgId as string,
+        programId: programId as string,
+    });
 
     const [files, setFiles] = useState<FileItem[]>([]);
     const [folders, setFolders] = useState<FolderItem[]>([]);
@@ -188,203 +193,213 @@ const ProgramFiles = () => {
     };
 
     return (
-        <div className={styles.container}>
-            <header>
-                <div>
-                    <h2>Program Files</h2>
+        <>
+            <Head>
+                <title>{programData?.name}</title>
+            </Head>
+            <div className={styles.container}>
+                <header>
                     <div>
-                        <UploadFileModal
-                            open={openUploadModal}
-                            handleOpen={handleOpenUploadModal}
-                            handleClose={handleCloseUploadModal}
-                            orgId={orgId as string}
-                            programId={programId as string}
-                            path={path}
-                            authUser={authUser}
-                            userDoc={userDoc}
-                            setRerenderer={setRerenderer}
-                        />
-                        <span ref={detailsPaneToggleRef}>
-                            <Button
-                                className="btn-ref"
-                                onClick={handleOpenDetailsPane}
-                            >
-                                <InfoIcon fontSize="small" />
-                                File Info
-                                {/* {openDetails ? "CLOSE" : "OPEN"} DETAILS PANE */}
-                            </Button>
-                        </span>
+                        <h2>Program Files</h2>
+                        <div>
+                            <UploadFileModal
+                                open={openUploadModal}
+                                handleOpen={handleOpenUploadModal}
+                                handleClose={handleCloseUploadModal}
+                                orgId={orgId as string}
+                                programId={programId as string}
+                                path={path}
+                                authUser={authUser}
+                                userDoc={userDoc}
+                                setRerenderer={setRerenderer}
+                            />
+                            <span ref={detailsPaneToggleRef}>
+                                <Button
+                                    className="btn-ref"
+                                    onClick={handleOpenDetailsPane}
+                                >
+                                    <InfoIcon fontSize="small" />
+                                    File Info
+                                    {/* {openDetails ? "CLOSE" : "OPEN"} DETAILS PANE */}
+                                </Button>
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <section>
-                    <IconButton onClick={handleRefreshFiles}>
-                        <RefreshIcon fontSize="small" />
-                    </IconButton>
-                    <IconButton onClick={navigateBack} disabled={!path}>
-                        <ArrowUpwardIcon fontSize="small" />
-                    </IconButton>
-                    <Breadcrumbs maxItems={6}>
-                        <p>{""}</p>
-                        {path.split("/").map((address, index) => (
-                            <a key={index}>{address}</a>
-                        ))}
-                    </Breadcrumbs>
-                </section>
-            </header>
-            <main className={styles.tableContainer}>
-                {filesLoading && <Loading />}
-                <section ref={!openDetails ? detailsPaneRef : null}>
-                    <table ref={itemListRef}>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                {!openDetails && (
-                                    <>
-                                        <th>Type</th>
-                                        <th>Last Updated</th>
-                                        <th>Size</th>
-                                    </>
+                    <section>
+                        <IconButton onClick={handleRefreshFiles}>
+                            <RefreshIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton onClick={navigateBack} disabled={!path}>
+                            <ArrowUpwardIcon fontSize="small" />
+                        </IconButton>
+                        <Breadcrumbs maxItems={6}>
+                            <p>{""}</p>
+                            {path.split("/").map((address, index) => (
+                                <a key={index}>{address}</a>
+                            ))}
+                        </Breadcrumbs>
+                    </section>
+                </header>
+                <main className={styles.tableContainer}>
+                    {filesLoading && <Loading />}
+                    <section ref={!openDetails ? detailsPaneRef : null}>
+                        <table ref={itemListRef}>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    {!openDetails && (
+                                        <>
+                                            <th>Type</th>
+                                            <th>Last Updated</th>
+                                            <th>Size</th>
+                                        </>
+                                    )}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {folders.length === 0 &&
+                                    files.length === 0 &&
+                                    !filesLoading && (
+                                        <tr className="fadeIn">
+                                            <td>
+                                                <h4>This directory is empty</h4>
+                                            </td>
+                                        </tr>
+                                    )}
+                                {folders.map(
+                                    (folder: FolderItem, index: number) => (
+                                        <tr
+                                            onClick={() => {
+                                                setSelectedItems([folder]);
+                                                setSelectedType("folder");
+                                            }}
+                                            onDoubleClick={() =>
+                                                navigateToFolder(folder)
+                                            }
+                                            key={index}
+                                            className={`${
+                                                selectedItems.includes(folder)
+                                                    ? styles.selected
+                                                    : ""
+                                            } fadeIn`}
+                                        >
+                                            <td>
+                                                <div>
+                                                    <div
+                                                        className={
+                                                            styles.itemListIcon
+                                                        }
+                                                    >
+                                                        <FolderIcon fontSize="small" />
+                                                    </div>
+                                                    <a
+                                                        rel="noopener noreferrer"
+                                                        className={
+                                                            styles.itemListName
+                                                        }
+                                                    >
+                                                        {folder.name}/
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            {!openDetails && (
+                                                <>
+                                                    <td>
+                                                        <p>Folder</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>-</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>-</p>
+                                                    </td>
+                                                </>
+                                            )}
+                                        </tr>
+                                    )
                                 )}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {folders.length === 0 &&
-                                files.length === 0 &&
-                                !filesLoading && (
-                                    <tr className="fadeIn">
-                                        <td>
-                                            <h4>This directory is empty</h4>
-                                        </td>
-                                    </tr>
-                                )}
-                            {folders.map(
-                                (folder: FolderItem, index: number) => (
+                                {files.map((file: FileItem, index: number) => (
                                     <tr
-                                        onClick={() => {
-                                            setSelectedItems([folder]);
-                                            setSelectedType("folder");
-                                        }}
-                                        onDoubleClick={() =>
-                                            navigateToFolder(folder)
-                                        }
                                         key={index}
                                         className={`${
-                                            selectedItems.includes(folder)
+                                            selectedItems.includes(file)
                                                 ? styles.selected
                                                 : ""
                                         } fadeIn`}
+                                        onClick={() =>
+                                            handleItemClick(file, "file")
+                                        }
+                                        onDoubleClick={() => {
+                                            window
+                                                .open(file.url, "_blank")
+                                                ?.focus();
+                                        }}
                                     >
-                                        <td>
+                                        <td key={index}>
                                             <div>
                                                 <div
                                                     className={
                                                         styles.itemListIcon
                                                     }
                                                 >
-                                                    <FolderIcon fontSize="small" />
+                                                    <InsertDriveFileIcon fontSize="small" />
                                                 </div>
-                                                <a
-                                                    rel="noopener noreferrer"
-                                                    className={
-                                                        styles.itemListName
-                                                    }
-                                                >
-                                                    {folder.name}/
+                                                <a rel="noopener noreferrer">
+                                                    {file.name}
                                                 </a>
                                             </div>
                                         </td>
                                         {!openDetails && (
                                             <>
                                                 <td>
-                                                    <p>Folder</p>
+                                                    <p>
+                                                        {
+                                                            file.metadata
+                                                                .contentType
+                                                        }
+                                                    </p>
                                                 </td>
                                                 <td>
-                                                    <p>-</p>
+                                                    <p>
+                                                        {new Date(
+                                                            file.metadata.updated
+                                                        ).toLocaleDateString()}
+                                                    </p>
                                                 </td>
                                                 <td>
-                                                    <p>-</p>
+                                                    <p>
+                                                        {(
+                                                            file.metadata.size /
+                                                            1024
+                                                        ).toFixed(2)}{" "}
+                                                        KB
+                                                    </p>
                                                 </td>
                                             </>
                                         )}
                                     </tr>
-                                )
-                            )}
-                            {files.map((file: FileItem, index: number) => (
-                                <tr
-                                    key={index}
-                                    className={`${
-                                        selectedItems.includes(file)
-                                            ? styles.selected
-                                            : ""
-                                    } fadeIn`}
-                                    onClick={() =>
-                                        handleItemClick(file, "file")
-                                    }
-                                    onDoubleClick={() => {
-                                        window
-                                            .open(file.url, "_blank")
-                                            ?.focus();
-                                    }}
-                                >
-                                    <td key={index}>
-                                        <div>
-                                            <div
-                                                className={styles.itemListIcon}
-                                            >
-                                                <InsertDriveFileIcon fontSize="small" />
-                                            </div>
-                                            <a rel="noopener noreferrer">
-                                                {file.name}
-                                            </a>
-                                        </div>
-                                    </td>
-                                    {!openDetails && (
-                                        <>
-                                            <td>
-                                                <p>
-                                                    {file.metadata.contentType}
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p>
-                                                    {new Date(
-                                                        file.metadata.updated
-                                                    ).toLocaleDateString()}
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p>
-                                                    {(
-                                                        file.metadata.size /
-                                                        1024
-                                                    ).toFixed(2)}{" "}
-                                                    KB
-                                                </p>
-                                            </td>
-                                        </>
-                                    )}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </section>
+                                ))}
+                            </tbody>
+                        </table>
+                    </section>
 
-                {openDetails && (
-                    <div
-                        ref={detailsPaneRef}
-                        className={`${styles.detailsPaneContainer} ${
-                            openDetails ? styles.openDetailsPane : ""
-                        }`}
-                    >
-                        <FileFolderDetails
-                            items={selectedItems}
-                            type={selectedType}
-                            setrerenderer={setRerenderer}
-                        />
-                    </div>
-                )}
-            </main>
-        </div>
+                    {openDetails && (
+                        <div
+                            ref={detailsPaneRef}
+                            className={`${styles.detailsPaneContainer} ${
+                                openDetails ? styles.openDetailsPane : ""
+                            }`}
+                        >
+                            <FileFolderDetails
+                                items={selectedItems}
+                                type={selectedType}
+                                setrerenderer={setRerenderer}
+                            />
+                        </div>
+                    )}
+                </main>
+            </div>
+        </>
     );
 };
 

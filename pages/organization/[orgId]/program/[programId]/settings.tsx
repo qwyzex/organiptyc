@@ -26,6 +26,7 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/context/UserContext";
 import useIsAdmin from "@/function/useIsAdmin";
 import AdminWrap from "@/components/AdminWrap";
+import Head from "next/head";
 
 export default function ProgramSettings({ setRerenderer }: any) {
     const router = useRouter();
@@ -262,215 +263,226 @@ export default function ProgramSettings({ setRerenderer }: any) {
     };
 
     return (
-        <div className={styles.container}>
-            <main className={styles.main}>
-                {/* General Section */}
-                <div className={styles.optionSection}>
-                    <article>
-                        <Box>
-                            <SettingsOutlined fontSize="small" />
-                            <h2>General</h2>
-                        </Box>
-                        <Divider />
-                    </article>
-                    {programData ? (
-                        <>
-                            <form
-                                onSubmit={handleProgramRename}
-                                className="fadeIn"
-                            >
-                                <label htmlFor="programName">
-                                    Program Name
-                                </label>
-                                <div>
-                                    <input
-                                        className="inp-form"
-                                        type="text"
-                                        aria-label="programName"
-                                        value={programName}
-                                        onChange={(e) => {
-                                            setProgramName(e.target.value);
-                                        }}
-                                        readOnly={!isAdmin}
-                                    />
-                                    <AdminWrap>
-                                        <Button
-                                            className="btn-def"
-                                            type="submit"
-                                        >
-                                            Rename
-                                        </Button>
-                                    </AdminWrap>
-                                </div>
-                            </form>
-                            <form onSubmit={handleProgramDescriptionUpdate}>
-                                <label htmlFor="programDescription">
-                                    Program Description
-                                </label>
-                                <div>
-                                    <textarea
-                                        spellCheck={false}
-                                        className="inp-form"
-                                        aria-label="programDescription"
-                                        value={programDescription}
-                                        onChange={(e) => {
-                                            setProgramDescription(
-                                                e.target.value
-                                            );
-                                        }}
-                                        readOnly={!isAdmin}
-                                    />
-                                    <AdminWrap>
-                                        <Button
-                                            className="btn-def"
-                                            type="submit"
-                                        >
-                                            Update
-                                        </Button>
-                                    </AdminWrap>
-                                </div>
-                            </form>
-                        </>
-                    ) : (
-                        <Loading />
-                    )}
-                </div>
+        <>
+            <Head>
+                <title>{programData?.name} Settings</title>
+            </Head>
+            <div className={styles.container}>
+                <main className={styles.main}>
+                    {/* General Section */}
+                    <div className={styles.optionSection}>
+                        <article>
+                            <Box>
+                                <SettingsOutlined fontSize="small" />
+                                <h2>General</h2>
+                            </Box>
+                            <Divider />
+                        </article>
+                        {programData ? (
+                            <>
+                                <form
+                                    onSubmit={handleProgramRename}
+                                    className="fadeIn"
+                                >
+                                    <label htmlFor="programName">
+                                        Program Name
+                                    </label>
+                                    <div>
+                                        <input
+                                            className="inp-form"
+                                            type="text"
+                                            aria-label="programName"
+                                            value={programName}
+                                            onChange={(e) => {
+                                                setProgramName(e.target.value);
+                                            }}
+                                            readOnly={!isAdmin}
+                                        />
+                                        <AdminWrap>
+                                            <Button
+                                                className="btn-def"
+                                                type="submit"
+                                            >
+                                                Rename
+                                            </Button>
+                                        </AdminWrap>
+                                    </div>
+                                </form>
+                                <form onSubmit={handleProgramDescriptionUpdate}>
+                                    <label htmlFor="programDescription">
+                                        Program Description
+                                    </label>
+                                    <div>
+                                        <textarea
+                                            spellCheck={false}
+                                            className="inp-form"
+                                            aria-label="programDescription"
+                                            value={programDescription}
+                                            onChange={(e) => {
+                                                setProgramDescription(
+                                                    e.target.value
+                                                );
+                                            }}
+                                            readOnly={!isAdmin}
+                                        />
+                                        <AdminWrap>
+                                            <Button
+                                                className="btn-def"
+                                                type="submit"
+                                            >
+                                                Update
+                                            </Button>
+                                        </AdminWrap>
+                                    </div>
+                                </form>
+                            </>
+                        ) : (
+                            <Loading />
+                        )}
+                    </div>
 
-                {/* Program ID & Date Settings */}
-                <div className={styles.optionSection}>
-                    <article>
-                        <Box>
-                            <InfoOutlined fontSize="small" />
-                            <h2>Program Info</h2>
-                        </Box>
-                        <Divider />
-                    </article>
-                    {programData ? (
-                        <>
-                            <div className="fadeIn">
-                                <p>Program ID</p>
-                                <div>
-                                    <input
-                                        className="inp-form"
-                                        type="text"
-                                        value={programId as string}
-                                        readOnly
-                                    />
-                                    <Button
-                                        className="btn-def"
-                                        onClick={() => {
-                                            navigator.clipboard.writeText(
-                                                programId as string
-                                            );
-                                            enqueueSnackbar("Copied", {
-                                                variant: "success",
-                                            });
-                                        }}
-                                    >
-                                        Copy
-                                    </Button>
+                    {/* Program ID & Date Settings */}
+                    <div className={styles.optionSection}>
+                        <article>
+                            <Box>
+                                <InfoOutlined fontSize="small" />
+                                <h2>Program Info</h2>
+                            </Box>
+                            <Divider />
+                        </article>
+                        {programData ? (
+                            <>
+                                <div className="fadeIn">
+                                    <p>Program ID</p>
+                                    <div>
+                                        <input
+                                            className="inp-form"
+                                            type="text"
+                                            value={programId as string}
+                                            readOnly
+                                        />
+                                        <Button
+                                            className="btn-def"
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(
+                                                    programId as string
+                                                );
+                                                enqueueSnackbar("Copied", {
+                                                    variant: "success",
+                                                });
+                                            }}
+                                        >
+                                            Copy
+                                        </Button>
+                                    </div>
                                 </div>
-                            </div>
-                            <form onSubmit={handleProgramDatesUpdate}>
-                                <label htmlFor="dateStart">Start Date</label>
-                                <div>
+                                <form onSubmit={handleProgramDatesUpdate}>
+                                    <label htmlFor="dateStart">
+                                        Start Date
+                                    </label>
+                                    <div>
+                                        <section>
+                                            <input
+                                                className="inp-form"
+                                                type="date"
+                                                aria-label="dateStart"
+                                                value={
+                                                    dateStart
+                                                        ? dateStart
+                                                              .toDate()
+                                                              .toISOString()
+                                                              .slice(0, 10)
+                                                        : ""
+                                                }
+                                                onChange={(e) =>
+                                                    setDateStart(
+                                                        Timestamp.fromDate(
+                                                            new Date(
+                                                                e.target.value
+                                                            )
+                                                        )
+                                                    )
+                                                }
+                                                readOnly={!isAdmin}
+                                            />
+                                        </section>
+                                        <AdminWrap>
+                                            <Button
+                                                className="btn-def"
+                                                type="submit"
+                                            >
+                                                Update Dates
+                                            </Button>
+                                        </AdminWrap>
+                                    </div>
                                     <section>
+                                        <label htmlFor="dateEnd">
+                                            End Date
+                                        </label>
                                         <input
                                             className="inp-form"
                                             type="date"
-                                            aria-label="dateStart"
+                                            aria-label="dateEnd"
                                             value={
-                                                dateStart
-                                                    ? dateStart
+                                                dateEnd
+                                                    ? dateEnd
                                                           .toDate()
                                                           .toISOString()
                                                           .slice(0, 10)
                                                     : ""
                                             }
                                             onChange={(e) =>
-                                                setDateStart(
+                                                setDateEnd(
                                                     Timestamp.fromDate(
                                                         new Date(e.target.value)
                                                     )
                                                 )
                                             }
                                             readOnly={!isAdmin}
+                                            disabled={!isAdmin ? true : false}
                                         />
                                     </section>
-                                    <AdminWrap>
-                                        <Button
-                                            className="btn-def"
-                                            type="submit"
-                                        >
-                                            Update Dates
-                                        </Button>
-                                    </AdminWrap>
-                                </div>
-                                <section>
-                                    <label htmlFor="dateEnd">End Date</label>
-                                    <input
-                                        className="inp-form"
-                                        type="date"
-                                        aria-label="dateEnd"
-                                        value={
-                                            dateEnd
-                                                ? dateEnd
-                                                      .toDate()
-                                                      .toISOString()
-                                                      .slice(0, 10)
-                                                : ""
-                                        }
-                                        onChange={(e) =>
-                                            setDateEnd(
-                                                Timestamp.fromDate(
-                                                    new Date(e.target.value)
-                                                )
-                                            )
-                                        }
-                                        readOnly={!isAdmin}
-                                        disabled={!isAdmin ? true : false}
-                                    />
-                                </section>
-                            </form>
-                        </>
-                    ) : (
-                        <Loading />
-                    )}
-                </div>
-
-                {/* Danger Zone */}
-                <AdminWrap>
-                    <div
-                        className={`fadeIn ${styles.DangerZone} ${styles.optionSection}`}
-                    >
-                        <article>
-                            <Box>
-                                <WarningAmberRounded
-                                    color="error"
-                                    // fontSize="small"
-                                />
-                                <h2>Danger Zone</h2>
-                            </Box>
-                            <Divider />
-                        </article>
-                        <div>
-                            <article>
-                                <label htmlFor="">Delete Program</label>
-                                <p className="dim">
-                                    Once you delete this program, it cannot be
-                                    recovered.
-                                </p>
-                            </article>
-
-                            <DeleteProgramModals
-                                programData={programData}
-                                deleteFunction={dangerDeleteProgram}
-                            />
-                        </div>
+                                </form>
+                            </>
+                        ) : (
+                            <Loading />
+                        )}
                     </div>
-                </AdminWrap>
-            </main>
-        </div>
+
+                    {/* Danger Zone */}
+                    <AdminWrap>
+                        <div
+                            className={`fadeIn ${styles.DangerZone} ${styles.optionSection}`}
+                        >
+                            <article>
+                                <Box>
+                                    <WarningAmberRounded
+                                        color="error"
+                                        // fontSize="small"
+                                    />
+                                    <h2>Danger Zone</h2>
+                                </Box>
+                                <Divider />
+                            </article>
+                            <div>
+                                <article>
+                                    <label htmlFor="">Delete Program</label>
+                                    <p className="dim">
+                                        Once you delete this program, it cannot
+                                        be recovered.
+                                    </p>
+                                </article>
+
+                                <DeleteProgramModals
+                                    programData={programData}
+                                    deleteFunction={dangerDeleteProgram}
+                                />
+                            </div>
+                        </div>
+                    </AdminWrap>
+                </main>
+            </div>
+        </>
     );
 }
 

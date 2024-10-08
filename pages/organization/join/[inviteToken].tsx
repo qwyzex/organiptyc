@@ -2,6 +2,7 @@ import React, { useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import handleInviteLink from "@/function/handleInviteLink";
 import { UserContext } from "@/context/UserContext";
+import Head from "next/head";
 
 const InviteJoin = () => {
     const router = useRouter();
@@ -21,7 +22,14 @@ const InviteJoin = () => {
         return <div>NO USER. PLEASE LOG IN FIRST</div>;
     }
 
-    return <div>Joining organization...</div>;
+    return (
+        <>
+            <Head>
+                <title>Joining...</title>
+            </Head>
+            <div>Joining organization...</div>
+        </>
+    );
 };
 
 export default InviteJoin;

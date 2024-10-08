@@ -57,6 +57,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import removeMember from "@/function/removeMember";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useOrganizationContext } from "@/context/OrganizationContext";
+import Head from "next/head";
 
 const modalBoxStyle = {
     position: "absolute" as "absolute",
@@ -194,388 +195,413 @@ export default function OrganizationMembers() {
     );
 
     return (
-        <div className={styles.container}>
-            <header>
-                <h1>MEMBERS</h1>
-                <section>
-                    {orgData?.members ? (
-                        <p className="fadeIn">
-                            Total Members : {orgData?.members.length}, including{" "}
-                            {
-                                orgData?.members.filter(
-                                    (x: any) => x.role === "admin"
-                                ).length
-                            }{" "}
-                            admin
-                        </p>
-                    ) : (
-                        <Skeleton
-                            variant="text"
-                            sx={{ bgcolor: "var(--color-dimmer)" }}
-                            height={20}
-                            width={300}
-                        />
-                    )}
-                    {!isAdminLoading && isAdmin && orgData ? (
-                        <InvitationLink
-                            open={openInviteModal}
-                            handleOpen={handleOpenInviteModal}
-                            handleClose={handleCloseInviteModal}
-                            userDoc={userDoc!}
-                            orgId={orgId as string}
-                            userId={authUser!.uid}
-                        />
-                    ) : isAdminLoading && !orgData ? (
-                        <>
-                            <Skeleton
-                                variant="text"
-                                sx={{ bgcolor: "var(--color-dimmer)" }}
-                                height={40.5}
-                                width={197.75}
-                            />
-                        </>
-                    ) : (
-                        <div style={{ height: 40.5 }}></div>
-                    )}
-                </section>
-            </header>
-            <main>
-                <h2>Your Status</h2>
-                <div className={styles.yourStatus}>
-                    {yourStatus ? (
-                        <>
+        <>
+            <Head>
+                <title>{orgData?.name} Members</title>
+            </Head>
+            <div className={styles.container}>
+                <header>
+                    <h1>MEMBERS</h1>
+                    <section>
+                        {orgData?.members ? (
                             <p className="fadeIn">
-                                {yourStatus?.user.fullName}
+                                Total Members : {orgData?.members.length},
+                                including{" "}
+                                {
+                                    orgData?.members.filter(
+                                        (x: any) => x.role === "admin"
+                                    ).length
+                                }{" "}
+                                admin
                             </p>
-                            <p className="fadeIn">
-                                {yourStatus?.joinedAt.toDate().toDateString()}
-                            </p>
-                            <p className="fadeIn">
-                                {yourStatus?.role == "admin"
-                                    ? "Admin"
-                                    : "Member"}
-                            </p>
-                        </>
-                    ) : (
-                        <>
+                        ) : (
                             <Skeleton
                                 variant="text"
                                 sx={{ bgcolor: "var(--color-dimmer)" }}
-                                width={100}
-                                height={20.8}
+                                height={20}
+                                width={300}
                             />
-                            <Skeleton
-                                variant="text"
-                                sx={{ bgcolor: "var(--color-dimmer)" }}
-                                width={70}
-                                height={20.8}
+                        )}
+                        {!isAdminLoading && isAdmin && orgData ? (
+                            <InvitationLink
+                                open={openInviteModal}
+                                handleOpen={handleOpenInviteModal}
+                                handleClose={handleCloseInviteModal}
+                                userDoc={userDoc!}
+                                orgId={orgId as string}
+                                userId={authUser!.uid}
                             />
-                            <Skeleton
-                                variant="text"
-                                sx={{ bgcolor: "var(--color-dimmer)" }}
-                                width={60}
-                                height={20.8}
-                            />
-                        </>
-                    )}
-                </div>
-                <hr />
-                <header className={styles.memberListHeader}>
-                    <div className={styles.memberListTitle}>
-                        <h2>Other Members</h2>
-                        <IconButton onClick={handleRerender}>
-                            {/* <Tooltip
+                        ) : isAdminLoading && !orgData ? (
+                            <>
+                                <Skeleton
+                                    variant="text"
+                                    sx={{ bgcolor: "var(--color-dimmer)" }}
+                                    height={40.5}
+                                    width={197.75}
+                                />
+                            </>
+                        ) : (
+                            <div style={{ height: 40.5 }}></div>
+                        )}
+                    </section>
+                </header>
+                <main>
+                    <h2>Your Status</h2>
+                    <div className={styles.yourStatus}>
+                        {yourStatus ? (
+                            <>
+                                <p className="fadeIn">
+                                    {yourStatus?.user.fullName}
+                                </p>
+                                <p className="fadeIn">
+                                    {yourStatus?.joinedAt
+                                        .toDate()
+                                        .toDateString()}
+                                </p>
+                                <p className="fadeIn">
+                                    {yourStatus?.role == "admin"
+                                        ? "Admin"
+                                        : "Member"}
+                                </p>
+                            </>
+                        ) : (
+                            <>
+                                <Skeleton
+                                    variant="text"
+                                    sx={{ bgcolor: "var(--color-dimmer)" }}
+                                    width={100}
+                                    height={20.8}
+                                />
+                                <Skeleton
+                                    variant="text"
+                                    sx={{ bgcolor: "var(--color-dimmer)" }}
+                                    width={70}
+                                    height={20.8}
+                                />
+                                <Skeleton
+                                    variant="text"
+                                    sx={{ bgcolor: "var(--color-dimmer)" }}
+                                    width={60}
+                                    height={20.8}
+                                />
+                            </>
+                        )}
+                    </div>
+                    <hr />
+                    <header className={styles.memberListHeader}>
+                        <div className={styles.memberListTitle}>
+                            <h2>Other Members</h2>
+                            <IconButton onClick={handleRerender}>
+                                {/* <Tooltip
                                 title={"Refresh"}
                             > */}
-                            <RefreshIcon fontSize="small" />
-                            {/* </Tooltip> */}
-                        </IconButton>
-                    </div>
-                    <div
-                        className={`${styles.memberListParam} ${
-                            sortIt === "asc" && styles.asc
-                        }`}
-                    >
-                        <p
-                            className={
-                                sortBy === "name" ? styles.sortBySelected : ""
-                            }
-                            onClick={() => handleChangeSort("name")}
+                                <RefreshIcon fontSize="small" />
+                                {/* </Tooltip> */}
+                            </IconButton>
+                        </div>
+                        <div
+                            className={`${styles.memberListParam} ${
+                                sortIt === "asc" && styles.asc
+                            }`}
                         >
-                            Name
-                        </p>
-                        <p
-                            className={
-                                sortBy === "dateJoined"
-                                    ? styles.sortBySelected
-                                    : ""
-                            }
-                            onClick={() => handleChangeSort("dateJoined")}
-                        >
-                            Date Joined
-                        </p>
-                        <p
-                            className={
-                                sortBy === "role" ? styles.sortBySelected : ""
-                            }
-                            onClick={() => handleChangeSort("role")}
-                        >
-                            Role
-                        </p>
-                        <p></p>
-                    </div>
-                </header>
-                <ul className={styles.otherMembers}>
-                    {orgData &&
-                    authUser &&
-                    userDoc &&
-                    orgData.members.length < 2 ? (
-                        <section className="fadeIn">
-                            <h3 className="dim italic">
-                                Whoa... It&apos;s lonely down here!
-                            </h3>
-                            {isAdmin && (
-                                <p className="dim italic">
-                                    <a
-                                        className="pointer dim bold"
-                                        onClick={handleOpenInviteModal}
-                                    >
-                                        Invite
-                                    </a>{" "}
-                                    other people.
-                                </p>
-                            )}
-                        </section>
-                    ) : orgData && authUser && userDoc ? (
-                        orgData.members
-                            .sort((a: any, b: any) => {
-                                if (sortBy === "name") {
-                                    return sortIt === "asc"
-                                        ? a.user.fullName.localeCompare(
-                                              b.user.fullName
-                                          )
-                                        : b.user.fullName.localeCompare(
-                                              a.user.fullName
-                                          );
-                                } else if (sortBy === "dateJoined") {
-                                    return sortIt === "asc"
-                                        ? Math.round(
-                                              a.joinedAt.toDate() / 1000
-                                          ) -
-                                              Math.round(
-                                                  b.joinedAt.toDate() / 1000
+                            <p
+                                className={
+                                    sortBy === "name"
+                                        ? styles.sortBySelected
+                                        : ""
+                                }
+                                onClick={() => handleChangeSort("name")}
+                            >
+                                Name
+                            </p>
+                            <p
+                                className={
+                                    sortBy === "dateJoined"
+                                        ? styles.sortBySelected
+                                        : ""
+                                }
+                                onClick={() => handleChangeSort("dateJoined")}
+                            >
+                                Date Joined
+                            </p>
+                            <p
+                                className={
+                                    sortBy === "role"
+                                        ? styles.sortBySelected
+                                        : ""
+                                }
+                                onClick={() => handleChangeSort("role")}
+                            >
+                                Role
+                            </p>
+                            <p></p>
+                        </div>
+                    </header>
+                    <ul className={styles.otherMembers}>
+                        {orgData &&
+                        authUser &&
+                        userDoc &&
+                        orgData.members.length < 2 ? (
+                            <section className="fadeIn">
+                                <h3 className="dim italic">
+                                    Whoa... It&apos;s lonely down here!
+                                </h3>
+                                {isAdmin && (
+                                    <p className="dim italic">
+                                        <a
+                                            className="pointer dim bold"
+                                            onClick={handleOpenInviteModal}
+                                        >
+                                            Invite
+                                        </a>{" "}
+                                        other people.
+                                    </p>
+                                )}
+                            </section>
+                        ) : orgData && authUser && userDoc ? (
+                            orgData.members
+                                .sort((a: any, b: any) => {
+                                    if (sortBy === "name") {
+                                        return sortIt === "asc"
+                                            ? a.user.fullName.localeCompare(
+                                                  b.user.fullName
                                               )
-                                        : Math.round(
-                                              b.joinedAt.toDate() / 1000
-                                          ) -
-                                              Math.round(
-                                                  a.joinedAt.toDate() / 1000
+                                            : b.user.fullName.localeCompare(
+                                                  a.user.fullName
                                               );
-                                } else if (sortBy === "role") {
-                                    return sortIt === "asc"
-                                        ? a.role.localeCompare(b.role)
-                                        : b.role.localeCompare(a.role);
-                                }
-                            })
-                            .map((member: any) => {
-                                return !(member.userId === authUser.uid) ? (
-                                    <li key={member.userId} className="fadeIn">
-                                        <p>
-                                            <Link
-                                                href={`/profile/${member.userId}`}
-                                            >
-                                                {member.user.fullName}
-                                            </Link>
-                                        </p>
-                                        <p>
-                                            {member.joinedAt
-                                                .toDate()
-                                                .toDateString()}
-                                        </p>
-                                        {isAdmin &&
-                                        !(member.userId === authUser.uid) ? (
-                                            <FormControl size="small">
-                                                <Select
-                                                    defaultValue={member.role}
-                                                    onChange={async (e) => {
-                                                        e.preventDefault();
-                                                        const newRole =
-                                                            e.target.value;
-                                                        const confirmChange =
-                                                            window.confirm(
-                                                                `ARE YOU SURE YOU WANT TO CHANGE ${member.user.fullName}'s ROLE FROM '${member.role}' to '${newRole}'`
-                                                            );
-                                                        if (confirmChange) {
-                                                            try {
-                                                                const userOrgDocRef =
-                                                                    doc(
-                                                                        db,
-                                                                        `organizations/${orgId}/members`,
-                                                                        member.userId
+                                    } else if (sortBy === "dateJoined") {
+                                        return sortIt === "asc"
+                                            ? Math.round(
+                                                  a.joinedAt.toDate() / 1000
+                                              ) -
+                                                  Math.round(
+                                                      b.joinedAt.toDate() / 1000
+                                                  )
+                                            : Math.round(
+                                                  b.joinedAt.toDate() / 1000
+                                              ) -
+                                                  Math.round(
+                                                      a.joinedAt.toDate() / 1000
+                                                  );
+                                    } else if (sortBy === "role") {
+                                        return sortIt === "asc"
+                                            ? a.role.localeCompare(b.role)
+                                            : b.role.localeCompare(a.role);
+                                    }
+                                })
+                                .map((member: any) => {
+                                    return !(member.userId === authUser.uid) ? (
+                                        <li
+                                            key={member.userId}
+                                            className="fadeIn"
+                                        >
+                                            <p>
+                                                <Link
+                                                    href={`/profile/${member.userId}`}
+                                                >
+                                                    {member.user.fullName}
+                                                </Link>
+                                            </p>
+                                            <p>
+                                                {member.joinedAt
+                                                    .toDate()
+                                                    .toDateString()}
+                                            </p>
+                                            {isAdmin &&
+                                            !(
+                                                member.userId === authUser.uid
+                                            ) ? (
+                                                <FormControl size="small">
+                                                    <Select
+                                                        defaultValue={
+                                                            member.role
+                                                        }
+                                                        onChange={async (e) => {
+                                                            e.preventDefault();
+                                                            const newRole =
+                                                                e.target.value;
+                                                            const confirmChange =
+                                                                window.confirm(
+                                                                    `ARE YOU SURE YOU WANT TO CHANGE ${member.user.fullName}'s ROLE FROM '${member.role}' to '${newRole}'`
+                                                                );
+                                                            if (confirmChange) {
+                                                                try {
+                                                                    const userOrgDocRef =
+                                                                        doc(
+                                                                            db,
+                                                                            `organizations/${orgId}/members`,
+                                                                            member.userId
+                                                                        );
+                                                                    const userDocRef =
+                                                                        doc(
+                                                                            db,
+                                                                            `users/${member.userId}/organizations`,
+                                                                            orgId as string
+                                                                        );
+
+                                                                    const batch =
+                                                                        writeBatch(
+                                                                            db
+                                                                        );
+
+                                                                    // Update role in organization document
+                                                                    batch.update(
+                                                                        userOrgDocRef,
+                                                                        {
+                                                                            role: newRole,
+                                                                        }
                                                                     );
-                                                                const userDocRef =
-                                                                    doc(
-                                                                        db,
-                                                                        `users/${member.userId}/organizations`,
-                                                                        orgId as string
+
+                                                                    // Update role in user document (inside organizations field)
+                                                                    batch.update(
+                                                                        userDocRef,
+                                                                        {
+                                                                            role: newRole,
+                                                                        }
                                                                     );
 
-                                                                const batch =
-                                                                    writeBatch(
-                                                                        db
+                                                                    await batch.commit();
+
+                                                                    await createLog(
+                                                                        orgId as string,
+                                                                        member.userId,
+                                                                        {
+                                                                            type: "change_role",
+                                                                            text: `${userDoc.firstName} changes ${member.user.firstName} role from ${member.role} to ${newRole}`,
+                                                                        },
+                                                                        userDoc.photoURL
                                                                     );
 
-                                                                // Update role in organization document
-                                                                batch.update(
-                                                                    userOrgDocRef,
-                                                                    {
-                                                                        role: newRole,
-                                                                    }
-                                                                );
+                                                                    alert(
+                                                                        `${member.user.fullName}'s role has been updated to ${newRole}`
+                                                                    );
 
-                                                                // Update role in user document (inside organizations field)
-                                                                batch.update(
-                                                                    userDocRef,
-                                                                    {
-                                                                        role: newRole,
-                                                                    }
-                                                                );
-
-                                                                await batch.commit();
-
-                                                                await createLog(
-                                                                    orgId as string,
-                                                                    member.userId,
-                                                                    {
-                                                                        type: "change_role",
-                                                                        text: `${userDoc.firstName} changes ${member.user.firstName} role from ${member.role} to ${newRole}`,
-                                                                    },
-                                                                    userDoc.photoURL
-                                                                );
-
-                                                                alert(
-                                                                    `${member.user.fullName}'s role has been updated to ${newRole}`
-                                                                );
-
-                                                                handleRerender();
-                                                            } catch (error) {
-                                                                console.error(
-                                                                    "Error updating role: ",
-                                                                    error
-                                                                );
-                                                                alert(
-                                                                    "Failed to update role. Please try again."
-                                                                );
+                                                                    handleRerender();
+                                                                } catch (error) {
+                                                                    console.error(
+                                                                        "Error updating role: ",
+                                                                        error
+                                                                    );
+                                                                    alert(
+                                                                        "Failed to update role. Please try again."
+                                                                    );
+                                                                }
                                                             }
-                                                        }
-                                                    }}
-                                                >
-                                                    <MaterialMenuItem
-                                                        disabled={
-                                                            member.role ==
-                                                            "member"
-                                                        }
-                                                        value={"member"}
+                                                        }}
                                                     >
-                                                        {"Member"}
-                                                    </MaterialMenuItem>
-                                                    <MaterialMenuItem
-                                                        disabled={
-                                                            member.role ==
-                                                            "admin"
-                                                        }
-                                                        value={"admin"}
-                                                    >
-                                                        {"Admin"}
-                                                    </MaterialMenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        ) : (
-                                            <p>{member.role}</p>
-                                        )}
-                                        <Dropdown>
-                                            {/* <Tooltip title={"More"}> */}
-                                            <StyledMenuButton>
-                                                <MoreVertIcon fontSize="small" />
-                                            </StyledMenuButton>
-                                            {/* </Tooltip> */}
-                                            <Menu slots={{ listbox: Listbox }}>
-                                                <StyledBaseMenuItem
-                                                    disabled={!isAdmin}
-                                                    onClick={() => {
-                                                        handleRemoveUser([
-                                                            {
-                                                                uid: member.userId,
-                                                                fullName:
-                                                                    member.user
-                                                                        .fullName,
-                                                                firstName:
-                                                                    member.user
-                                                                        .firstName,
-                                                                lastName:
-                                                                    member.user
-                                                                        .lastName,
-                                                                photoURL:
-                                                                    member.user
-                                                                        .photoURL,
-                                                            },
-                                                        ]);
-                                                    }}
+                                                        <MaterialMenuItem
+                                                            disabled={
+                                                                member.role ==
+                                                                "member"
+                                                            }
+                                                            value={"member"}
+                                                        >
+                                                            {"Member"}
+                                                        </MaterialMenuItem>
+                                                        <MaterialMenuItem
+                                                            disabled={
+                                                                member.role ==
+                                                                "admin"
+                                                            }
+                                                            value={"admin"}
+                                                        >
+                                                            {"Admin"}
+                                                        </MaterialMenuItem>
+                                                    </Select>
+                                                </FormControl>
+                                            ) : (
+                                                <p>{member.role}</p>
+                                            )}
+                                            <Dropdown>
+                                                {/* <Tooltip title={"More"}> */}
+                                                <StyledMenuButton>
+                                                    <MoreVertIcon fontSize="small" />
+                                                </StyledMenuButton>
+                                                {/* </Tooltip> */}
+                                                <Menu
+                                                    slots={{ listbox: Listbox }}
                                                 >
-                                                    <p>Remove Member</p>
-                                                </StyledBaseMenuItem>
-                                            </Menu>
-                                        </Dropdown>
-                                    </li>
-                                ) : (
-                                    <></>
-                                );
-                            })
-                    ) : (
-                        <section>
-                            <Loading />
-                        </section>
-                    )}
-                </ul>
-                <Modal
-                    open={openRemoveMemberModal}
-                    onClose={handleCloseRemoveMemberModal}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                >
-                    <Box sx={modalBoxStyle}>
-                        <Typography variant="h6" component="h2">
-                            Are you sure you want to remove this member?
-                        </Typography>
-                        <Button
-                            className="btn-def btn-danger"
-                            onClick={() => {
-                                if (membersToRemove) {
-                                    removeMember({
-                                        orgId: orgId as string,
-                                        perpetrator: {
-                                            uid: authUser?.uid,
-                                            ...userDoc,
-                                        },
-                                        memberList: membersToRemove,
-                                    });
-                                    handleRerender();
-                                }
-                                handleCloseRemoveMemberModal();
-                            }}
-                        >
-                            <p>Yes, Remove Member</p>
-                        </Button>
-                        <Button
-                            className="btn-ref"
-                            onClick={() => handleCloseRemoveMemberModal()}
-                        >
-                            <p>Cancel</p>
-                        </Button>
-                    </Box>
-                </Modal>
-            </main>
-        </div>
+                                                    <StyledBaseMenuItem
+                                                        disabled={!isAdmin}
+                                                        onClick={() => {
+                                                            handleRemoveUser([
+                                                                {
+                                                                    uid: member.userId,
+                                                                    fullName:
+                                                                        member
+                                                                            .user
+                                                                            .fullName,
+                                                                    firstName:
+                                                                        member
+                                                                            .user
+                                                                            .firstName,
+                                                                    lastName:
+                                                                        member
+                                                                            .user
+                                                                            .lastName,
+                                                                    photoURL:
+                                                                        member
+                                                                            .user
+                                                                            .photoURL,
+                                                                },
+                                                            ]);
+                                                        }}
+                                                    >
+                                                        <p>Remove Member</p>
+                                                    </StyledBaseMenuItem>
+                                                </Menu>
+                                            </Dropdown>
+                                        </li>
+                                    ) : (
+                                        <></>
+                                    );
+                                })
+                        ) : (
+                            <section>
+                                <Loading />
+                            </section>
+                        )}
+                    </ul>
+                    <Modal
+                        open={openRemoveMemberModal}
+                        onClose={handleCloseRemoveMemberModal}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                    >
+                        <Box sx={modalBoxStyle}>
+                            <Typography variant="h6" component="h2">
+                                Are you sure you want to remove this member?
+                            </Typography>
+                            <Button
+                                className="btn-def btn-danger"
+                                onClick={() => {
+                                    if (membersToRemove) {
+                                        removeMember({
+                                            orgId: orgId as string,
+                                            perpetrator: {
+                                                uid: authUser?.uid,
+                                                ...userDoc,
+                                            },
+                                            memberList: membersToRemove,
+                                        });
+                                        handleRerender();
+                                    }
+                                    handleCloseRemoveMemberModal();
+                                }}
+                            >
+                                <p>Yes, Remove Member</p>
+                            </Button>
+                            <Button
+                                className="btn-ref"
+                                onClick={() => handleCloseRemoveMemberModal()}
+                            >
+                                <p>Cancel</p>
+                            </Button>
+                        </Box>
+                    </Modal>
+                </main>
+            </div>
+        </>
     );
 }
 

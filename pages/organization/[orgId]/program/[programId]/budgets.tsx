@@ -13,6 +13,7 @@ import {
     ref,
     uploadBytesResumable,
 } from "firebase/storage";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
 import {
@@ -71,32 +72,37 @@ export default function ProgramBudgets() {
     }, [orgId, programId]);
 
     return (
-        <div className={styles.container}>
-            <header>
-                <h1>Budgets</h1>
-                <p className="dim">Total: {programData?.budget}</p>
-            </header>
-            <main className={styles.main}>
-                {fileExists == null && programData ? (
-                    <UploadBudget
-                        orgId={orgId as string}
-                        programId={programId as string}
-                        onUploadComplete={() => {}}
-                    />
-                ) : fileExists && programData ? (
-                    <DisplayBudget
-                        orgId={orgId as string}
-                        programId={programId as string}
-                        programName={programData.name}
-                    />
-                ) : (
-                    <section>
-                        <Loading />
-                        <h4>Loading document...</h4>
-                    </section>
-                )}
-            </main>
-        </div>
+        <>
+            <Head>
+                <title>{programData?.name} Budgets</title>
+            </Head>
+            <div className={styles.container}>
+                <header>
+                    <h1>Budgets</h1>
+                    <p className="dim">Total: {programData?.budget}</p>
+                </header>
+                <main className={styles.main}>
+                    {fileExists == null && programData ? (
+                        <UploadBudget
+                            orgId={orgId as string}
+                            programId={programId as string}
+                            onUploadComplete={() => {}}
+                        />
+                    ) : fileExists && programData ? (
+                        <DisplayBudget
+                            orgId={orgId as string}
+                            programId={programId as string}
+                            programName={programData.name}
+                        />
+                    ) : (
+                        <section>
+                            <Loading />
+                            <h4>Loading document...</h4>
+                        </section>
+                    )}
+                </main>
+            </div>
+        </>
     );
 }
 

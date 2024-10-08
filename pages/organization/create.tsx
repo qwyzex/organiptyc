@@ -9,6 +9,7 @@ import { storage, db, auth } from "@/firebase";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "@mui/material";
 import { ArrowBackIosNew, DomainAdd } from "@mui/icons-material";
+import Head from "next/head";
 
 const CreateOrganizationForm = () => {
     const [name, setName] = useState<string>("");
@@ -107,114 +108,119 @@ const CreateOrganizationForm = () => {
     };
 
     return (
-        <main className={styles.container}>
-            <header>
-                <Button
-                    className="btn-compact"
-                    onClick={() => router.replace(`/organization/new`)}
-                >
-                    <ArrowBackIosNew />
-                </Button>
-                <h1>Create Organization</h1>
-            </header>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    <p>Organization Name</p>
-                    <input
-                        className="inp-form"
-                        type="text"
-                        value={name}
-                        placeholder="Organization name"
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                        disabled={loading}
-                    />
-                </label>
-                <label>
-                    <p>Description</p>
-                    <textarea
-                        className="inp-form"
-                        value={description}
-                        placeholder="Organization description"
-                        onChange={(e) => setDescription(e.target.value)}
-                        disabled={loading}
-                    />
-                </label>
-                <label>
-                    <p>Type</p>
-                    <select
-                        className="inp-form"
-                        value={type}
-                        onChange={(e) => setType(e.target.value)}
-                        required
-                        disabled={loading}
-                    >
-                        <option value="" disabled>
-                            Select type
-                        </option>
-                        <option value="nonprofit">Nonprofit</option>
-                        <option value="student">Student</option>
-                    </select>
-                </label>
-                <label>
-                    <p>Website (optional)</p>
-                    <input
-                        className="inp-form"
-                        type="url"
-                        value={website}
-                        placeholder="https://example.com"
-                        onChange={(e) => setWebsite(e.target.value)}
-                        disabled={loading}
-                    />
-                </label>{" "}
-                <label>
-                    <p>Location (optional)</p>
-                    <input
-                        className="inp-form"
-                        type="text"
-                        value={location}
-                        placeholder="City, State, Country"
-                        onChange={(e) => setLocation(e.target.value)}
-                        disabled={loading}
-                    />
-                </label>
-                <label>
-                    <p>Logo</p>
-                    <input
-                        className="inp-form"
-                        type="file"
-                        onChange={(e) =>
-                            setLogoFile(e.target.files?.[0] || null)
-                        }
-                        required
-                        disabled={loading}
-                    />
-                </label>
-                <label>
-                    <p>Articles of Association / Bylaws</p>
-                    <input
-                        className="inp-form"
-                        type="file"
-                        onChange={(e) =>
-                            setAdArtFile(e.target.files?.[0] || null)
-                        }
-                        required
-                        disabled={loading}
-                    />
-                </label>{" "}
-                <label>
-                    <p></p>
+        <>
+            <Head>
+                <title>Create Organization</title>
+            </Head>
+            <main className={styles.container}>
+                <header>
                     <Button
-                        className="btn-def"
-                        type="submit"
-                        disabled={loading}
+                        className="btn-compact"
+                        onClick={() => router.replace(`/organization/new`)}
                     >
-                        <DomainAdd />
-                        Create Organization
+                        <ArrowBackIosNew />
                     </Button>
-                </label>
-            </form>
-        </main>
+                    <h1>Create Organization</h1>
+                </header>
+                <form onSubmit={handleSubmit}>
+                    <label>
+                        <p>Organization Name</p>
+                        <input
+                            className="inp-form"
+                            type="text"
+                            value={name}
+                            placeholder="Organization name"
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                            disabled={loading}
+                        />
+                    </label>
+                    <label>
+                        <p>Description</p>
+                        <textarea
+                            className="inp-form"
+                            value={description}
+                            placeholder="Organization description"
+                            onChange={(e) => setDescription(e.target.value)}
+                            disabled={loading}
+                        />
+                    </label>
+                    <label>
+                        <p>Type</p>
+                        <select
+                            className="inp-form"
+                            value={type}
+                            onChange={(e) => setType(e.target.value)}
+                            required
+                            disabled={loading}
+                        >
+                            <option value="" disabled>
+                                Select type
+                            </option>
+                            <option value="nonprofit">Nonprofit</option>
+                            <option value="student">Student</option>
+                        </select>
+                    </label>
+                    <label>
+                        <p>Website (optional)</p>
+                        <input
+                            className="inp-form"
+                            type="url"
+                            value={website}
+                            placeholder="https://example.com"
+                            onChange={(e) => setWebsite(e.target.value)}
+                            disabled={loading}
+                        />
+                    </label>{" "}
+                    <label>
+                        <p>Location (optional)</p>
+                        <input
+                            className="inp-form"
+                            type="text"
+                            value={location}
+                            placeholder="City, State, Country"
+                            onChange={(e) => setLocation(e.target.value)}
+                            disabled={loading}
+                        />
+                    </label>
+                    <label>
+                        <p>Logo</p>
+                        <input
+                            className="inp-form"
+                            type="file"
+                            onChange={(e) =>
+                                setLogoFile(e.target.files?.[0] || null)
+                            }
+                            required
+                            disabled={loading}
+                        />
+                    </label>
+                    <label>
+                        <p>Articles of Association / Bylaws</p>
+                        <input
+                            className="inp-form"
+                            type="file"
+                            onChange={(e) =>
+                                setAdArtFile(e.target.files?.[0] || null)
+                            }
+                            required
+                            disabled={loading}
+                        />
+                    </label>{" "}
+                    <label>
+                        <p></p>
+                        <Button
+                            className="btn-def"
+                            type="submit"
+                            disabled={loading}
+                        >
+                            <DomainAdd />
+                            Create Organization
+                        </Button>
+                    </label>
+                </form>
+            </main>
+        </>
     );
 };
 

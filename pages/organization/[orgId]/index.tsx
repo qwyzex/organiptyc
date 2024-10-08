@@ -30,6 +30,7 @@ import useIsAdmin from "@/function/useIsAdmin";
 import { Button } from "@mui/material";
 import Loading from "@/components/Loading";
 import { useOrganizationContext } from "@/context/OrganizationContext";
+import Head from "next/head";
 
 type OrganizationProps = {
     orgId: string;
@@ -136,53 +137,63 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
     }
 
     return (
-        <div className={styles.container}>
-            <header className={styles.orgHeader}>
-                <Image
-                    src={orgData.logoURL}
-                    alt={`${orgData.name} logo`}
-                    height={100}
-                    width={100}
-                    priority
-                ></Image>
-                <article>
-                    <h1>{orgData.name}</h1>
-                    <p>
-                        Created on : {orgData.createdAt.toDate().toDateString()}
-                    </p>
-                    <p>
-                        <strong>{orgData.members.length} </strong>
-                        members |<strong> You </strong>
-                        are {isAdmin
-                            ? "an admin and a member"
-                            : "a member"}{" "}
-                        since{" "}
-                        {orgData.members
-                            .find(
-                                (member: any) => member.userId === authUser?.uid
-                            )
-                            ?.joinedAt.toDate()
-                            .toLocaleDateString()
-                            .replaceAll("/", " / ")}
-                    </p>
-                </article>
-                <div>
-                    <Button className="btn-def fadeIn" onClick={handleEditOrg}>
-                        <p>EDIT ORGANIZATION</p>
+        <>
+            <Head>
+                <title>{orgData?.name} Dashboard</title>
+            </Head>
+            <div className={styles.container}>
+                <header className={styles.orgHeader}>
+                    <Image
+                        src={orgData.logoURL}
+                        alt={`${orgData.name} logo`}
+                        height={100}
+                        width={100}
+                        priority
+                    ></Image>
+                    <article>
+                        <h1>{orgData.name}</h1>
+                        <p>
+                            Created on :{" "}
+                            {orgData.createdAt.toDate().toDateString()}
+                        </p>
+                        <p>
+                            <strong>{orgData.members.length} </strong>
+                            members |<strong> You </strong>
+                            are {isAdmin
+                                ? "an admin and a member"
+                                : "a member"}{" "}
+                            since{" "}
+                            {orgData.members
+                                .find(
+                                    (member: any) =>
+                                        member.userId === authUser?.uid
+                                )
+                                ?.joinedAt.toDate()
+                                .toLocaleDateString()
+                                .replaceAll("/", " / ")}
+                        </p>
+                    </article>
+                    <div>
+                        <Button
+                            className="btn-def fadeIn"
+                            onClick={handleEditOrg}
+                        >
+                            <p>EDIT ORGANIZATION</p>
+                        </Button>
+                    </div>
+                </header>
+                <main className={styles.orgMain}>
+                    <LogContainer logs={logs} />
+                    <Button
+                        className="btn-def fadeIn"
+                        disabled={!hasMoreLogs}
+                        onClick={() => loadMoreLogs(orgId)}
+                    >
+                        {logIsLoading ? "Loading" : "Load More"}
                     </Button>
-                </div>
-            </header>
-            <main className={styles.orgMain}>
-                <LogContainer logs={logs} />
-                <Button
-                    className="btn-def fadeIn"
-                    disabled={!hasMoreLogs}
-                    onClick={() => loadMoreLogs(orgId)}
-                >
-                    {logIsLoading ? "Loading" : "Load More"}
-                </Button>
-            </main>
-        </div>
+                </main>
+            </div>
+        </>
     );
 };
 

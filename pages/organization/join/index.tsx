@@ -11,6 +11,7 @@ import handleInviteLink from "@/function/handleInviteLink";
 import { UserContext } from "@/context/UserContext";
 import { useRouter } from "next/router";
 import { ArrowBackIosNew } from "@mui/icons-material";
+import Head from "next/head";
 
 export default function JoinOrganization() {
     const router = useRouter();
@@ -29,52 +30,57 @@ export default function JoinOrganization() {
     };
 
     return (
-        <div className={styles.container}>
-            <header className={styles.header}>
-                <Button
-                    className="btn-compact"
-                    onClick={() => router.replace(`/organization/new`)}
-                >
-                    <ArrowBackIosNew />
-                </Button>
-                <h1>Join Organization</h1>
-            </header>
-            <main className={styles.main}>
-                <form
-                    className={styles.inviteTokenForm}
-                    onSubmit={handleOnJoinOrganizationFormSubmit}
-                >
-                    <article>
-                        <p>Insert a full link of the invitation</p>
-                        <code>
-                            https://organiptyc.vercel.app/organization/join/
-                            {`{invite_token}`}
-                        </code>
-                        <p>Or just insert the Invite Token</p>
-                    </article>
-                    <FormControl size="small">
-                        <TextField
-                            autoFocus
-                            size="small"
-                            variant="standard"
-                            type="text"
-                            required
-                            value={inviteToken}
-                            label="Invite Token"
-                            onChange={handleInviteTokenValueChange}
-                        />
-                    </FormControl>
+        <>
+            <Head>
+                <title>Join Organization</title>
+            </Head>
+            <div className={styles.container}>
+                <header className={styles.header}>
                     <Button
-                        type="submit"
-                        className="btn-def"
-                        disabled={!inviteToken}
+                        className="btn-compact"
+                        onClick={() => router.replace(`/organization/new`)}
                     >
-                        Check Organization
+                        <ArrowBackIosNew />
                     </Button>
-                </form>
-                {extractedToken && <Invitee token={extractedToken} />}
-            </main>
-        </div>
+                    <h1>Join Organization</h1>
+                </header>
+                <main className={styles.main}>
+                    <form
+                        className={styles.inviteTokenForm}
+                        onSubmit={handleOnJoinOrganizationFormSubmit}
+                    >
+                        <article>
+                            <p>Insert a full link of the invitation</p>
+                            <code>
+                                https://organiptyc.vercel.app/organization/join/
+                                {`{invite_token}`}
+                            </code>
+                            <p>Or just insert the Invite Token</p>
+                        </article>
+                        <FormControl size="small">
+                            <TextField
+                                autoFocus
+                                size="small"
+                                variant="standard"
+                                type="text"
+                                required
+                                value={inviteToken}
+                                label="Invite Token"
+                                onChange={handleInviteTokenValueChange}
+                            />
+                        </FormControl>
+                        <Button
+                            type="submit"
+                            className="btn-def"
+                            disabled={!inviteToken}
+                        >
+                            Check Organization
+                        </Button>
+                    </form>
+                    {extractedToken && <Invitee token={extractedToken} />}
+                </main>
+            </div>
+        </>
     );
 }
 
