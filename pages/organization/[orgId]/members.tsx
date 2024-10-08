@@ -35,7 +35,12 @@ import {
 } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 
-import { SnackbarProvider, VariantType, useSnackbar } from "notistack";
+import {
+    SnackbarProvider,
+    VariantType,
+    enqueueSnackbar,
+    useSnackbar,
+} from "notistack";
 import { default as MaterialMenuItem } from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
@@ -79,11 +84,11 @@ export default function OrganizationMembers() {
     const { orgId } = router.query;
     const {
         orgData,
+        isAdmin,
         loading: orgDataLoading,
         refetchOrganizationData,
     } = useOrganizationContext();
     const { authUser, loading, userDoc } = useContext(UserContext);
-    const { isAdmin, loading: isAdminLoading } = useIsAdmin(orgId as string);
     const yourStatus = orgData?.members.find(
         (member: any) => member.userId === authUser?.uid
     );
@@ -99,7 +104,7 @@ export default function OrganizationMembers() {
     const handleOpenInviteModal = () => setOpenInviteModal(true);
     const handleCloseInviteModal = () => setOpenInviteModal(false);
 
-    const [membersToRemove, setMembersToRemove] = useState([]);
+    const [membersToRemove, setMembersToRemove] = useState<any>([]);
     const [openRemoveMemberModal, setOpenRemoveMemberModal] =
         useState<boolean>(false);
     const handleOpenRemoveMemberModal = () => setOpenRemoveMemberModal(true);
@@ -201,49 +206,27 @@ export default function OrganizationMembers() {
             </Head>
             <div className={styles.container}>
                 <header>
-                    <h1>MEMBERS</h1>
                     <section>
-                        {orgData?.members ? (
-                            <p className="fadeIn">
-                                Total Members : {orgData?.members.length},
-                                including{" "}
-                                {
-                                    orgData?.members.filter(
-                                        (x: any) => x.role === "admin"
-                                    ).length
-                                }{" "}
-                                admin
-                            </p>
-                        ) : (
-                            <Skeleton
-                                variant="text"
-                                sx={{ bgcolor: "var(--color-dimmer)" }}
-                                height={20}
-                                width={300}
-                            />
-                        )}
-                        {!isAdminLoading && isAdmin && orgData ? (
-                            <InvitationLink
-                                open={openInviteModal}
-                                handleOpen={handleOpenInviteModal}
-                                handleClose={handleCloseInviteModal}
-                                userDoc={userDoc!}
-                                orgId={orgId as string}
-                                userId={authUser!.uid}
-                            />
-                        ) : isAdminLoading && !orgData ? (
-                            <>
-                                <Skeleton
-                                    variant="text"
-                                    sx={{ bgcolor: "var(--color-dimmer)" }}
-                                    height={40.5}
-                                    width={197.75}
-                                />
-                            </>
-                        ) : (
-                            <div style={{ height: 40.5 }}></div>
-                        )}
+                        <h1>MEMBERS</h1>
+                        <p>
+                            Total Members : {orgData?.members.length}; Including{" "}
+                            {
+                                orgData?.members.filter((x: any) => x.admin)
+                                    .length
+                            }{" "}
+                            admin
+                        </p>
                     </section>
+                    {!orgDataLoading && isAdmin && orgData && (
+                        <InvitationLink
+                            open={openInviteModal}
+                            handleOpen={handleOpenInviteModal}
+                            handleClose={handleCloseInviteModal}
+                            userDoc={userDoc!}
+                            orgId={orgId as string}
+                            userId={authUser!.uid}
+                        />
+                    )}
                 </header>
                 <main>
                     <h2>Your Status</h2>
@@ -259,9 +242,7 @@ export default function OrganizationMembers() {
                                         .toDateString()}
                                 </p>
                                 <p className="fadeIn">
-                                    {yourStatus?.role == "admin"
-                                        ? "Admin"
-                                        : "Member"}
+                                    {yourStatus?.admin ? "Admin" : "Member"}
                                 </p>
                             </>
                         ) : (
@@ -385,11 +366,13 @@ export default function OrganizationMembers() {
                                                   );
                                     } else if (sortBy === "role") {
                                         return sortIt === "asc"
-                                            ? a.role.localeCompare(b.role)
-                                            : b.role.localeCompare(a.role);
+                                            ? a.admin - b.admin
+                                            : b.admin - a.admin;
                                     }
                                 })
                                 .map((member: any) => {
+                                    let currentlyAdmin = member.admin;
+
                                     return !(member.userId === authUser.uid) ? (
                                         <li
                                             key={member.userId}
@@ -413,16 +396,32 @@ export default function OrganizationMembers() {
                                             ) ? (
                                                 <FormControl size="small">
                                                     <Select
-                                                        defaultValue={
-                                                            member.role
+                                                        value={
+                                                            currentlyAdmin
+                                                                ? "admin"
+                                                                : "member"
                                                         }
                                                         onChange={async (e) => {
                                                             e.preventDefault();
-                                                            const newRole =
-                                                                e.target.value;
+                                                            const newAdminStatus =
+                                                                e.target
+                                                                    .value ===
+                                                                "admin";
                                                             const confirmChange =
                                                                 window.confirm(
-                                                                    `ARE YOU SURE YOU WANT TO CHANGE ${member.user.fullName}'s ROLE FROM '${member.role}' to '${newRole}'`
+                                                                    `ARE YOU SURE YOU WANT TO CHANGE ${
+                                                                        member
+                                                                            .user
+                                                                            .fullName
+                                                                    }'s ROLE FROM '${
+                                                                        member.admin
+                                                                            ? "ADMIN"
+                                                                            : "MEMBER"
+                                                                    }' to '${
+                                                                        newAdminStatus
+                                                                            ? "ADMIN"
+                                                                            : "MEMBER"
+                                                                    }'`
                                                                 );
                                                             if (confirmChange) {
                                                                 try {
@@ -444,36 +443,61 @@ export default function OrganizationMembers() {
                                                                             db
                                                                         );
 
-                                                                    // Update role in organization document
+                                                                    // Update admin status in organization document
                                                                     batch.update(
                                                                         userOrgDocRef,
                                                                         {
-                                                                            role: newRole,
+                                                                            admin: newAdminStatus,
                                                                         }
                                                                     );
 
-                                                                    // Update role in user document (inside organizations field)
+                                                                    // Update admin status in user document (inside organizations field)
                                                                     batch.update(
                                                                         userDocRef,
                                                                         {
-                                                                            role: newRole,
+                                                                            admin: newAdminStatus,
                                                                         }
                                                                     );
 
                                                                     await batch.commit();
+
+                                                                    currentlyAdmin =
+                                                                        newAdminStatus;
 
                                                                     await createLog(
                                                                         orgId as string,
                                                                         member.userId,
                                                                         {
                                                                             type: "change_role",
-                                                                            text: `${userDoc.firstName} changes ${member.user.firstName} role from ${member.role} to ${newRole}`,
+                                                                            text: `${
+                                                                                userDoc.firstName
+                                                                            } changed ${
+                                                                                member
+                                                                                    .user
+                                                                                    .firstName
+                                                                            }'s role from ${
+                                                                                member.admin
+                                                                                    ? "ADMIN"
+                                                                                    : "MEMBER"
+                                                                            } to ${
+                                                                                newAdminStatus
+                                                                                    ? "ADMIN"
+                                                                                    : "MEMBER"
+                                                                            }`,
                                                                         },
                                                                         userDoc.photoURL
                                                                     );
 
                                                                     alert(
-                                                                        `${member.user.fullName}'s role has been updated to ${newRole}`
+                                                                        `${
+                                                                            member
+                                                                                .user
+                                                                                .fullName
+                                                                        }'s role has been updated to ${
+                                                                            newAdminStatus
+                                                                                ? "ADMIN"
+                                                                                : "MEMBER"
+                                                                        }`
                                                                     );
 
                                                                     handleRerender();
@@ -491,8 +515,7 @@ export default function OrganizationMembers() {
                                                     >
                                                         <MaterialMenuItem
                                                             disabled={
-                                                                member.role ==
-                                                                "member"
+                                                                !member.admin
                                                             }
                                                             value={"member"}
                                                         >
@@ -500,8 +523,7 @@ export default function OrganizationMembers() {
                                                         </MaterialMenuItem>
                                                         <MaterialMenuItem
                                                             disabled={
-                                                                member.role ==
-                                                                "admin"
+                                                                member.admin
                                                             }
                                                             value={"admin"}
                                                         >
@@ -510,14 +532,16 @@ export default function OrganizationMembers() {
                                                     </Select>
                                                 </FormControl>
                                             ) : (
-                                                <p>{member.role}</p>
+                                                <p>
+                                                    {member.admin
+                                                        ? "Admin"
+                                                        : "Member"}
+                                                </p>
                                             )}
                                             <Dropdown>
-                                                {/* <Tooltip title={"More"}> */}
                                                 <StyledMenuButton>
                                                     <MoreVertIcon fontSize="small" />
                                                 </StyledMenuButton>
-                                                {/* </Tooltip> */}
                                                 <Menu
                                                     slots={{ listbox: Listbox }}
                                                 >
@@ -568,35 +592,54 @@ export default function OrganizationMembers() {
                         aria-labelledby="modal-modal-title"
                         aria-describedby="modal-modal-description"
                     >
-                        <Box sx={modalBoxStyle}>
-                            <Typography variant="h6" component="h2">
-                                Are you sure you want to remove this member?
-                            </Typography>
-                            <Button
-                                className="btn-def btn-danger"
-                                onClick={() => {
-                                    if (membersToRemove) {
-                                        removeMember({
-                                            orgId: orgId as string,
-                                            perpetrator: {
-                                                uid: authUser?.uid,
-                                                ...userDoc,
-                                            },
-                                            memberList: membersToRemove,
-                                        });
-                                        handleRerender();
+                        <Box
+                            sx={modalBoxStyle}
+                            className={`modalDangerous ${styles.removeMemberModal}`}
+                        >
+                            <h2 className="color-danger">Remove Member</h2>
+                            <p>
+                                Are you sure you want to remove{" "}
+                                <span className="color-danger">
+                                    {membersToRemove[0]?.fullName}
+                                </span>{" "}
+                                from the organization?
+                            </p>
+                            <section>
+                                <Button
+                                    className=" btn-danger"
+                                    onClick={() => {
+                                        if (membersToRemove) {
+                                            removeMember({
+                                                orgId: orgId as string,
+                                                perpetrator: {
+                                                    uid: authUser?.uid,
+                                                    ...userDoc,
+                                                },
+                                                memberList: membersToRemove,
+                                            }).then(() => {
+                                                enqueueSnackbar(
+                                                    "Member removed successfully",
+                                                    {
+                                                        variant: "success",
+                                                    }
+                                                );
+                                            });
+                                            handleRerender();
+                                        }
+                                        handleCloseRemoveMemberModal();
+                                    }}
+                                >
+                                    <p>Yes, Remove Member</p>
+                                </Button>
+                                <Button
+                                    className="btn-ref"
+                                    onClick={() =>
+                                        handleCloseRemoveMemberModal()
                                     }
-                                    handleCloseRemoveMemberModal();
-                                }}
-                            >
-                                <p>Yes, Remove Member</p>
-                            </Button>
-                            <Button
-                                className="btn-ref"
-                                onClick={() => handleCloseRemoveMemberModal()}
-                            >
-                                <p>Cancel</p>
-                            </Button>
+                                >
+                                    <p>Cancel</p>
+                                </Button>
+                            </section>
                         </Box>
                     </Modal>
                 </main>
@@ -766,7 +809,6 @@ const InvitationLink = ({
                                         navigator.clipboard.writeText(
                                             inviteLink
                                         );
-                                        // alert("Copied to clipboard!");
                                         handleSuccessCopy();
                                     }}
                                 >

@@ -71,8 +71,6 @@ const removeMember = async ({ orgId, perpetrator, memberList }: any) => {
             );
         } catch (err: any) {
             console.log(err);
-        } finally {
-            alert("SUCCESSFULLY REMOVED!");
         }
     }
 };

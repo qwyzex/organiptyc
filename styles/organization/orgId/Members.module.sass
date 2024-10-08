@@ -4,12 +4,13 @@
 
     > header
         display: flex
-        flex-direction: column
+        flex-direction: row
+        justify-content: space-between
 
         section
-            display: flex
-            align-items: center
-            justify-content: space-between
+            // display: flex
+            // align-items: center
+            // justify-content: space-between
 
     > main
         display: flex
@@ -161,23 +162,14 @@
                         grid-area: m
                         justify-self: center
 
-                        // // width: 100%
+.removeMemberModal
+    display: flex
+    flex-direction: column
+    gap: 1rem
 
-                        // border: 1px var(--color-dimmed) solid
-                        // border-radius: 3px
-
-                        // // background-color: var(--color-dimmer)
-                        // background-color: #00000000
-                        // color: var(--color)
-
-                        // // padding: 0.3rem 0.6rem
-                        // transition: all 0.3s ease
-
-                        // &:hover
-                        //     cursor: pointer
-
-                        //     box-shadow: var(--shadow-light)
-                    
+    section
+        display: flex
+        justify-content: space-between
 
 .inviteLinkModal
     display: flex
