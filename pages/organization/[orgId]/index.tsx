@@ -41,11 +41,11 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
     const [error, setError] = useState<string | null>(null);
 
     const { loading, authUser, userDoc } = useContext(UserContext);
-    const { isAdmin, error: isAdminError } = useIsAdmin(orgId);
     const {
         orgData,
         error: orgDataError,
         refetchOrganizationData,
+        isAdmin,
     } = useOrganizationContext();
 
     const [logs, setLogs] = useState<Array<any> | null>(null);
@@ -119,10 +119,6 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ orgId }) => {
     const handleEditOrg = () => {
         router.push(`/organization/${orgId}/edit`);
     };
-
-    if (isAdminError || orgDataError) {
-        return <></>;
-    }
 
     if (error) {
         return <div>{error}</div>;

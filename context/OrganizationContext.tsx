@@ -7,11 +7,13 @@ import {
     getDocs,
     query,
     limit,
+    DocumentData,
 } from "firebase/firestore";
 import { UserContext } from "@/context/UserContext";
 
 interface OrganizationContextProps {
-    orgData: any;
+    orgData: DocumentData | null;
+    isAdmin: boolean;
     loading: boolean;
     error: any;
     refetchOrganizationData: () => Promise<void>; // Exposing refetch method
@@ -30,20 +32,22 @@ export const OrganizationProvider = ({
 }) => {
     const { authUser } = useContext(UserContext);
     const [orgData, setOrgData] = useState<any>(null);
+    const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<any>(null);
 
     const fetchOrganizationData = async () => {
-        console.log("INITIATING FETCH");
+        // PREQUIREMENTS
         if (!authUser) return;
         if (!orgId || !window.location.pathname.startsWith("/organization")) {
             setOrgData(null);
             return;
         }
         setLoading(true);
-        console.log("PASSED THE PARAMETERS");
 
+        // FUNCTION RUN
         try {
+            // Root Document
             const orgRef = doc(db, "organizations", orgId);
             const orgSnap = await getDoc(orgRef);
 
@@ -52,6 +56,8 @@ export const OrganizationProvider = ({
             }
 
             const orgData = orgSnap.data();
+
+            // Subcollections
             const subcollections = ["members", "programs"];
 
             for (const subcollectionName of subcollections) {
@@ -86,6 +92,19 @@ export const OrganizationProvider = ({
                 }
             }
 
+            // Check if user is an admin
+            const orgMemberRef = doc(
+                db,
+                `organizations/${orgId}/members`,
+                authUser.uid
+            );
+            const orgMemberDoc = await getDoc(orgMemberRef);
+
+            if (orgMemberDoc.exists()) {
+                setIsAdmin(orgMemberDoc.data().admin);
+            }
+
+            // Final Data
             setOrgData(orgData);
         } catch (error) {
             setError(error);
@@ -106,7 +125,13 @@ export const OrganizationProvider = ({
 
     return (
         <OrganizationContext.Provider
-            value={{ orgData, loading, error, refetchOrganizationData }}
+            value={{
+                orgData,
+                isAdmin,
+                loading,
+                error,
+                refetchOrganizationData,
+            }}
         >
             {children}
         </OrganizationContext.Provider>

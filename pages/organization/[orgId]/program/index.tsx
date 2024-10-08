@@ -28,11 +28,11 @@ export default function OrganizationPrograms() {
     const { orgId } = router.query;
     const {
         orgData,
+        isAdmin,
         loading: orgLoading,
         refetchOrganizationData,
     } = useOrganizationContext();
     const { authUser, loading, userDoc } = useContext(UserContext);
-    const { isAdmin, loading: isAdminLoading } = useIsAdmin(orgId as string);
     const yourStatus = orgData?.members.find(
         (member: any) => member.userId === authUser?.uid
     );

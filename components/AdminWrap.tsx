@@ -1,3 +1,4 @@
+import { useOrganizationContext } from "@/context/OrganizationContext";
 import useIsAdmin from "@/function/useIsAdmin";
 import { useRouter } from "next/router";
 import { ReactNode } from "react";
@@ -15,7 +16,7 @@ import { ReactNode } from "react";
 export default function AdminWrap({ children }: { children: ReactNode }) {
     const { orgId } = useRouter().query;
 
-    const { isAdmin } = useIsAdmin(orgId as string);
+    const { isAdmin } = useOrganizationContext();
 
     return <>{isAdmin ? children : <></>}</>;
 }

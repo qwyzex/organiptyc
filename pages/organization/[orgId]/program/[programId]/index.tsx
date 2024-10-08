@@ -231,7 +231,7 @@ const ProgramStatusModal = ({
     const router = useRouter();
     const { orgId, programId } = router.query;
     const { authUser, userDoc } = useContext(UserContext);
-    const { isAdmin } = useIsAdmin(orgId as string);
+    const { isAdmin } = useOrganizationContext();
 
     const { enqueueSnackbar } = useSnackbar();
     const [localStatus, setLocalStatus] = useState<any>(currentStatus);

@@ -27,12 +27,13 @@ import { UserContext } from "@/context/UserContext";
 import useIsAdmin from "@/function/useIsAdmin";
 import AdminWrap from "@/components/AdminWrap";
 import Head from "next/head";
+import { useOrganizationContext } from "@/context/OrganizationContext";
 
 export default function ProgramSettings({ setRerenderer }: any) {
     const router = useRouter();
     const { orgId, programId } = router.query;
     const { enqueueSnackbar } = useSnackbar();
-    const { isAdmin } = useIsAdmin(orgId as string);
+    const { isAdmin } = useOrganizationContext();
 
     const [localRerender, setLocalRerender] = useState<number>(0);
 

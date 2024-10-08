@@ -8,8 +8,8 @@ import { deleteObject, getBlob, getDownloadURL, ref } from "firebase/storage";
 import { storage } from "@/firebase";
 import DescriptionIcon from "@mui/icons-material/Description";
 import AdminWrap from "./AdminWrap";
-import useIsAdmin from "@/function/useIsAdmin";
 import { useRouter } from "next/router";
+import { useOrganizationContext } from "@/context/OrganizationContext";
 
 interface Props {
     items: FileItem[] | FolderItem[] | null;
@@ -34,9 +34,7 @@ const FileFolderDetails: React.FC<Props> = ({
     type,
     setrerenderer,
 }: any) => {
-    const router = useRouter();
-    const { orgId } = router.query;
-    const { isAdmin } = useIsAdmin(orgId as string);
+    const { isAdmin } = useOrganizationContext();
 
     const handleDownload = async (item: FileItem) => {
         const fileRef = ref(storage, item.metadata.fullPath);

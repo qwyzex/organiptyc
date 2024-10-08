@@ -18,6 +18,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/firebase";
 import Head from "next/head";
+import { useOrganizationContext } from "@/context/OrganizationContext";
 
 type CommitteeMember = {
     name: string;
@@ -30,7 +31,7 @@ type CommitteeData = {
 export default function ProgramCommittee() {
     const router = useRouter();
     const { orgId, programId } = router.query;
-    const { isAdmin } = useIsAdmin(orgId as string);
+    const { isAdmin } = useOrganizationContext();
 
     const [rerenderer, setRerenderer] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
