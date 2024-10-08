@@ -48,35 +48,43 @@ interface UserProviderProps {
 export function UserProvider({ children }: UserProviderProps) {
     const [authUser, setAuthUser] = useState<FirebaseUser | null>(null);
     const [userDoc, setUserDoc] = useState<UserDocument | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            setAuthUser(user);
             if (user) {
-                const userDocRef = doc(db, "users", user.uid);
-                const userDocSnap = await getDoc(userDocRef);
-                if (userDocSnap.exists()) {
-                    const userDocData = userDocSnap.data() as UserDocument;
-                    const orgsCollectionRef = collection(
-                        db,
-                        `users/${user.uid}/organizations`
-                    );
-                    const orgsSnap = await getDocs(orgsCollectionRef);
-                    const organizations = orgsSnap.docs.reduce(
-                        (acc, doc) => ({
-                            ...acc,
-                            [doc.id]: doc.data(),
-                        }),
-                        {}
-                    );
-                    setUserDoc({ ...userDocData, organizations });
-                } else {
-                    setUserDoc(null);
+                setAuthUser(user);
+                try {
+                    const userDocRef = doc(db, "users", user.uid);
+                    const userDocSnap = await getDoc(userDocRef);
+
+                    if (userDocSnap.exists()) {
+                        const userDocData = userDocSnap.data() as UserDocument;
+                        const orgsCollectionRef = collection(
+                            db,
+                            `users/${user.uid}/organizations`
+                        );
+                        const orgsSnap = await getDocs(orgsCollectionRef);
+                        const organizations = orgsSnap.docs.reduce(
+                            (acc, doc) => ({
+                                ...acc,
+                                [doc.id]: doc.data(),
+                            }),
+                            {}
+                        );
+                        setUserDoc({ ...userDocData, organizations });
+                    } else {
+                        setUserDoc(null);
+                    }
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                    setUserDoc(null); // Handle failure
                 }
             } else {
+                setAuthUser(null);
                 setUserDoc(null);
             }
+
             setLoading(false);
         });
 
