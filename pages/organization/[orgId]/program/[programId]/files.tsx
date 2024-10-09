@@ -30,6 +30,8 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import useProgramData from "@/function/useProgramData";
 import { User } from "firebase/auth";
 import Head from "next/head";
+import AdminWrap from "@/components/AdminWrap";
+import { useOrganizationContext } from "@/context/OrganizationContext";
 
 export interface FileItem {
     name: string;
@@ -202,17 +204,19 @@ const ProgramFiles = () => {
                     <div>
                         <h2>Program Files</h2>
                         <div>
-                            <UploadFileModal
-                                open={openUploadModal}
-                                handleOpen={handleOpenUploadModal}
-                                handleClose={handleCloseUploadModal}
-                                orgId={orgId as string}
-                                programId={programId as string}
-                                path={path}
-                                authUser={authUser}
-                                userDoc={userDoc}
-                                setRerenderer={setRerenderer}
-                            />
+                            <AdminWrap>
+                                <UploadFileModal
+                                    open={openUploadModal}
+                                    handleOpen={handleOpenUploadModal}
+                                    handleClose={handleCloseUploadModal}
+                                    orgId={orgId as string}
+                                    programId={programId as string}
+                                    path={path}
+                                    authUser={authUser}
+                                    userDoc={userDoc}
+                                    setRerenderer={setRerenderer}
+                                />
+                            </AdminWrap>
                             <span ref={detailsPaneToggleRef}>
                                 <Button
                                     className="btn-ref"
@@ -440,10 +444,14 @@ const UploadFileModal = ({
         p: 4,
     };
 
+    const { isAdmin } = useOrganizationContext();
+
     const [dragging, setDragging] = useState(false);
     const [progress, setProgress] = useState(0);
 
     const handleFileUpload = async (files: any) => {
+        if (!isAdmin) return;
+
         const metadata: any = {
             uploadedByUID: authUser?.uid,
             uploadedByUSR: userDoc?.fullName,

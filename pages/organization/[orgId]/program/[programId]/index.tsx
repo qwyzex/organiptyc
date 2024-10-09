@@ -329,7 +329,7 @@ const ProgramStatusModal = ({
                 )}
             </div>
             <Modal
-                open={open}
+                open={isAdmin && open}
                 onClose={handleClose}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
@@ -345,6 +345,7 @@ const ProgramStatusModal = ({
                         <div>
                             <FormControl size="small">
                                 <Select
+                                    disabled={!isAdmin}
                                     value={localStatus}
                                     onChange={(e) => {
                                         e.preventDefault();

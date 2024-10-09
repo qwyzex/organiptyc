@@ -59,7 +59,7 @@ export default function ProgramSettings({ setRerenderer }: any) {
     const handleProgramRename = async (e: any) => {
         e.preventDefault();
 
-        if (!authUser || !userDoc) return;
+        if (!authUser || !userDoc || !isAdmin) return;
 
         if (programData?.name == programName.trim()) {
             enqueueSnackbar("Program name unchanged", { variant: "warning" });
@@ -103,7 +103,7 @@ export default function ProgramSettings({ setRerenderer }: any) {
     const handleProgramDescriptionUpdate = async (e: any) => {
         e.preventDefault();
 
-        if (!authUser || !userDoc) return;
+        if (!authUser || !userDoc || !isAdmin) return;
 
         if (programData?.description == programDescription.trim()) {
             enqueueSnackbar("Program description unchanged", {
@@ -215,7 +215,7 @@ export default function ProgramSettings({ setRerenderer }: any) {
     const handleProgramDatesUpdate = async (e: any) => {
         e.preventDefault();
 
-        if (!authUser || !userDoc) return;
+        if (!authUser || !userDoc || !isAdmin) return;
 
         if (
             programData?.dateStart == dateStart &&
@@ -440,7 +440,6 @@ export default function ProgramSettings({ setRerenderer }: any) {
                                                 )
                                             }
                                             readOnly={!isAdmin}
-                                            disabled={!isAdmin ? true : false}
                                         />
                                     </section>
                                 </form>

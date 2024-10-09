@@ -1,5 +1,6 @@
 import AdminWrap from "@/components/AdminWrap";
 import Loading from "@/components/Loading";
+import { useOrganizationContext } from "@/context/OrganizationContext";
 import { UserContext } from "@/context/UserContext";
 import { storage } from "@/firebase";
 import createLog from "@/function/createLog";
@@ -217,6 +218,8 @@ const DisplayBudget = ({
     const [uploadReplace, setUploadReplace] = useState<boolean>(false);
     const [rerenderer, setRerenderer] = useState<number>(0);
 
+    const { isAdmin } = useOrganizationContext();
+
     const { authUser, userDoc } = useContext(UserContext);
 
     const { enqueueSnackbar } = useSnackbar();
@@ -279,6 +282,8 @@ const DisplayBudget = ({
         programId: string,
         newFile: File
     ) => {
+        if (!isAdmin) return;
+
         const budgetPath = `organization/${orgId}/programs/${programId}/${programId}_budgets.xlsx`;
         const fileRef = ref(storage, budgetPath);
 

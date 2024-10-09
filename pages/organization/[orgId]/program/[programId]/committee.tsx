@@ -69,6 +69,7 @@ export default function ProgramCommittee() {
 
     const handleAddNewCommitMember = (e: any) => {
         e.preventDefault();
+        if (!isAdmin) return;
 
         if (newCommitName && newCommitRole) {
             setLoading(true);
@@ -94,6 +95,8 @@ export default function ProgramCommittee() {
         type: "name" | "role"
     ) => {
         e.preventDefault();
+        if (!isAdmin) return;
+
         setLoading(true);
         programData
             ?.updateCommitteeMember(id, type, e.target.value.trim())
