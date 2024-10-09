@@ -708,6 +708,7 @@ const InvitationLink = ({
 
     useEffect(() => {
         const checkExistingLinks = async () => {
+            if (!isAdmin) return;
             setGenerateNew(false);
             if (userDoc) {
                 const invitesRef = collection(db, `invites`);
@@ -737,10 +738,14 @@ const InvitationLink = ({
         };
 
         setExpiry(24);
+
         checkExistingLinks();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userDoc, orgId, open]);
 
     const handleGenerateLink = async () => {
+        if (!isAdmin) return;
+
         setGenerateLoading(true);
         if (userDoc) {
             const { link, expiresAt } = await generateInviteLink(
@@ -771,6 +776,8 @@ const InvitationLink = ({
         e.preventDefault();
         setExpiry(e.target.value);
     };
+
+    if (!isAdmin) return null;
 
     return (
         <>

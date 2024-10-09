@@ -385,6 +385,18 @@ const FileDisplay = () => {
     );
 };
 
+/**
+ * A modal component for uploading files to a program.
+ * @param {Object} props
+ * @param {boolean} props.open Whether the modal is open or not.
+ * @param {Function} props.handleOpen Function to open the modal.
+ * @param {Function} props.handleClose Function to close the modal.
+ * @param {string} props.orgId The organization ID.
+ * @param {string} props.path The path to upload the files to.
+ * @param {Object} props.authUser The authenticated user.
+ * @param {Object} props.userDoc The authenticated user's document.
+ * @param {Function} props.setRerenderer Function to rerender the component.
+ */
 const UploadFileModal = ({
     open,
     handleOpen,
@@ -395,6 +407,8 @@ const UploadFileModal = ({
     userDoc,
     setRerenderer,
 }: any) => {
+    const { isAdmin } = useOrganizationContext();
+
     const style = {
         position: "absolute" as "absolute",
         top: "50%",
@@ -412,6 +426,8 @@ const UploadFileModal = ({
     const [progress, setProgress] = useState(0);
 
     const handleFileUpload = async (files: any) => {
+        if (!isAdmin) return;
+
         const metadata: any = {
             uploadedByUID: authUser?.uid,
             uploadedByUSR: userDoc?.fullName,
@@ -501,6 +517,10 @@ const UploadFileModal = ({
     const handleFileChange = (e: any) => {
         handleFileUpload(e.target.files);
     };
+
+    if (!isAdmin) {
+        return null;
+    }
 
     return (
         <>
