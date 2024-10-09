@@ -14,10 +14,13 @@ import { addDoc, collection, doc, setDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/firebase";
 import { useSnackbar } from "notistack";
 import { v4 as uuidv4 } from "uuid";
+import { useOrganizationContext } from "@/context/OrganizationContext";
 
 const NewProgramCreation = () => {
     const router = useRouter();
     const { orgId } = router.query;
+    const { isAdmin, refetchOrganizationData } = useOrganizationContext();
+
     const { enqueueSnackbar } = useSnackbar();
 
     const [loading, setLoading] = useState<boolean>(false);
@@ -126,9 +129,10 @@ const NewProgramCreation = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!isAdmin) return;
+        if (!orgId) return;
 
         setLoading(true);
-        if (!orgId) return;
         if (
             !name ||
             !dateStart ||
@@ -192,6 +196,7 @@ const NewProgramCreation = () => {
             );
             setLoading(false);
             setTimeout(() => {
+                refetchOrganizationData();
                 router.push(
                     `/organization/${orgId as string}/program/${programId}`
                 );
@@ -204,6 +209,13 @@ const NewProgramCreation = () => {
             setLoading(false);
         }
     };
+
+    if (!isAdmin)
+        return (
+            <div className={styles.container}>
+                <p>You do not have permission to access this page</p>
+            </div>
+        );
 
     return (
         <>
