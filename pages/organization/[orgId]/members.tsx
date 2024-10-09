@@ -403,6 +403,9 @@ export default function OrganizationMembers() {
                                                         }
                                                         onChange={async (e) => {
                                                             e.preventDefault();
+                                                            if (!isAdmin)
+                                                                return; // ONLY ALLOW ADMIN PASS
+
                                                             const newAdminStatus =
                                                                 e.target
                                                                     .value ===
@@ -548,6 +551,8 @@ export default function OrganizationMembers() {
                                                     <StyledBaseMenuItem
                                                         disabled={!isAdmin}
                                                         onClick={() => {
+                                                            if (!isAdmin)
+                                                                return;
                                                             handleRemoveUser([
                                                                 {
                                                                     uid: member.userId,
