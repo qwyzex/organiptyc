@@ -99,7 +99,11 @@ const Organization = () => {
                                                 <p>
                                                     {userDoc?.firstName}{" "}
                                                     {userDoc?.lastName} -{" "}
-                                                    {roles[org.uid].role}
+                                                    {roles[org.uid].admin ? (
+                                                        <span>Admin</span>
+                                                    ) : (
+                                                        <span>Member</span>
+                                                    )}
                                                 </p>
                                                 <p>
                                                     Joined{" "}
