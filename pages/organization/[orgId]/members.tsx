@@ -680,6 +680,8 @@ const InvitationLink = ({
     orgId,
     userId,
 }: InvitationLinkType) => {
+    const { isAdmin } = useOrganizationContext();
+
     const [newOldLink, setNewOldLink] = useState<string>("");
     const [inviteLink, setInviteLink] = useState<string>("");
     const [inviteExpiredAt, setInviteExpiredAt] = useState<string>("");

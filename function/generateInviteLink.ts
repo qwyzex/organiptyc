@@ -52,7 +52,10 @@ const generateInviteLink = async (
     });
 
     return {
-        link: `http://localhost:3000/organization/join/${inviteToken}`,
+        link:
+            process.env.NODE_ENV === "production"
+                ? `http://organiptyc.vercel.app/organization/join/${inviteToken}`
+                : `https://localhost:3000/organization/join/${inviteToken}`,
         expiresAt,
     };
 };
