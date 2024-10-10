@@ -49,6 +49,7 @@ body
     max-width: 100vw
     overflow-x: hidden
     background-size: cover
+    height: 100%
 
 @font-face
     font-family: DMSans
@@ -59,7 +60,6 @@ body
     src: url('./fonts/Inconsolata.ttf')
 
 body
-    min-height: 100vh
     color: var(--color)
     background: var(--background-img) no-repeat
     background-size: cover
@@ -222,16 +222,23 @@ input, textarea, select
     border: 2px solid var(--danger)
 
 #__next
-    height: 100vh
+    height: 100%
+    display: flex
+    flex-direction: column
 
 .root
-    height: 100%
+    display: flex
+    flex-direction: column
+    flex: 1
+    // height: 100%
     // overflow: hidden
 
 .sideAndMain
     display: flex
     flex-direction: row
-    height: calc( 100% - 104px )
+    flex: 1
+    // height: calc( 100% - 104px )
+    position: relative
 
     .mainLayout
         padding: 3rem 2rem 1rem 2rem

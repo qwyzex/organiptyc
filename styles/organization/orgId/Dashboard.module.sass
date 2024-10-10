@@ -2,7 +2,9 @@
     display: flex
     flex-direction: column
 
-    gap: 2rem
+    gap: 3rem
+
+    height: 100%
 
     .orgHeader
         display: flex
@@ -11,6 +13,7 @@
 
         h1
             font-size: 2.6rem
+            letter-spacing: 0.2rem
 
         article
             display: flex
@@ -35,46 +38,14 @@
         flex-direction: column
         gap: 0.8rem
 
-        .logsCard
-            display: flex
-            flex-direction: column
+        background-color: var(--background)
 
-            gap: 1rem
+        // min-height: 100%
+        // height: auto
 
-            border: 1px var(--color-dimmer) solid
-            border-radius: 5px
+        border-radius: 15px
 
-            padding: 1rem
-
-            transition: all 0.3s ease-out
-            overflow: hidden 
-
-            ul
-                display: flex
-                flex-direction: column
-                gap: 0.5rem
-                
-                transition: all 0.3s ease-out
-                overflow: hidden 
-
-                li
-                    list-style: none
-
-                    display: flex
-                    gap: 0.5rem
-
-                    > div
-                        display: flex
-                        flex-direction: column
-                        justify-content: space-evenly
-
-                        .logDate
-                            font-size: .8rem
-                            // opacity: 0.8
-                            color: var(--color-dimmed)
-
-                        .logAction
-                            font-size: 1.1rem
+        box-shadow: 0 0 20px #20202010
 
 .loadingContainer
     height: 80%
