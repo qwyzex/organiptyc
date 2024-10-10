@@ -1,87 +1,67 @@
 .sidebar
-        padding: 2rem
-
-        min-width: 14rem
-        max-width: 30vh
-        // border-right: 2px solid var(--transparent)
+    position: sticky
+    top: 0
+    left: 0
+    padding: 2rem
+    min-width: 14rem
+    max-width: 30vh
+    // border-right: 2px solid var(--transparent)
+    // border-right: 2px solid var(--color-dimmer)
+    overflow: hidden
+    transition: all .5s ease
+    display: flex
+    flex-direction: column
+    gap: 1rem
+    button
+        svg
+            color: var(--color)
+            filter: drop-shadow(0 0 8px #ffffff00)
+            transition: all 0.2s ease                
+        padding: 6px
+        width: min-content  !important
+        min-width: 0 !important
+    &.collapse
+        // background-color: red
         // border-right: 2px solid var(--color-dimmer)
-
-        overflow: hidden
-        transition: all .5s ease
-
+        // align-items: center
+        min-width: 6rem !important
+        width: 6rem !important
+    ul
         display: flex
         flex-direction: column
-
         gap: 1rem
-
-        button
-            svg
-                color: var(--color)
-                filter: drop-shadow(0 0 8px #ffffff00)
-                transition: all 0.2s ease
-                
-            padding: 6px
-            width: min-content  !important
-            min-width: 0 !important
-
-        &.collapse
-            // background-color: red
-            // border-right: 2px solid var(--color-dimmer)
-
-            // align-items: center
-            min-width: 6rem !important
-            width: 6rem !important
-
-        ul
-            display: flex
-            flex-direction: column
-            gap: 1rem
-
-            li
-                width: min-content
-
-                font-weight: 200
-                font-size: 1.1rem
-                list-style: none
-                cursor: pointer
-
-                color: var(--color)
-                text-shadow:  0 0 1.3rem #f5f5f500
-
-                transition:  all 0.3s ease
-                user-select: none
-
-                &:hover
-                    text-shadow:  0 0 0.8rem var(--color-dimmed)
-                    color: #f5f5f5
-
-                    a
-                        button
-                            svg
-                                transform: rotate(-8deg)
-                    
-                &:active
-                    text-shadow:  0 0 0.5rem var(--color-dimmer)
-
-                &.yesThisIsMe
-                    color: #f5f5f5
-                    font-weight: 600
-                    cursor: default
-
-                    text-shadow:  0 0 1.3rem #f5f5f5
-
-                    a
-                        button
-                            svg
-                                color: var(--acc)
-                                filter: drop-shadow(0 0 8px var(--acc))
-
+        li
+            width: min-content
+            font-weight: 200
+            font-size: 1.1rem
+            list-style: none
+            cursor: pointer
+            color: var(--color)
+            text-shadow:  0 0 1.3rem #f5f5f500
+            transition:  all 0.3s ease
+            user-select: none
+            &:hover
+                text-shadow:  0 0 0.8rem var(--color-dimmed)
+                color: #f5f5f5
                 a
-                    text-decoration: none
                     button
                         svg
-                            transform: rotate(0)
-                            transition: all 0.2s ease
-
-
-
+                            transform: rotate(-8deg)                    
+            &:active
+                text-shadow:  0 0 0.5rem var(--color-dimmer)
+            &.yesThisIsMe
+                color: #f5f5f5
+                font-weight: 600
+                cursor: default
+                text-shadow:  0 0 1.3rem #f5f5f5
+                a
+                    button
+                        svg
+                            color: var(--acc)
+                            filter: drop-shadow(0 0 8px var(--acc))
+            a
+                text-decoration: none
+                button
+                    svg
+                        transform: rotate(0)
+                        transition: all 0.2s ease
