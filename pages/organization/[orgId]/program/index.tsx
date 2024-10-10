@@ -161,7 +161,16 @@ export default function OrganizationPrograms() {
                             >
                                 Name
                             </p>
-                            <p>Status</p>
+                            <p
+                                className={
+                                    sortBy === "status"
+                                        ? styles.sortBySelected
+                                        : ""
+                                }
+                                onClick={() => handleChangeSort("status")}
+                            >
+                                Status
+                            </p>
                             <p
                                 className={
                                     sortBy === "toex"
@@ -217,6 +226,10 @@ export default function OrganizationPrograms() {
                                         return sortIt === "asc"
                                             ? a.chief.localeCompare(b.chief)
                                             : b.chief.localeCompare(a.chief);
+                                    } else if (sortBy === "status") {
+                                        return sortIt === "asc"
+                                            ? a.status.localeCompare(b.status)
+                                            : b.status.localeCompare(a.status);
                                     }
                                 })
                                 .map((program: any) => (
