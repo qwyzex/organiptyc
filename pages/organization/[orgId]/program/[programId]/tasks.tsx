@@ -113,6 +113,46 @@ export default function ProgramTasks() {
                 <header className={styles.tasksHeader}>
                     <h2>Tasks</h2>
                 </header>
+                <footer className={styles.footer}>
+                    <form onSubmit={handleNewTaskSubmit}>
+                        <input
+                            className={styles.inputForm}
+                            placeholder="Add new task"
+                            type="text"
+                            value={newTaskContent}
+                            disabled={newTaskLoading}
+                            onChange={(e) => {
+                                e.preventDefault();
+
+                                setNewTaskContent(e.target.value);
+                            }}
+                        />
+                        <Button
+                            className="btn-ref"
+                            onClick={() => setNewTaskHP(!newTaskHP)}
+                            disabled={!newTaskContent.trim() || newTaskLoading}
+                        >
+                            {newTaskHP ? (
+                                <Star fontSize="small" />
+                            ) : (
+                                <StarOutline fontSize="small" />
+                            )}
+                        </Button>
+                        <Button
+                            className="btn-def"
+                            type="submit"
+                            disabled={!newTaskContent.trim() || newTaskLoading}
+                        >
+                            {newTaskLoading ? (
+                                <div>
+                                    <Loading className={styles.loadingComp} />
+                                </div>
+                            ) : (
+                                <Add fontSize="small" />
+                            )}
+                        </Button>
+                    </form>
+                </footer>
                 <main className={styles.main}>
                     <div>
                         <ListItemButton
@@ -233,46 +273,6 @@ export default function ProgramTasks() {
                         </Collapse>
                     </div>
                 </main>
-                <footer className={styles.footer}>
-                    <form onSubmit={handleNewTaskSubmit}>
-                        <input
-                            className={styles.inputForm}
-                            placeholder="Add new task"
-                            type="text"
-                            value={newTaskContent}
-                            disabled={newTaskLoading}
-                            onChange={(e) => {
-                                e.preventDefault();
-
-                                setNewTaskContent(e.target.value);
-                            }}
-                        />
-                        <Button
-                            className="btn-ref"
-                            onClick={() => setNewTaskHP(!newTaskHP)}
-                            disabled={!newTaskContent.trim() || newTaskLoading}
-                        >
-                            {newTaskHP ? (
-                                <Star fontSize="small" />
-                            ) : (
-                                <StarOutline fontSize="small" />
-                            )}
-                        </Button>
-                        <Button
-                            className="btn-def"
-                            type="submit"
-                            disabled={!newTaskContent.trim() || newTaskLoading}
-                        >
-                            {newTaskLoading ? (
-                                <div>
-                                    <Loading className={styles.loadingComp} />
-                                </div>
-                            ) : (
-                                <Add fontSize="small" />
-                            )}
-                        </Button>
-                    </form>
-                </footer>
             </section>
         </>
     );
