@@ -63,20 +63,7 @@ import removeMember from "@/function/removeMember";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useOrganizationContext } from "@/context/OrganizationContext";
 import Head from "next/head";
-
-const modalBoxStyle = {
-    position: "absolute" as "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "500",
-    // height: 400,
-    bgcolor: "var(--background)",
-    border: "2px solid #8A8FF8",
-    borderRadius: 2,
-    boxShadow: 24,
-    p: 4,
-};
+import modalBoxStyle, { modalBoxDangerous } from "@/utils/modalBoxStyle";
 
 export default function OrganizationMembers() {
     const router = useRouter();
@@ -598,7 +585,7 @@ export default function OrganizationMembers() {
                         aria-describedby="modal-modal-description"
                     >
                         <Box
-                            sx={modalBoxStyle}
+                            sx={modalBoxDangerous}
                             className={`modalDangerous ${styles.removeMemberModal}`}
                         >
                             <h2 className="color-danger">Remove Member</h2>
