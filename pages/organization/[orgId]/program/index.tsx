@@ -31,8 +31,8 @@ export default function OrganizationPrograms() {
     const { authUser, userDoc } = useContext(UserContext);
 
     // name, timeofexecution (toex), chief
-    const [sortBy, setSortBy] = useState<string>("toex");
-    const [sortIt, setSortIt] = useState<"asc" | "des">("asc");
+    const [sortBy, setSortBy] = useState<string>("status");
+    const [sortIt, setSortIt] = useState<"asc" | "des">("des");
 
     const handleChangeSort = (by: string) => {
         if (sortBy == by) {
@@ -82,7 +82,7 @@ export default function OrganizationPrograms() {
 
         &:hover {
             background-color: var(--hover-background);
-            color: var(--danger);
+            color: var(--acc);
             cursor: pointer;
         }
     
